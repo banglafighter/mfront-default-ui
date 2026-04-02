@@ -1,6 +1,69 @@
 {
   "name": "@mfront/default-ui",
   "version": "0.0.1",
+  "description": "mFront UI Default Implementation",
+  "license": "Apache-2.0",
   "main": "src/index.ts",
-  "types": "src/index.ts"
+  "module": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "version:alpha": "pnpm version prerelease --preid alpha --no-git-tag-version",
+    "version:beta": "pnpm version prerelease --preid beta --no-git-tag-version",
+    "version:release": "pnpm version patch --no-git-tag-version",
+    "publish:alpha": "pnpm publish --tag alpha --no-git-checks",
+    "publish:beta": "pnpm publish --tag beta --no-git-checks",
+    "publish:release": "pnpm publish --tag latest --no-git-checks",
+    "release:alpha": "pnpm run build && pnpm run version:alpha && pnpm run publish:alpha",
+    "release:beta": "pnpm run build && pnpm run version:beta && pnpm run publish:beta",
+    "release": "pnpm run build && pnpm run version:release && pnpm run publish:release"
+  },
+  "author": {
+    "name": "Bangla Fighter",
+    "url": "https://banglafighter.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/banglafighter/mfront-default-ui"
+  },
+  "homepage": "https://github.com/banglafighter/mfront-default-ui#readme",
+  "bugs": {
+    "url": "https://github.com/banglafighter/mfront-default-ui/issues"
+  },
+  "packageManager": "pnpm@10.28.2",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "import": "./dist/index.js",
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "keywords": [
+    "@mfront/default-ui",
+    "mfront",
+    "mweb",
+    "maintainable",
+    "react",
+    "frontend",
+    "framework",
+    "router",
+    "mapend"
+  ]
 }
