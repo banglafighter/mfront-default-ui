@@ -1,6 +1,6 @@
 {
-  "name": "@mfront/default-ui",
-  "version": "0.0.1",
+  "name": "mfront-default-ui",
+  "version": "0.0.2-alpha.0",
   "description": "mFront UI Default Implementation",
   "license": "Apache-2.0",
   "main": "src/index.ts",
@@ -17,6 +17,9 @@
     "release:alpha": "pnpm run build && pnpm run version:alpha && pnpm run publish:alpha",
     "release:beta": "pnpm run build && pnpm run version:beta && pnpm run publish:beta",
     "release": "pnpm run build && pnpm run version:release && pnpm run publish:release"
+  },
+  "dependencies": {
+    "mfront-ui": "workspace:*"
   },
   "author": {
     "name": "Bangla Fighter",
@@ -56,7 +59,7 @@
     }
   },
   "keywords": [
-    "@mfront/default-ui",
+    "mfront-default-ui",
     "mfront",
     "mweb",
     "maintainable",

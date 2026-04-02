@@ -1,4 +1,4 @@
-import {UIActionSpec, UIAdapterData, UIComponentSpec} from "@mfront/ui";
+import {UIActionSpec, UIAdapterData, UIComponentSpec} from "mfront-ui";
 
 
 export const DefaultUIComponent: UIComponentSpec = {}
