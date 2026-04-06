@@ -74,8 +74,17 @@ export function defaultToastAction(props: WebToastActionProps) {
         theme: props.theme,
         position: position,
         transition: transition,
-        onClose: props.onClose,
-        autoClose: getAutoClose(props.autoHide, props.visibilityTimeMS)
+        autoClose: getAutoClose(props.autoHide, props.visibilityTimeMS),
+        onClick: (event: any) => {
+            if (props.onAction) {
+                props.onAction(props.actionData)
+            }
+        },
+        onClose: (reason?: boolean | string) => {
+            if (props.onClose) {
+                props.onClose()
+            }
+        }
     }
     switch (props.type) {
         case "success":
