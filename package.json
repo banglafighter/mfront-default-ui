@@ -15,7 +15,9 @@
     "release": "pnpm run build && pnpm run version:release && pnpm run publish:release"
   },
   "dependencies": {
-    "mfront-ui": "workspace:*"
+    "mfront-ui": "workspace:*",
+    "react-toastify": "^11.0.5",
+    "clsx": "^2.1.1"
   },
   "license": "Apache-2.0",
   "main": "src/index.ts",
