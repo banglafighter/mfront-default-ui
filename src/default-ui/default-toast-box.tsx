@@ -82,7 +82,7 @@ export function defaultToastAction(props: WebToastActionProps) {
         },
         onClose: (reason?: boolean | string) => {
             if (props.onClose) {
-                props.onClose()
+                props.onClose(props.actionData)
             }
         }
     }
