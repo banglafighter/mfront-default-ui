@@ -43,6 +43,7 @@
   },
   "packageManager": "pnpm@10.28.2",
   "exports": {
+    "./style": "./mfront-default-style.css",
     ".": {
       "import": "./src/index.ts",
       "types": "./src/index.ts",
