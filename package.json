@@ -20,6 +20,7 @@
     "clsx": "^2.1.1",
     "class-variance-authority": "^0.7.1",
     "tailwind-merge": "^3.5.0",
+    "lucide-react": "*",
     "@radix-ui/react-separator": "^1.1.8"
   },
   "devDependencies": {
