@@ -11,6 +11,8 @@ import {
     DefaultCardHeader, DefaultCardSubTitle,
     DefaultCardTitle
 } from "./default-ui/default-card";
+import {DefaultGrid} from "./default-ui/default-grid";
+import {DefaultGridItem} from "./default-ui/default-grid-item";
 
 
 export const DefaultUIComponent: UIComponentSpec = {
@@ -27,6 +29,9 @@ export const DefaultUIComponent: UIComponentSpec = {
     CardTitle: DefaultCardTitle,
     CardSubTitle: DefaultCardSubTitle,
     CardAction: DefaultCardAction,
+
+    Grid: DefaultGrid,
+    GridItem: DefaultGridItem
 }
 
 export const DefaultUIAction: UIActionSpec = {
