@@ -13,6 +13,7 @@ import {
 } from "./default-ui/default-card";
 import {DefaultGrid} from "./default-ui/default-grid";
 import {DefaultGridItem} from "./default-ui/default-grid-item";
+import {DefaultInputFrame} from "./default-ui/default-input-frame";
 
 
 export const DefaultUIComponent: UIComponentSpec = {
@@ -31,7 +32,9 @@ export const DefaultUIComponent: UIComponentSpec = {
     CardAction: DefaultCardAction,
 
     Grid: DefaultGrid,
-    GridItem: DefaultGridItem
+    GridItem: DefaultGridItem,
+
+    InputFrame: DefaultInputFrame
 }
 
 export const DefaultUIAction: UIActionSpec = {
