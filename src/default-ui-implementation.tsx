@@ -14,6 +14,7 @@ import {
 import {DefaultGrid} from "./default-ui/default-grid";
 import {DefaultGridItem} from "./default-ui/default-grid-item";
 import {DefaultInputFrame} from "./default-ui/default-input-frame";
+import {DefaultInput} from "./default-ui/default-input";
 
 
 export const DefaultUIComponent: UIComponentSpec = {
@@ -34,7 +35,8 @@ export const DefaultUIComponent: UIComponentSpec = {
     Grid: DefaultGrid,
     GridItem: DefaultGridItem,
 
-    InputFrame: DefaultInputFrame
+    InputFrame: DefaultInputFrame,
+    Input: DefaultInput
 }
 
 export const DefaultUIAction: UIActionSpec = {
