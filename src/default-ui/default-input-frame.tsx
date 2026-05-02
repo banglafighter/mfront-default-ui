@@ -133,7 +133,7 @@ export function DefaultInputFrame({element, className, label, labelNext, require
         )
     }
 
-    const {gridItemProps, otherProps} = UICommonUtil.extractGridItemProps(props as Map<string, MixType>)
+    const {gridItemProps, otherProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
     return (
         <div
             data-tag={"input-frame"}

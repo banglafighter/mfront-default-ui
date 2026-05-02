@@ -5,7 +5,7 @@ import {MixType} from "mmcore";
 
 
 export function DefaultInputField({type, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, ...props}: WebInputFieldProps) {
-    const {gridItemProps, otherProps} = UICommonUtil.extractGridItemProps(props as Map<string, MixType>)
+    const {gridItemProps, otherProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
     return (
         <DefaultInputFrame
             label={label}
