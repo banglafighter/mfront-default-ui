@@ -4,7 +4,7 @@ import {Input, UICommonUtil} from "mfront-ui";
 import {MixType} from "mmcore";
 
 
-export function DefaultInputField({type, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, ...props}: WebInputFieldProps) {
+export function DefaultInputField({name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, type = "text", ...props}: WebInputFieldProps) {
     const {gridItemProps, otherProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
     return (
         <DefaultInputFrame
@@ -19,7 +19,7 @@ export function DefaultInputField({type, className, label, labelNext, required, 
             {...gridItemProps}
             element={(labelKey: string) => {
                 return (
-                    <Input id={labelKey} type={type} {...otherProps} className={inputClassName}/>
+                    <Input name={name} id={labelKey} type={type} {...otherProps} className={inputClassName}/>
                 )
             }}
         />
