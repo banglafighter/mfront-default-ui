@@ -60,21 +60,32 @@ function generate12DigitNumber() {
     return num.toString();
 }
 
-function getLabel(labelKey: string, label?: string, required?: boolean, labelNext?: any) {
+function getLabel(labelKey: string, label?: string, required?: boolean, labelNext?: UINode) {
     if (!label) {
         return ""
     }
-    let requiredSymbol: any = required ? <span className="text-danger relative top-[2.5px] required-symbol font-bold">*</span> : ""
-    return (
+    let requiredSymbol: UINode = required ? <span className="text-danger relative top-[2.5px] required-symbol font-bold">*</span> : ""
+    const labelContent: UINode = (
         <label data-tag={"label"} htmlFor={labelKey} className={mergeWind(
             "flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
             "group/label peer/label flex w-fit gap-2 leading-snug group-data-[disabled=true]/input-frame:opacity-50",
             "has-[>[data-tag=input-frame]]:w-full has-[>[data-tag=input-frame]]:flex-col has-[>[data-tag=input-frame]]:rounded-md has-[>[data-tag=input-frame]]:border [&>*]:data-[tag=input-frame]:p-4",
             "has-data-[state=checked]:border-primary has-data-[state=checked]:bg-primary/5 dark:has-data-[state=checked]:bg-primary/10",
         )}>
-            {requiredSymbol} {label} {labelNext}
+            {requiredSymbol} {label}
         </label>
     )
+
+    let content : UINode = labelContent
+    if (labelNext) {
+        content = (
+            <div className={"flex items-center"}>
+                {labelContent}
+                <div className={"ml-auto"}>{labelNext}</div>
+            </div>
+        )
+    }
+    return content
 }
 
 function getErrorText(errorTest?: string) {
