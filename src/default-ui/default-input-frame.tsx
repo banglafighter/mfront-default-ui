@@ -4,7 +4,7 @@ import {MixType, UINode} from "mmcore";
 import {UICommonUtil} from "mfront-ui";
 
 const inputFrameVariants = makeClassVariance(
-  "group/input-frame flex w-full gap-2 data-[invalid=true]:text-danger",
+  "group/input-frame flex w-full gap-1 data-[invalid=true]:text-danger",
   {
     variants: {
         orientation: {
