@@ -94,9 +94,8 @@ export function DefaultGridItem({
                 rowStartLarge,
                 rowEndMob,
                 rowEndTab,
-                rowEndLarge,
-                className
-            }))}
+                rowEndLarge
+            }), className)}
             {...props}
         />
     )

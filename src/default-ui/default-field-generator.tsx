@@ -1,8 +1,18 @@
-import {WebGridProps} from "mmcore-ui";
-import {makeClassVariance, mergeWind} from "../common/tailwind-utils";
+import {
+    WebDefaultInputFieldPropsBase,
+    WebFieldEngineProps,
+    WebFieldGeneratorProps,
+    WebInputFieldProps,
+    WebInputProps
+} from "mmcore-ui";
+import {UICommonUtil, useFieldEngine} from "mfront-ui";
+import {MixType} from "mmcore";
+import {makeClassVariance, mergeWind} from "mfront-default-ui";
+import {DefaultInputField} from "./default-input-field";
 
-const gridVariants = makeClassVariance(
-    "grid",
+
+const fieldGeneratorVariants = makeClassVariance(
+    "",
     {
         variants: {
             cols: {1: "grid-cols-1", 2: "grid-cols-2", 3: "grid-cols-3", 4: "grid-cols-4", 5: "grid-cols-5", 6: "grid-cols-6", 7: "grid-cols-7", 8: "grid-cols-8", 9: "grid-cols-9", 10: "grid-cols-10", 11: "grid-cols-11", 12: "grid-cols-12"},
@@ -23,48 +33,34 @@ const gridVariants = makeClassVariance(
 
             gapMob: {1: "sm:gap-1", 2: "sm:gap-2", 3: "sm:gap-3", 4: "sm:gap-4", 5: "sm:gap-5", 6: "sm:gap-6", 7: "sm:gap-7", 8: "sm:gap-8", 9: "sm:gap-9", 10: "sm:gap-10", 11: "sm:gap-11", 12: "sm:gap-12"},
             gapTab: {1: "md:gap-1", 2: "md:gap-2", 3: "md:gap-3", 4: "md:gap-4", 5: "md:gap-5", 6: "md:gap-6", 7: "md:gap-7", 8: "md:gap-8", 9: "md:gap-9", 10: "md:gap-10", 11: "md:gap-11", 12: "md:gap-12"},
+            layout: {
+                grid: "grid"
+            }
         }
     }
 )
 
-export function DefaultGrid({
-                                className,
-                                cols,
-                                rows,
-                                flow,
-                                gap,
-                                colGap,
-                                rowGap,
-                                colsMob,
-                                colsTab,
-                                colsLarge,
-                                rowsMob,
-                                rowsTab,
-                                rowsLarge,
-                                gapMob,
-                                gapTab,
-                                ...props
-                            }: WebGridProps) {
-    const GridTag = "div"
+function getField(spec: WebDefaultInputFieldPropsBase, index: number, engine: WebFieldEngineProps) {
+    const {specType, ...fieldSpec} = spec;
+    if (spec.hideMe) {
+        return ""
+    }
+    switch (specType) {
+        case "text":
+            const props = fieldSpec as WebInputFieldProps
+            return (<DefaultInputField {...props} type={"text"} key={index} engine={engine}/>)
+    }
+    return ""
+}
+
+export default function DefaultFieldGenerator ({className, engine, layout = "grid", ...props}: WebFieldGeneratorProps){
+    const {gridProps, otherProps} = UICommonUtil.extractGridProps(props as Record<string, MixType>)
+
     return (
-        <GridTag
-            className={mergeWind(gridVariants({
-                cols,
-                rows,
-                flow,
-                gap,
-                colGap,
-                rowGap,
-                colsMob,
-                colsTab,
-                colsLarge,
-                rowsMob,
-                rowsTab,
-                rowsLarge,
-                gapMob,
-                gapTab
-            }), className)}
-            {...props}
-        />
+        <div {...otherProps} className={mergeWind(fieldGeneratorVariants({layout, ...gridProps}), className)} key={`fg-${engine.version}`}>
+            {engine.fieldSpecList().map((spec: WebDefaultInputFieldPropsBase, index: number)=> {
+                return getField(spec, index, engine)
+            })}
+        </div>
     )
 }
