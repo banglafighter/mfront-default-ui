@@ -1,4 +1,4 @@
-import {InputType, WebDefaultInputFieldPropsBase, WebFieldGroupItemProps, WebFieldGroupProps} from "mmcore-ui";
+import {InputType, WebFieldGroupItemProps, WebFieldGroupProps} from "mmcore-ui";
 import {makeClassVariance, mergeWind} from "mfront-default-ui";
 import {MixType, MmReactFragment, UIComponentProps, UINode} from "mmcore";
 import {DefaultInputFrame} from "./default-input-frame";
@@ -57,7 +57,7 @@ function InputGroupAddon({className, align = "inline-start", children}: { align 
         <div
             data-align={align}
             data-tag="field-group-adon"
-            className={mergeWind(className, inputGroupAddonVariants({align}))}
+            className={mergeWind(inputGroupAddonVariants({align}), className)}
         >
             {children}
         </div>
@@ -72,12 +72,12 @@ function getItemText(content: UINode){
     )
 }
 
-function getItems(align: AddonAlign, items?: Array<WebFieldGroupItemProps>) {
+function getItems(align: AddonAlign, items?: Array<WebFieldGroupItemProps>, className?: string) {
     if (!items) {
         return ""
     }
     return (
-        <InputGroupAddon align={align}>
+        <InputGroupAddon align={align} className={className}>
             {items.map((item: WebFieldGroupItemProps, index: number) => {
                 return (
                     <MmReactFragment key={index}>
@@ -89,7 +89,7 @@ function getItems(align: AddonAlign, items?: Array<WebFieldGroupItemProps>) {
     )
 }
 
-export function DefaultFieldGroup({groupType, startOrTopItems, endOrButtonItems, name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, defaultValue, engine, type = "text", ...props}: WebFieldGroupProps) {
+export function DefaultFieldGroup({groupType, startOrTopItems, endOrButtonItems, name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, defaultValue, engine, type = "text", startOrTopItemClassName, endOrButtonItemClassName, ...props}: WebFieldGroupProps) {
     const {fieldRef, handleChange} = useFieldHelper<HTMLInputElement>({name, defaultValue, engine, onChange})
     const {fieldRef : textareaRef, handleChange: textareaHandleChange} = useFieldHelper<HTMLTextAreaElement>({name, defaultValue, engine, onChange})
     const {gridItemProps, otherProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
@@ -137,8 +137,8 @@ export function DefaultFieldGroup({groupType, startOrTopItems, endOrButtonItems,
         return (
             <FieldGroup>
                 {input}
-                {getItems(startOrTopAlign, startOrTopItems as Array<WebFieldGroupItemProps>)}
-                {getItems(endOrButtonAlign, endOrButtonItems as Array<WebFieldGroupItemProps>)}
+                {getItems(startOrTopAlign, startOrTopItems as Array<WebFieldGroupItemProps>, startOrTopItemClassName)}
+                {getItems(endOrButtonAlign, endOrButtonItems as Array<WebFieldGroupItemProps>, endOrButtonItemClassName)}
             </FieldGroup>
         )
     }
