@@ -47,8 +47,11 @@ function getField(spec: WebDefaultInputFieldPropsBase, index: number, engine: We
     }
     switch (specType) {
         case "text":
-            const props = fieldSpec as WebInputFieldProps
-            return (<DefaultInputField {...props} type={"text"} key={index} engine={engine}/>)
+            const textProps = fieldSpec as WebInputFieldProps
+            return (<DefaultInputField {...textProps} type={"text"} key={index} engine={engine}/>)
+        case "textarea":
+            const textareaProps = fieldSpec as WebInputFieldProps
+            return (<DefaultInputField {...textareaProps} type={"textarea"} key={index} engine={engine}/>)
     }
     return ""
 }
