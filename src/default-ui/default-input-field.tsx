@@ -1,10 +1,12 @@
 import {WebInputFieldProps} from "mmcore-ui";
 import {DefaultInputFrame} from "./default-input-frame";
-import {Input, UICommonUtil} from "mfront-ui";
+import {UICommonUtil, useFieldHelper} from "mfront-ui";
 import {MixType} from "mmcore";
+import {DefaultInput} from "./default-input";
 
 
-export function DefaultInputField({name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, type = "text", ...props}: WebInputFieldProps) {
+export function DefaultInputField({name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, defaultValue, engine, type = "text", ...props}: WebInputFieldProps) {
+    const {fieldRef, handleChange} = useFieldHelper<HTMLInputElement>({name, defaultValue, engine, onChange})
     const {gridItemProps, otherProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
     return (
         <DefaultInputFrame
@@ -19,7 +21,15 @@ export function DefaultInputField({name, className, label, labelNext, required, 
             {...gridItemProps}
             element={(labelKey: string) => {
                 return (
-                    <Input name={name} id={labelKey} type={type} {...otherProps} className={inputClassName}/>
+                    <DefaultInput
+                        name={name}
+                        id={labelKey}
+                        type={type}
+                        {...otherProps}
+                        className={inputClassName}
+                        ref={fieldRef}
+                        onChange={handleChange}
+                    />
                 )
             }}
         />
