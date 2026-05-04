@@ -5,10 +5,12 @@ import {DefaultSeparator} from "./default-ui/default-separator";
 import {DefaultButtonGroup} from "./default-ui/default-button-group";
 import {DefaultLoader} from "./default-ui/default-loader";
 import {
-    DefaultCard, DefaultCardAction,
+    DefaultCard,
+    DefaultCardAction,
     DefaultCardBody,
     DefaultCardFooter,
-    DefaultCardHeader, DefaultCardSubTitle,
+    DefaultCardHeader,
+    DefaultCardSubTitle,
     DefaultCardTitle
 } from "./default-ui/default-card";
 import {DefaultGrid} from "./default-ui/default-grid";
@@ -18,6 +20,7 @@ import {DefaultInput} from "./default-ui/default-input";
 import {DefaultInputField} from "./default-ui/default-input-field";
 import DefaultFieldGenerator from "./default-ui/default-field-generator";
 import {DefaultTextarea} from "./default-ui/default-textarea";
+import {DefaultFieldGroup} from "./default-ui/default-field-group";
 
 
 export const DefaultUIComponent: UIComponentSpec = {
@@ -41,6 +44,7 @@ export const DefaultUIComponent: UIComponentSpec = {
     InputFrame: DefaultInputFrame,
     InputField: DefaultInputField,
     Input: DefaultInput,
+    FieldGroup: DefaultFieldGroup,
     FieldGenerator: DefaultFieldGenerator,
     Textarea: DefaultTextarea
 }

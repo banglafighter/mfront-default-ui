@@ -14,6 +14,7 @@ const buttonVariants = makeClassVariance(
                 success: "bg-success text-success-foreground hover:bg-success/90",
                 outline: "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
                 link: "text-primary underline-offset-4 hover:underline",
+                ghost: "",
             },
             size: {
                 default: "h-9 px-4 py-2 has-[>svg]:px-3",
