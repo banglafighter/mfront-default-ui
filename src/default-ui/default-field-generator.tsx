@@ -7,6 +7,7 @@ import {UICommonUtil} from "mfront-ui";
 import {MixType} from "mmcore";
 import {makeClassVariance, mergeWind} from "mfront-default-ui";
 import {DefaultFieldGroup} from "./default-field-group";
+import PasswordField from "../internal/password-field";
 
 
 const fieldGeneratorVariants = makeClassVariance(
@@ -48,6 +49,9 @@ function getField(spec: WebDefaultInputFieldPropsBase, index: number, engine: We
         case "text":
             const textProps = fieldSpec as WebFieldGroupProps
             return (<DefaultFieldGroup {...textProps} type={textProps.type} key={index} engine={engine}/>)
+        case "password":
+            const passwordProps = fieldSpec as WebFieldGroupProps
+            return (<PasswordField {...passwordProps} key={index} engine={engine}/>)
         case "textarea":
             const textareaProps = fieldSpec as WebFieldGroupProps
             return (<DefaultFieldGroup {...textareaProps} type={"textarea"} key={index} engine={engine}/>)
