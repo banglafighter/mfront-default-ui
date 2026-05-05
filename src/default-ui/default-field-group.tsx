@@ -58,6 +58,12 @@ function InputGroupAddon({className, align = "inline-start", children}: { align 
             data-align={align}
             data-tag="field-group-adon"
             className={mergeWind(inputGroupAddonVariants({align}), className)}
+            onClick={(e) => {
+                if ((e.target as HTMLElement).closest("button")) {
+                    return
+                }
+                e.currentTarget.parentElement?.querySelector("input")?.focus()
+            }}
         >
             {children}
         </div>
