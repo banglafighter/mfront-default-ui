@@ -1,14 +1,12 @@
 import {
     WebDefaultInputFieldPropsBase,
     WebFieldEngineProps,
-    WebFieldGeneratorProps,
-    WebInputFieldProps,
-    WebInputProps
+    WebFieldGeneratorProps, WebFieldGroupProps,
 } from "mmcore-ui";
-import {UICommonUtil, useFieldEngine} from "mfront-ui";
+import {UICommonUtil} from "mfront-ui";
 import {MixType} from "mmcore";
 import {makeClassVariance, mergeWind} from "mfront-default-ui";
-import {DefaultInputField} from "./default-input-field";
+import {DefaultFieldGroup} from "./default-field-group";
 
 
 const fieldGeneratorVariants = makeClassVariance(
@@ -45,13 +43,14 @@ function getField(spec: WebDefaultInputFieldPropsBase, index: number, engine: We
     if (spec.hideMe) {
         return ""
     }
+
     switch (specType) {
         case "text":
-            const textProps = fieldSpec as WebInputFieldProps
-            return (<DefaultInputField {...textProps} type={"text"} key={index} engine={engine}/>)
+            const textProps = fieldSpec as WebFieldGroupProps
+            return (<DefaultFieldGroup {...textProps} type={textProps.type} key={index} engine={engine}/>)
         case "textarea":
-            const textareaProps = fieldSpec as WebInputFieldProps
-            return (<DefaultInputField {...textareaProps} type={"textarea"} key={index} engine={engine}/>)
+            const textareaProps = fieldSpec as WebFieldGroupProps
+            return (<DefaultFieldGroup {...textareaProps} type={"textarea"} key={index} engine={engine}/>)
     }
     return ""
 }

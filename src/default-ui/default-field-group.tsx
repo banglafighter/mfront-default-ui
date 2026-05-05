@@ -89,7 +89,7 @@ function getItems(align: AddonAlign, items?: Array<WebFieldGroupItemProps>, clas
     )
 }
 
-export function DefaultFieldGroup({groupType, startOrTopItems, endOrButtonItems, name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, defaultValue, engine, type = "text", startOrTopItemClassName, endOrButtonItemClassName, ...props}: WebFieldGroupProps) {
+export function DefaultFieldGroup({startOrTopItems, endOrButtonItems, name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, defaultValue, engine, startOrTopItemClassName, endOrButtonItemClassName, groupType = "text", type = "text", ...props}: WebFieldGroupProps) {
     const {fieldRef, handleChange} = useFieldHelper<HTMLInputElement>({name, defaultValue, engine, onChange})
     const {fieldRef : textareaRef, handleChange: textareaHandleChange} = useFieldHelper<HTMLTextAreaElement>({name, defaultValue, engine, onChange})
     const {gridItemProps, otherProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
