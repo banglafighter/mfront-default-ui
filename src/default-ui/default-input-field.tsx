@@ -14,6 +14,7 @@ export function DefaultInputField({name, className, label, labelNext, required, 
     const getInputField = (labelKey: string) => {
         return (
             <DefaultInput
+                aria-invalid={isError}
                 name={name}
                 id={labelKey}
                 type={type}
@@ -28,6 +29,7 @@ export function DefaultInputField({name, className, label, labelNext, required, 
     const getTextareaField = (labelKey: string) => {
         return (
             <DefaultTextarea
+                aria-invalid={isError}
                 name={name}
                 id={labelKey}
                 {...otherProps}

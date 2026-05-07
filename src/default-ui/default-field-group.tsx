@@ -103,6 +103,7 @@ export function DefaultFieldGroup({startOrTopItems, endOrBottomItems, name, clas
     const getInputField = (labelKey: string, type: InputType) => {
         return (
             <DefaultInput
+                aria-invalid={isError}
                 data-tag="field-group-input"
                 name={name}
                 id={labelKey}
@@ -118,6 +119,7 @@ export function DefaultFieldGroup({startOrTopItems, endOrBottomItems, name, clas
     const getTextareaField = (labelKey: string) => {
         return (
             <DefaultTextarea
+                aria-invalid={isError}
                 data-tag="field-group-input"
                 name={name}
                 id={labelKey}
