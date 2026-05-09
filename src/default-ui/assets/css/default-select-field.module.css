@@ -1,0 +1,15 @@
+.spinner {
+    box-sizing: border-box;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 10rem;
+    border: 1px solid currentColor;
+    border-right-color: transparent;
+    animation: spinnerRotation 0.75s linear infinite;
+}
+
+@keyframes spinnerRotation {
+    100% {
+        transform: rotate(360deg);
+    }
+}

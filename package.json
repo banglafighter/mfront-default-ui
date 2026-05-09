@@ -21,7 +21,11 @@
     "class-variance-authority": "^0.7.1",
     "tailwind-merge": "^3.5.0",
     "lucide-react": "*",
-    "@radix-ui/react-separator": "^1.1.8"
+    "@radix-ui/react-separator": "*",
+    "@radix-ui/react-primitive": "*",
+    "@radix-ui/react-slot": "*",
+    "@radix-ui/react-compose-refs": "*",
+    "@base-ui/react": "^1.4.1"
   },
   "devDependencies": {
     "@tailwindcss/vite": "*",
