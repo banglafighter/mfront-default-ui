@@ -7,6 +7,7 @@ import {DefaultButton} from "./default-button";
 import {DefaultInput} from "./default-input";
 import {CheckIcon, ChevronDownIcon, XIcon} from "lucide-react";
 import styles from "./assets/css/default-select-field.module.css"
+import {UICommonUtil, useFieldHelper} from "mfront-ui";
 
 const ComboboxPrimitive = BasicUICombobox.Root
 
@@ -251,12 +252,16 @@ function ComboboxItem({
 
 
 
-export function DefaultSelectField({options, labelKey, valueKey, multiple, customOption, defaultValue, createNewItem, loadNewItem, placeholder, emptyOptionContent = "List is empty", ...props}: WebSelectFieldProps) {
+export function DefaultSelectField({options, labelKey, valueKey, multiple, customOption, defaultValue, createNewItem, loadNewItem, placeholder, emptyOptionContent = "List is empty", name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, engine, ...props}: WebSelectFieldProps) {
     const [value, setValue] = mmReactUseState<Record<string, MixType>[]>([])
     const [dynamicOptions, setDynamicOptions] = mmReactUseState<Record<string, MixType>[]>([])
     const [showEmptyOption, setShowEmptyOption] = mmReactUseState<boolean>(true)
     const [isLoading, setLoading] = mmReactUseState<boolean>(false)
     const [searchText, setSearchText] = mmReactUseState('')
+
+    const {fieldRef, handleChange} = useFieldHelper<HTMLSelectElement>({name, defaultValue, engine, onChange})
+    const {gridItemProps, otherProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
+
 
 
     const mergedItems = mmReactUseMemo(() => {
