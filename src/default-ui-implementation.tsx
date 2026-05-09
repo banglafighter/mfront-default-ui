@@ -21,6 +21,7 @@ import {DefaultInputField} from "./default-ui/default-input-field";
 import DefaultFieldGenerator from "./default-ui/default-field-generator";
 import {DefaultTextarea} from "./default-ui/default-textarea";
 import {DefaultFieldGroup} from "./default-ui/default-field-group";
+import {DefaultSelectField} from "./default-ui/default-select-field";
 
 
 export const DefaultUIComponent: UIComponentSpec = {
@@ -46,7 +47,8 @@ export const DefaultUIComponent: UIComponentSpec = {
     Input: DefaultInput,
     FieldGroup: DefaultFieldGroup,
     FieldGenerator: DefaultFieldGenerator,
-    Textarea: DefaultTextarea
+    Textarea: DefaultTextarea,
+    SelectField: DefaultSelectField,
 }
 
 export const DefaultUIAction: UIActionSpec = {
