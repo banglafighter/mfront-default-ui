@@ -12,6 +12,7 @@ import {DefaultButton} from "./default-button";
 import {CheckIcon, ChevronDownIcon, XIcon} from "lucide-react";
 import styles from "./assets/css/default-select-field.module.css"
 import {UICommonUtil, useFieldHelper} from "mfront-ui";
+import {DefaultInputFrame} from "./default-input-frame";
 
 const ComboboxPrimitive = BasicUICombobox.Root
 
@@ -57,7 +58,7 @@ function ComboboxInput(
   return (
     <SharedFieldGroup className={mergeWind("w-auto", className)}>
       <BasicUICombobox.Input
-        render={<SharedFieldGroupInput disabled={disabled} type={"text"} name={"input"}/>}
+        render={<SharedFieldGroupInput disabled={disabled} type={"text"} name={"input"} autoComplete={"off"}/>}
         {...props}
       />
       <SharedInputGroupAddon align="inline-end">
@@ -113,6 +114,7 @@ function ComboboxChipsInput({className, children, ...props}: BasicUICombobox.Inp
         <BasicUICombobox.Input
             data-tag="combobox-chip-input"
             className={mergeWind("min-w-16 flex-1 outline-none", className)}
+            autoComplete={"off"}
             {...props}
         />
     )
@@ -229,7 +231,7 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
     const [searchText, setSearchText] = mmReactUseState('')
 
     const {fieldRef, handleChange} = useFieldHelper<HTMLSelectElement>({name, defaultValue, engine, onChange})
-    const {gridItemProps, otherProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
+    const {gridItemProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
 
 
 
@@ -346,34 +348,48 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
     }
 
     return (
-        <ComboboxPrimitive
-            items={mergedItems}
-            onValueChange={onValueChange}
-            onInputValueChange={onInputValueChange}
-            {...conditionalProps}
-            multiple={multiple}
-            defaultValue={defaultValue}
-            onOpenChangeComplete={(open: boolean) => {
-                setShowEmptyOption(true)
-            }}
-        >
-            {multiple ? getMultiInput() : getSingleInput()}
-            <ComboboxContent>
-                {getEmptyContent()}
-                {getStatus()}
-                <ComboboxList>
-                    {(item: any, index: any) => {
-                        if (multiple && ignoreItemIfSelected(item)) {
-                            return null
-                        }
-                        return (
-                            <ComboboxItem key={index} value={item}>
-                                {customOption ? customOption(item, labelKey, valueKey, options) : item[labelKey]}
-                            </ComboboxItem>
-                        )
+        <DefaultInputFrame
+            label={label}
+            labelNext={labelNext}
+            required={required}
+            errorText={errorText}
+            hintsText={hintsText}
+            isError={isError}
+            className={className}
+            id={id}
+            {...gridItemProps}
+            element={(labelId: string) => (
+                <ComboboxPrimitive
+                    ref={fieldRef}
+                    items={mergedItems}
+                    onValueChange={onValueChange}
+                    onInputValueChange={onInputValueChange}
+                    {...conditionalProps}
+                    multiple={multiple}
+                    defaultValue={defaultValue}
+                    onOpenChangeComplete={(open: boolean) => {
+                        setShowEmptyOption(true)
                     }}
-                </ComboboxList>
-            </ComboboxContent>
-        </ComboboxPrimitive>
+                    id={labelId}
+                >
+                    {multiple ? getMultiInput() : getSingleInput()}
+                    <ComboboxContent>
+                        {getEmptyContent()}
+                        {getStatus()}
+                        <ComboboxList>
+                            {(item: any, index: any) => {
+                                if (multiple && ignoreItemIfSelected(item)) {
+                                    return null
+                                }
+                                return (
+                                    <ComboboxItem key={index} value={item}>
+                                        {customOption ? customOption(item, labelKey, valueKey, options) : item[labelKey]}
+                                    </ComboboxItem>
+                                )
+                            }}
+                        </ComboboxList>
+                    </ComboboxContent>
+                </ComboboxPrimitive>
+            )}/>
     )
 }
