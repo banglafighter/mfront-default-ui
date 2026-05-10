@@ -1,7 +1,7 @@
 import {WebButtonProps} from "mmcore-ui";
 import {makeClassVariance, mergeWind} from "../common/tailwind-utils";
 
-const buttonVariants = makeClassVariance(
+export const buttonClassAndVariants = makeClassVariance(
     "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all active:translate-y-px outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
     {
         variants: {
@@ -38,7 +38,7 @@ export function DefaultButton({className, variant = "primary", size = "default",
     const ButtonTag = "button"
     return (
         <ButtonTag
-            className={mergeWind(buttonVariants({variant, size, className}))}
+            className={mergeWind(buttonClassAndVariants({variant, size, className}))}
             {...props}
         />
     )
