@@ -14,8 +14,181 @@ import styles from "./assets/css/default-select-field.module.css"
 import {UICommonUtil, useFieldHelper} from "mfront-ui";
 import {DefaultInputFrame} from "./default-input-frame";
 
-const ComboboxPrimitive = BasicUICombobox.Root
 
+export function DefaultSelectField({options, labelKey, valueKey, multiple, customOption, defaultValue, createNewItem, loadNewItem, placeholder, emptyOptionContent = "List is empty", name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, engine, ...props}: WebSelectFieldProps) {
+    const [value, setValue] = mmReactUseState<Record<string, MixType>[]>([])
+    const [dynamicOptions, setDynamicOptions] = mmReactUseState<Record<string, MixType>[]>([])
+    const [showEmptyOption, setShowEmptyOption] = mmReactUseState<boolean>(true)
+    const [isLoading, setLoading] = mmReactUseState<boolean>(false)
+    const [searchText, setSearchText] = mmReactUseState('')
+
+    const {fieldRef, handleChange} = useFieldHelper<HTMLSelectElement>({name, defaultValue, engine, onChange})
+    const {gridItemProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
+
+
+
+    const mergedItems = mmReactUseMemo(() => {
+        const map = new Map();
+        [...dynamicOptions, ...options].forEach(item => {
+            map.set(item[valueKey], item);
+        });
+        return Array.from(map.values());
+    }, [dynamicOptions, options, valueKey]);
+
+    const selectedItemSet = mmReactUseMemo(() => {
+        return new Set((Array.isArray(value) ? value : []).map(v => v[valueKey]));
+    }, [value, valueKey]);
+
+    const getSingleInput = () => {
+        return (<ComboboxInput placeholder={placeholder} showClear={true}/>)
+    }
+
+    const getMultiInput = () => {
+        return (
+            <ComboboxChips>
+                <ComboboxValue>
+                    {value.map((item: any, index: number) => (
+                        <ComboboxChip key={item[valueKey]}>{item[labelKey]}</ComboboxChip>
+                    ))}
+                </ComboboxValue>
+                <ComboboxChipsInput placeholder={placeholder}/>
+            </ComboboxChips>
+        )
+    }
+    const onValueChange = mmReactUseCallback((selectedValue: any) => {
+        if (Array.isArray(selectedValue)) {
+            setValue(selectedValue);
+        } else {
+            let value: any = []
+            if (selectedValue !== null && selectedValue !== undefined) {
+                value.push(selectedValue)
+            }
+            setValue(value);
+        }
+    }, []);
+
+    const ignoreItemIfSelected = mmReactUseCallback((item: any) => {
+        return selectedItemSet.has(item[valueKey]);
+    }, [selectedItemSet, valueKey]);
+
+    let conditionalProps: any = {}
+    if (multiple) {
+        conditionalProps["value"] = value
+    }
+
+    const onInputValueChange = mmReactUseCallback((searchValue: string, event: any) => {
+        const trimmed = searchValue.trim();
+        setSearchText(trimmed);
+        if (loadNewItem && !isLoading) {
+            let refinedSearchText: string = trimmed.toLowerCase();
+            let willCall: boolean = !mergedItems.some((item: any) => (String(item?.[labelKey]).toLowerCase().includes(refinedSearchText)));
+            if (!willCall) {
+                return
+            }
+            loadNewItem((isLoading: boolean) => {
+                setLoading(isLoading);
+            }, (newOptions: Array<any>) => {
+                setDynamicOptions(prev => [
+                    ...prev,
+                    ...newOptions
+                ]);
+                setLoading(false)
+            })
+        }
+        setShowEmptyOption(true);
+    }, [isLoading]);
+
+    const getEmptyContent = mmReactUseCallback(() => {
+        if (!showEmptyOption || isLoading) {
+            return ""
+        }
+        let emptyContent: any = emptyOptionContent
+        let emptyType: any = "message"
+        if (createNewItem) {
+            emptyType = "action"
+            emptyContent = (
+                <div className={"w-full"} onClick={() => {
+                    setShowEmptyOption(false);
+                    createNewItem(searchText, (newOptions: Array<any>) => {
+                        setDynamicOptions(prev => [
+                            ...prev,
+                            ...newOptions
+                        ]);
+                    })
+                }}>{emptyOptionContent}</div>
+            )
+        }
+        return (<ComboboxEmpty type={emptyType}>{emptyContent}</ComboboxEmpty>)
+    }, [isLoading])
+
+    const getStatus = () => {
+        let content: any = null
+        if (isLoading) {
+            content = (
+                <>
+                    <span className={styles.spinner}/>
+                    Searching…
+                </>
+            )
+        }
+        if (!content) {
+            return ""
+        }
+        return (
+            <ComboboxStatus>{content}</ComboboxStatus>
+        )
+    }
+
+    return (
+        <DefaultInputFrame
+            label={label}
+            labelNext={labelNext}
+            required={required}
+            errorText={errorText}
+            hintsText={hintsText}
+            isError={isError}
+            className={className}
+            id={id}
+            {...gridItemProps}
+            element={(labelId: string) => (
+                <ComboboxPrimitive
+                    ref={fieldRef}
+                    items={mergedItems}
+                    onValueChange={onValueChange}
+                    onInputValueChange={onInputValueChange}
+                    {...conditionalProps}
+                    multiple={multiple}
+                    defaultValue={defaultValue}
+                    onOpenChangeComplete={(open: boolean) => {
+                        setShowEmptyOption(true)
+                    }}
+                    id={labelId}
+                >
+                    {multiple ? getMultiInput() : getSingleInput()}
+                    <ComboboxContent>
+                        {getEmptyContent()}
+                        {getStatus()}
+                        <ComboboxList>
+                            {(item: any, index: any) => {
+                                if (multiple && ignoreItemIfSelected(item)) {
+                                    return null
+                                }
+                                return (
+                                    <ComboboxItem key={index} value={item}>
+                                        {customOption ? customOption(item, labelKey, valueKey, options) : item[labelKey]}
+                                    </ComboboxItem>
+                                )
+                            }}
+                        </ComboboxList>
+                    </ComboboxContent>
+                </ComboboxPrimitive>
+            )}/>
+    )
+}
+
+
+
+const ComboboxPrimitive = BasicUICombobox.Root
 
 function ComboboxTrigger({className, children, ...props}: BasicUICombobox.Trigger.Props) {
     return (
@@ -223,173 +396,3 @@ function ComboboxItem({ className, children, ...props }: BasicUICombobox.Item.Pr
 
 
 
-export function DefaultSelectField({options, labelKey, valueKey, multiple, customOption, defaultValue, createNewItem, loadNewItem, placeholder, emptyOptionContent = "List is empty", name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, engine, ...props}: WebSelectFieldProps) {
-    const [value, setValue] = mmReactUseState<Record<string, MixType>[]>([])
-    const [dynamicOptions, setDynamicOptions] = mmReactUseState<Record<string, MixType>[]>([])
-    const [showEmptyOption, setShowEmptyOption] = mmReactUseState<boolean>(true)
-    const [isLoading, setLoading] = mmReactUseState<boolean>(false)
-    const [searchText, setSearchText] = mmReactUseState('')
-
-    const {fieldRef, handleChange} = useFieldHelper<HTMLSelectElement>({name, defaultValue, engine, onChange})
-    const {gridItemProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
-
-
-
-    const mergedItems = mmReactUseMemo(() => {
-        const map = new Map();
-        [...dynamicOptions, ...options].forEach(item => {
-            map.set(item[valueKey], item);
-        });
-        return Array.from(map.values());
-    }, [dynamicOptions, options, valueKey]);
-
-    const selectedItemSet = mmReactUseMemo(() => {
-        return new Set((Array.isArray(value) ? value : []).map(v => v[valueKey]));
-    }, [value, valueKey]);
-
-    const getSingleInput = () => {
-        return (<ComboboxInput placeholder={placeholder} showClear={true}/>)
-    }
-
-    const getMultiInput = () => {
-        return (
-            <ComboboxChips>
-                <ComboboxValue>
-                    {value.map((item: any, index: number) => (
-                        <ComboboxChip key={item[valueKey]}>{item[labelKey]}</ComboboxChip>
-                    ))}
-                </ComboboxValue>
-                <ComboboxChipsInput placeholder={placeholder}/>
-            </ComboboxChips>
-        )
-    }
-    const onValueChange = mmReactUseCallback((selectedValue: any) => {
-        if (Array.isArray(selectedValue)) {
-            setValue(selectedValue);
-        } else {
-            let value: any = []
-            if (selectedValue !== null && selectedValue !== undefined) {
-                value.push(selectedValue)
-            }
-            setValue(value);
-        }
-    }, []);
-
-    const ignoreItemIfSelected = mmReactUseCallback((item: any) => {
-        return selectedItemSet.has(item[valueKey]);
-    }, [selectedItemSet, valueKey]);
-
-    let conditionalProps: any = {}
-    if (multiple) {
-        conditionalProps["value"] = value
-    }
-
-    const onInputValueChange = mmReactUseCallback((searchValue: string, event: any) => {
-        const trimmed = searchValue.trim();
-        setSearchText(trimmed);
-        if (loadNewItem && !isLoading) {
-            let refinedSearchText: string = trimmed.toLowerCase();
-            let willCall: boolean = !mergedItems.some((item: any) => (String(item?.[labelKey]).toLowerCase().includes(refinedSearchText)));
-            if (!willCall) {
-                return
-            }
-            loadNewItem((isLoading: boolean) => {
-                setLoading(isLoading);
-            }, (newOptions: Array<any>) => {
-                setDynamicOptions(prev => [
-                    ...prev,
-                    ...newOptions
-                ]);
-                setLoading(false)
-            })
-        }
-        setShowEmptyOption(true);
-    }, [isLoading]);
-
-    const getEmptyContent = mmReactUseCallback(() => {
-        if (!showEmptyOption || isLoading) {
-            return ""
-        }
-        let emptyContent: any = emptyOptionContent
-        let emptyType: any = "message"
-        if (createNewItem) {
-            emptyType = "action"
-            emptyContent = (
-                <div className={"w-full"} onClick={() => {
-                    setShowEmptyOption(false);
-                    createNewItem(searchText, (newOptions: Array<any>) => {
-                        setDynamicOptions(prev => [
-                            ...prev,
-                            ...newOptions
-                        ]);
-                    })
-                }}>{emptyOptionContent}</div>
-            )
-        }
-        return (<ComboboxEmpty type={emptyType}>{emptyContent}</ComboboxEmpty>)
-    }, [isLoading])
-
-    const getStatus = () => {
-        let content: any = null
-        if (isLoading) {
-            content = (
-                <>
-                    <span className={styles.spinner}/>
-                    Searching…
-                </>
-            )
-        }
-        if (!content) {
-            return ""
-        }
-        return (
-            <ComboboxStatus>{content}</ComboboxStatus>
-        )
-    }
-
-    return (
-        <DefaultInputFrame
-            label={label}
-            labelNext={labelNext}
-            required={required}
-            errorText={errorText}
-            hintsText={hintsText}
-            isError={isError}
-            className={className}
-            id={id}
-            {...gridItemProps}
-            element={(labelId: string) => (
-                <ComboboxPrimitive
-                    ref={fieldRef}
-                    items={mergedItems}
-                    onValueChange={onValueChange}
-                    onInputValueChange={onInputValueChange}
-                    {...conditionalProps}
-                    multiple={multiple}
-                    defaultValue={defaultValue}
-                    onOpenChangeComplete={(open: boolean) => {
-                        setShowEmptyOption(true)
-                    }}
-                    id={labelId}
-                >
-                    {multiple ? getMultiInput() : getSingleInput()}
-                    <ComboboxContent>
-                        {getEmptyContent()}
-                        {getStatus()}
-                        <ComboboxList>
-                            {(item: any, index: any) => {
-                                if (multiple && ignoreItemIfSelected(item)) {
-                                    return null
-                                }
-                                return (
-                                    <ComboboxItem key={index} value={item}>
-                                        {customOption ? customOption(item, labelKey, valueKey, options) : item[labelKey]}
-                                    </ComboboxItem>
-                                )
-                            }}
-                        </ComboboxList>
-                    </ComboboxContent>
-                </ComboboxPrimitive>
-            )}/>
-    )
-}
