@@ -27,6 +27,7 @@
     "@radix-ui/react-compose-refs": "*",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
+    "@radix-ui/react-collapsible": "^1.1.12",
     "@radix-ui/react-tabs": "^1.1.13",
     "@base-ui/react": "^1.4.1"
   },
