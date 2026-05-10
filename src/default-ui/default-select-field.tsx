@@ -20,13 +20,13 @@ function ComboboxTrigger({className, children, ...props}: BasicUICombobox.Trigge
     return (
         <BasicUICombobox.Trigger
             data-tag="combobox-trigger"
-            className={mergeWind("[&_svg:not([class*='size-'])]:size-4", className)}
+            className={mergeWind("[&_svg:not([class*='size-'])]:size-5", className)}
             {...props}
         >
             {children}
             <ChevronDownIcon
                 data-tag="combobox-trigger-icon"
-                className="pointer-events-none size-4 text-muted-foreground"
+                className="pointer-events-none size-5 text-muted-foreground"
             />
         </BasicUICombobox.Trigger>
     )
@@ -62,16 +62,7 @@ function ComboboxInput(
       />
       <SharedInputGroupAddon align="inline-end">
         {showTrigger && (
-          <SharedFieldGroupButton
-            size="iconXs"
-            variant="ghost"
-            data-tag="input-group-button"
-            className="group-has-data-[tag=combobox-clear]/field-group:hidden data-pressed:bg-transparent"
-            disabled={disabled}
-            tagName={"span"}
-          >
-            <ComboboxTrigger />
-          </SharedFieldGroupButton>
+             <ComboboxTrigger className="group-has-data-[tag=combobox-clear]/field-group:hidden data-pressed:bg-transparent" />
         )}
         {showClear && <ComboboxClear disabled={disabled} />}
       </SharedInputGroupAddon>
@@ -85,7 +76,7 @@ function ComboboxChips({className, ...props}: BasicUICombobox.Chips.Props) {
         <BasicUICombobox.Chips
             data-tag="combobox-chips"
             className={mergeWind(
-                "flex min-h-9 flex-wrap items-center gap-1.5 rounded-md border border-input bg-transparent bg-clip-padding px-2.5 py-1.5 text-sm shadow-xs transition-[color,box-shadow] focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50 has-aria-invalid:border-destructive has-aria-invalid:ring-[3px] has-aria-invalid:ring-destructive/20 has-data-[tag=combobox-chip]:px-1.5 dark:bg-input/30 dark:has-aria-invalid:border-destructive/50 dark:has-aria-invalid:ring-destructive/40",
+                "flex min-h-8 flex-wrap items-center gap-1.5 rounded-md border border-input bg-transparent bg-clip-padding px-2.5 py-1.5 text-sm shadow-xs transition-[color,box-shadow] focus-within:border-ring focus-within:ring-[1px] focus-within:ring-ring/50 has-aria-invalid:border-danger has-aria-invalid:ring-[1px] has-aria-invalid:ring-danger/20 has-data-[tag=combobox-chip]:px-1.5 dark:bg-input/30 dark:has-aria-invalid:border-danger/50 dark:has-aria-invalid:ring-danger/40",
                 className
             )}
             {...props}
@@ -211,7 +202,7 @@ function ComboboxItem({ className, children, ...props }: BasicUICombobox.Item.Pr
     <BasicUICombobox.Item
       data-tag="combobox-item"
       className={mergeWind(
-        "relative flex w-full cursor-default items-center gap-2 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground not-data-[variant=destructive]:data-highlighted:**:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "relative flex w-full cursor-default items-center gap-2 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground not-data-[variant=danger]:data-highlighted:**:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className
       )}
       {...props}
