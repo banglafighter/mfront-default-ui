@@ -12,24 +12,20 @@ import {UICommonUtil, useFieldHelper} from "mfront-ui";
 const ComboboxPrimitive = BasicUICombobox.Root
 
 
-function ComboboxTrigger({
-  className,
-  children,
-  ...props
-}: BasicUICombobox.Trigger.Props) {
-  return (
-    <BasicUICombobox.Trigger
-      data-slot="combobox-trigger"
-      className={mergeWind("[&_svg:not([class*='size-'])]:size-4", className)}
-      {...props}
-    >
-      {children}
-      <ChevronDownIcon
-        data-slot="combobox-trigger-icon"
-        className="pointer-events-none size-4 text-muted-foreground"
-      />
-    </BasicUICombobox.Trigger>
-  )
+function ComboboxTrigger({className, children, ...props}: BasicUICombobox.Trigger.Props) {
+    return (
+        <BasicUICombobox.Trigger
+            data-slot="combobox-trigger"
+            className={mergeWind("[&_svg:not([class*='size-'])]:size-4", className)}
+            {...props}
+        >
+            {children}
+            <ChevronDownIcon
+                data-slot="combobox-trigger-icon"
+                className="pointer-events-none size-4 text-muted-foreground"
+            />
+        </BasicUICombobox.Trigger>
+    )
 }
 
 function ComboboxClear({ className, ...props }: BasicUICombobox.Clear.Props) {
@@ -45,17 +41,15 @@ function ComboboxClear({ className, ...props }: BasicUICombobox.Clear.Props) {
   )
 }
 
-function ComboboxInput({
-  className,
-  children,
-  disabled = false,
-  showTrigger = true,
-  showClear = false,
-  ...props
-}: BasicUICombobox.Input.Props & {
-  showTrigger?: boolean
-  showClear?: boolean
-}) {
+function ComboboxInput(
+    {
+        className,
+        children,
+        disabled = false,
+        showTrigger = true,
+        showClear = false,
+        ...props
+    }: BasicUICombobox.Input.Props & { showTrigger?: boolean, showClear?: boolean }) {
   return (
     <SharedFieldGroup className={mergeWind("w-auto", className)}>
       <BasicUICombobox.Input
@@ -81,30 +75,20 @@ function ComboboxInput({
   )
 }
 
-function ComboboxChips({
-  className,
-  ...props
-}: BasicUICombobox.Chips.Props) {
-  return (
-    <BasicUICombobox.Chips
-      data-slot="combobox-chips"
-      className={mergeWind(
-        "flex min-h-9 flex-wrap items-center gap-1.5 rounded-md border border-input bg-transparent bg-clip-padding px-2.5 py-1.5 text-sm shadow-xs transition-[color,box-shadow] focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50 has-aria-invalid:border-destructive has-aria-invalid:ring-[3px] has-aria-invalid:ring-destructive/20 has-data-[slot=combobox-chip]:px-1.5 dark:bg-input/30 dark:has-aria-invalid:border-destructive/50 dark:has-aria-invalid:ring-destructive/40",
-        className
-      )}
-      {...props}
-    />
-  )
+function ComboboxChips({className, ...props}: BasicUICombobox.Chips.Props) {
+    return (
+        <BasicUICombobox.Chips
+            data-slot="combobox-chips"
+            className={mergeWind(
+                "flex min-h-9 flex-wrap items-center gap-1.5 rounded-md border border-input bg-transparent bg-clip-padding px-2.5 py-1.5 text-sm shadow-xs transition-[color,box-shadow] focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50 has-aria-invalid:border-destructive has-aria-invalid:ring-[3px] has-aria-invalid:ring-destructive/20 has-data-[slot=combobox-chip]:px-1.5 dark:bg-input/30 dark:has-aria-invalid:border-destructive/50 dark:has-aria-invalid:ring-destructive/40",
+                className
+            )}
+            {...props}
+        />
+    )
 }
 
-function ComboboxChip({
-  className,
-  children,
-  showRemove = true,
-  ...props
-}: BasicUICombobox.Chip.Props & {
-  showRemove?: boolean
-}) {
+function ComboboxChip({ className, children, showRemove = true, ...props }: BasicUICombobox.Chip.Props & { showRemove?: boolean }) {
   return (
     <BasicUICombobox.Chip
       data-slot="combobox-chip"
@@ -128,11 +112,7 @@ function ComboboxChip({
   )
 }
 
-function ComboboxChipsInput({
-  className,
-  children,
-  ...props
-}: BasicUICombobox.Input.Props) {
+function ComboboxChipsInput({className, children, ...props}: BasicUICombobox.Input.Props) {
     return (
         <BasicUICombobox.Input
             data-slot="combobox-chip-input"
@@ -177,19 +157,16 @@ function ComboboxEmpty({className, type = "message", ...props}: {type?: "message
   )
 }
 
-function ComboboxContent({
-  className,
-  side = "bottom",
-  sideOffset = 6,
-  align = "start",
-  alignOffset = 0,
-  anchor,
-  ...props
-}: BasicUICombobox.Popup.Props &
-  Pick<
-    BasicUICombobox.Positioner.Props,
-    "side" | "align" | "sideOffset" | "alignOffset" | "anchor"
-  >) {
+function ComboboxContent(
+    {
+        className,
+        side = "bottom",
+        sideOffset = 6,
+        align = "start",
+        alignOffset = 0,
+        anchor,
+        ...props
+    }: BasicUICombobox.Popup.Props & Pick< BasicUICombobox.Positioner.Props, "side" | "align" | "sideOffset" | "alignOffset" | "anchor" >) {
   return (
     <BasicUICombobox.Portal>
       <BasicUICombobox.Positioner
@@ -224,11 +201,7 @@ function ComboboxList({ className, ...props }: BasicUICombobox.List.Props) {
   )
 }
 
-function ComboboxItem({
-  className,
-  children,
-  ...props
-}: BasicUICombobox.Item.Props) {
+function ComboboxItem({ className, children, ...props }: BasicUICombobox.Item.Props) {
   return (
     <BasicUICombobox.Item
       data-slot="combobox-item"
