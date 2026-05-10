@@ -23,6 +23,10 @@ import {DefaultTextarea} from "./default-ui/default-textarea";
 import {DefaultFieldGroup} from "./default-ui/default-field-group";
 import {DefaultSelectField} from "./default-ui/default-select-field";
 import {DefaultDropdown} from "./default-ui/default-dropdown";
+import {DefaultSidebar} from "./default-ui/default-sidebar";
+import {DefaultSidebarContent} from "./default-ui/default-sidebar-content";
+import {DefaultSidebarProvider} from "./default-ui/default-sidebar-provider";
+import {DefaultSidebarToggler} from "./default-ui/default-sidebar-toggler";
 
 
 export const DefaultUIComponent: UIComponentSpec = {
@@ -51,6 +55,11 @@ export const DefaultUIComponent: UIComponentSpec = {
     Textarea: DefaultTextarea,
     SelectField: DefaultSelectField,
     Dropdown: DefaultDropdown,
+
+    Sidebar: DefaultSidebar,
+    SidebarContent: DefaultSidebarContent,
+    SidebarProvider: DefaultSidebarProvider,
+    SidebarToggler: DefaultSidebarToggler
 }
 
 export const DefaultUIAction: UIActionSpec = {
