@@ -1,9 +1,9 @@
 import {
     WebDefaultInputFieldPropsBase,
     WebFieldEngineProps,
-    WebFieldGeneratorProps, WebFieldGroupProps,
+    WebFieldGeneratorProps, WebFieldGroupProps, WebSelectFieldProps,
 } from "mmcore-ui";
-import {UICommonUtil} from "mfront-ui";
+import {SelectField, UICommonUtil} from "mfront-ui";
 import {MixType} from "mmcore";
 import {makeClassVariance, mergeWind} from "mfront-default-ui";
 import {DefaultFieldGroup} from "./default-field-group";
@@ -55,6 +55,9 @@ function getField(spec: WebDefaultInputFieldPropsBase, index: number, engine: We
         case "textarea":
             const textareaProps = fieldSpec as WebFieldGroupProps
             return (<DefaultFieldGroup {...textareaProps} type={"textarea"} key={index} engine={engine}/>)
+        case "select":
+            const selectProps = fieldSpec as WebSelectFieldProps
+            return (<SelectField {...selectProps} key={index} engine={engine}/>)
     }
     return ""
 }
