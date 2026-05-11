@@ -2,7 +2,7 @@ import {
     SidebarMenuItemBaseProps,
     SidebarMenuItemProps,
     SidebarMenuItemSize,
-    SidebarMenuItemVariant,
+    SidebarMenuItemVariant, SidebarNestedMenuProps,
     WebSidebarProps
 } from "mmcore-ui";
 import {makeClassVariance, mergeWind} from "../common/tailwind-utils";
@@ -66,21 +66,23 @@ export function getSidebarMenu(menu?: SidebarMenuItemProps[]) {
     return (
         <>
             {menu?.map((item: SidebarMenuItemProps, index: number) => {
-                if (item.group) {
+                if (item.grouped) {
                     return (
                         <SidebarGroupBlock key={index}>
-                            <SidebarGroupLabelBlock>{item.menuContent}</SidebarGroupLabelBlock>
-                            {getMenuAndNestingMenu(item.group, index)}
+                            <SidebarGroupLabelBlock>{item.grouped.labelContent}</SidebarGroupLabelBlock>
+                            {getMenuAndNestingMenu(item.grouped.items, index)}
                         </SidebarGroupBlock>
                     )
+                } else if (item.single) {
+                    return getMenuAndNestingMenu(item.single, index)
                 }
-                return getMenuAndNestingMenu([item], index)
+
             })}
         </>
     )
 }
 
-function getMenuAndNestingMenu(nested?: SidebarMenuItemProps[], keyIndex?: number) {
+function getMenuAndNestingMenu(items?: SidebarNestedMenuProps[], keyIndex?: number) {
 
     const _getSubMenu = (submenu?: SidebarMenuItemBaseProps[], subIndex?: number) => {
         if (!submenu) {
@@ -99,7 +101,7 @@ function getMenuAndNestingMenu(nested?: SidebarMenuItemProps[], keyIndex?: numbe
         )
     }
 
-    const _getItemAction = (item: SidebarMenuItemProps, collapsible: boolean, index: number) => {
+    const _getItemAction = (item: SidebarNestedMenuProps, collapsible: boolean, index: number) => {
         let _itemNext: UINode = (
             <>
                 {item.menuNext ? (
@@ -128,10 +130,10 @@ function getMenuAndNestingMenu(nested?: SidebarMenuItemProps[], keyIndex?: numbe
         )
     }
 
-    const _getMenuItem = (item: SidebarMenuItemProps, index: number, collapsible: boolean) => {
+    const _getMenuItem = (item: SidebarNestedMenuProps, index: number, collapsible: boolean) => {
         return (
             <SidebarMenuItemBlock key={index} {...item.menuContentAttrs}>
-                {collapsible ? <CollapsibleTrigger asChild>{_getItemAction(item, true, index)}</CollapsibleTrigger> : _getItemAction(item, false, index)}
+                {collapsible ? <CollapsibleTrigger className={"flex w-full items-center"}>{_getItemAction(item, true, index)}</CollapsibleTrigger> : _getItemAction(item, false, index)}
                 {collapsible ? <CollapsibleContent asChild>{_getSubMenu(item.nested, index)}</CollapsibleContent> : _getSubMenu(item.nested, index)}
             </SidebarMenuItemBlock>
         )
@@ -139,7 +141,7 @@ function getMenuAndNestingMenu(nested?: SidebarMenuItemProps[], keyIndex?: numbe
 
     return (
         <SidebarMenuBlock key={`menu-${keyIndex}`}>
-            {nested?.map((item: SidebarMenuItemProps, index: number) => {
+            {items?.map((item: SidebarNestedMenuProps, index: number) => {
                 return (
                     <MmReactFragment key={`smb-${index}`}>
                         {item.collapsible ? (
