@@ -4,7 +4,7 @@ import {useSidebarContext} from "./default-sidebar-provider";
 import {mmReactUseCallback, UIComponentProps} from "mmcore";
 
 
-export function DefaultSidebar({header, headerAttrs, footer, footerAttrs, body, ...props}: WebSidebarProps) {
+export function DefaultSidebar({header, headerAttrs, footer, footerAttrs, body, bodyAttrs, ...props}: WebSidebarProps) {
 
     const headerContent = mmReactUseCallback(() => {
         if (!header) {
@@ -29,7 +29,13 @@ export function DefaultSidebar({header, headerAttrs, footer, footerAttrs, body, 
     }, [footer])
 
     const bodyContent = mmReactUseCallback(() => {
-        return ""
+        if (body) {
+            return (
+                <SidebarBodyBlock {...bodyAttrs}>
+                    {body}
+                </SidebarBodyBlock>
+            )
+        }
     }, [body])
 
     return (
