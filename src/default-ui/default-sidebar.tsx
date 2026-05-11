@@ -10,7 +10,6 @@ import {useSidebarContext} from "./default-sidebar-provider";
 import {MmReactFragment, mmReactUseCallback, UIComponentProps, UINode} from "mmcore";
 import {ChevronRight} from "lucide-react";
 import {Collapsible, CollapsibleContent, CollapsibleTrigger} from "../internal/colapsible";
-import {DefaultButton} from "./default-button";
 
 
 export function DefaultSidebar({menu, header, headerAttrs, footer, footerAttrs, body, bodyAttrs, menuBefore, menuAfter, ...props}: WebSidebarProps) {
@@ -83,7 +82,7 @@ export function getSidebarMenu(menu?: SidebarMenuItemProps[]) {
 
 function getMenuAndNestingMenu(nested?: SidebarMenuItemProps[], keyIndex?: number) {
 
-    const getSubMenu = (submenu?: SidebarMenuItemBaseProps[], subIndex?: number) => {
+    const _getSubMenu = (submenu?: SidebarMenuItemBaseProps[], subIndex?: number) => {
         if (!submenu) {
             return ""
         }
@@ -100,8 +99,8 @@ function getMenuAndNestingMenu(nested?: SidebarMenuItemProps[], keyIndex?: numbe
         )
     }
 
-    const getItemAction = (item: SidebarMenuItemProps, collapsible: boolean, index: number) => {
-        let itemNext: UINode = (
+    const _getItemAction = (item: SidebarMenuItemProps, collapsible: boolean, index: number) => {
+        let _itemNext: UINode = (
             <>
                 {item.menuNext ? (
                     <SidebarMenuNextBlock showOnHover={item.menuNextShowOnHover} {...item.menuNextAttrs}>
@@ -111,8 +110,9 @@ function getMenuAndNestingMenu(nested?: SidebarMenuItemProps[], keyIndex?: numbe
             </>
         )
 
+        let _collapsibleContent: UINode = ""
         if (collapsible) {
-            itemNext = (
+            _collapsibleContent = (
                 <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
             )
         }
@@ -121,17 +121,18 @@ function getMenuAndNestingMenu(nested?: SidebarMenuItemProps[], keyIndex?: numbe
             <MmReactFragment key={`action-${index}`}>
                 <SidebarMenuItemActionBlock variant={item.variant} size={item.size} isActive={false}>
                     {item.menuContent}
+                    {_collapsibleContent}
                 </SidebarMenuItemActionBlock>
-                {itemNext}
+                {_itemNext}
             </MmReactFragment>
         )
     }
 
-    const getMenuItem = (item: SidebarMenuItemProps, index: number) => {
+    const _getMenuItem = (item: SidebarMenuItemProps, index: number, collapsible: boolean) => {
         return (
             <SidebarMenuItemBlock key={index} {...item.menuContentAttrs}>
-                {item.collapsible ? <CollapsibleTrigger key={`ctrigger-${index}`} asChild>{getItemAction(item, true, index)}</CollapsibleTrigger> : getItemAction(item, false, index)}
-                {item.collapsible ? <CollapsibleContent key={`ccontent-${index}`} asChild>{getSubMenu(item.nested, index)}</CollapsibleContent> : getSubMenu(item.nested, index)}
+                {collapsible ? <CollapsibleTrigger key={`ctrigger-${index}`} asChild>{_getItemAction(item, true, index)}</CollapsibleTrigger> : _getItemAction(item, false, index)}
+                {collapsible ? <CollapsibleContent key={`ccontent-${index}`} asChild>{_getSubMenu(item.nested, index)}</CollapsibleContent> : _getSubMenu(item.nested, index)}
             </SidebarMenuItemBlock>
         )
     }
@@ -142,10 +143,10 @@ function getMenuAndNestingMenu(nested?: SidebarMenuItemProps[], keyIndex?: numbe
                 return (
                     <MmReactFragment key={`smb-${index}`}>
                         {item.collapsible ? (
-                            <Collapsible asChild className="group/collapsible" key={`collapsible-${index}`} >
-                                {getMenuItem(item, index)}
+                            <Collapsible asChild className="group/collapsible" >
+                                {_getMenuItem(item, index, true)}
                             </Collapsible>
-                        ) : getMenuItem(item, index)}
+                        ) : _getMenuItem(item, index, false)}
                     </MmReactFragment>
                 )
             })}
@@ -234,7 +235,7 @@ function SidebarMenuItemBlock({ className, ...props }: UIComponentProps<"li">) {
     <li
       data-tag="sidebar-menu-item"
       data-sidebar="menu-item"
-      className={mergeWind("group/menu-item relative", className)}
+      className={mergeWind("group/menu-item relative cursor-pointer", className)}
       {...props}
     />
   )
@@ -384,7 +385,7 @@ const sidebarMenuItemActionVariants = makeClassVariance(
 function SidebarMenuItemActionBlock({ isActive = false, variant = "default", size = "default", className, ...props }: UIComponentProps<"div"> & { isActive?: boolean, variant?: SidebarMenuItemVariant, size?: SidebarMenuItemSize}) {
   return (
     <div
-      data-tag="sidebar-menu-button"
+      data-tag="sidebar-menu-action"
       data-sidebar="menu-button"
       data-size={size}
       data-active={isActive}
