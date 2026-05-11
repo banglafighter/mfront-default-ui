@@ -1,19 +1,143 @@
 import {WebSidebarProps} from "mmcore-ui";
 import {mergeWind} from "../common/tailwind-utils";
 import {useSidebarContext} from "./default-sidebar-provider";
+import {mmReactUseCallback, UIComponentProps} from "mmcore";
 
 
-export function DefaultSidebar({...props}: WebSidebarProps) {
+export function DefaultSidebar({header, headerAttrs, footer, footerAttrs, body, ...props}: WebSidebarProps) {
+
+    const headerContent = mmReactUseCallback(() => {
+        if (!header) {
+            return ""
+        }
+        return (
+            <SidebarHeaderBlock {...headerAttrs}>
+                {header}
+            </SidebarHeaderBlock>
+        )
+    }, [header])
+
+    const footerContent = mmReactUseCallback(() => {
+        if (!footer) {
+            return ""
+        }
+        return (
+            <SidebarFooterBlock {...footerAttrs}>
+                {footer}
+            </SidebarFooterBlock>
+        )
+    }, [footer])
+
+    const bodyContent = mmReactUseCallback(() => {
+        return ""
+    }, [body])
+
     return (
-        <Sidebar {...props}>
-
-        </Sidebar>
+        <SidebarBlock {...props}>
+            {headerContent()}
+            {bodyContent()}
+            {footerContent()}
+        </SidebarBlock>
     )
 }
 
-function Sidebar({className,  side = "left", variant = "sidebar", collapsible = "offcanvas", children, ...props}: WebSidebarProps) {
-    const {isMobile} = useSidebarContext()
+function SidebarBodyBlock({ className, ...props }: UIComponentProps<"div">) {
+  return (
+    <div
+      data-tag="sidebar-body"
+      data-sidebar="content"
+      className={mergeWind(
+        "flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden",
+        className
+      )}
+      {...props}
+    />
+  )
+}
 
+function SidebarGroupBlock({ className, ...props }: UIComponentProps<"div">) {
+  return (
+    <div
+      data-tag="sidebar-group"
+      data-sidebar="group"
+      className={mergeWind("relative flex w-full min-w-0 flex-col p-2", className)}
+      {...props}
+    />
+  )
+}
+
+function SidebarMenuBlock({ className, ...props }: UIComponentProps<"ul">) {
+  return (
+    <ul
+      data-tag="sidebar-menu"
+      data-sidebar="menu"
+      className={mergeWind("flex w-full min-w-0 flex-col gap-1", className)}
+      {...props}
+    />
+  )
+}
+
+function SidebarMenuItemBlock({ className, ...props }: UIComponentProps<"li">) {
+  return (
+    <li
+      data-tag="sidebar-menu-item"
+      data-sidebar="menu-item"
+      className={mergeWind("group/menu-item relative", className)}
+      {...props}
+    />
+  )
+}
+
+function SidebarMenuSubBlock({ className, ...props }: UIComponentProps<"ul">) {
+  return (
+    <ul
+      data-tag="sidebar-menu-sub"
+      data-sidebar="menu-sub"
+      className={mergeWind(
+        "mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l border-sidebar-border px-2.5 py-0.5",
+        "group-data-[collapsible=icon]:hidden",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function SidebarMenuSubItemBlock({className, ...props }: UIComponentProps<"li">) {
+  return (
+    <li
+      data-tag="sidebar-menu-sub-item"
+      data-sidebar="menu-sub-item"
+      className={mergeWind("group/menu-sub-item relative", className)}
+      {...props}
+    />
+  )
+}
+
+function SidebarHeaderBlock({ className, ...props }: UIComponentProps<"div">) {
+  return (
+    <div
+      data-tag="sidebar-header"
+      data-sidebar="header"
+      className={mergeWind("flex flex-col gap-2 p-2", className)}
+      {...props}
+    />
+  )
+}
+
+function SidebarFooterBlock({ className, ...props }: UIComponentProps<"div">) {
+  return (
+    <div
+      data-tag="sidebar-footer"
+      data-sidebar="footer"
+      className={mergeWind("flex flex-col gap-2 p-2", className)}
+      {...props}
+    />
+  )
+}
+
+function SidebarBlock({className,  side = "left", variant = "sidebar", collapsible = "offcanvas", children, ...props}: WebSidebarProps) {
+    const {isMobile, stateName} = useSidebarContext()
     if (collapsible === "none") {
         return (
             <div
@@ -36,6 +160,10 @@ function Sidebar({className,  side = "left", variant = "sidebar", collapsible = 
     return (
         <div
             data-tag="sidebar"
+            data-state={stateName}
+            data-collapsible={stateName === "collapsed" ? collapsible : ""}
+            data-variant={variant}
+            data-side={side}
             className={mergeWind(
                 "group peer hidden text-sidebar-foreground md:block",
                 className

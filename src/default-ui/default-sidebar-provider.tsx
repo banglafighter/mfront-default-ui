@@ -26,27 +26,43 @@ export function useSidebarContext() {
 export function DefaultSidebarProvider(
     {
         className,
-        isOpen = true,
-        cookieName = "sidebar-state",
-        cookieMaxAge = 60 * 60 * 24 * 7,
+        isOpen,
+        defaultState = "expanded",
+        stateStoreName = "sidebar-state",
         sidebarWidth = "16rem",
         sidebarWidthMobile = "18rem",
         sidebarIconWidth = "3rem",
         sidebarShortcutKey = "b",
         children,
         style,
+        onOpenChange,
         ...props
     }: WebSidebarProviderProps) {
     const {isMobile} = useUIUtil()
-    const [mobileOpenState, setMobileOpenState] = mmReactUseState(false)
+    const [mobileOpenState, setMobileOpenState] = mmReactUseState<boolean>(false)
 
-    const setOtherOpenState = mmReactUseCallback((state: boolean) => {
-        // document.cookie = `${cookieName}=${openState}; path=/; max-age=${cookieMaxAge}`
-    }, [])
+    // Check state already saved on memory
+    const storedOpenState = localStorage.getItem(stateStoreName)
+    let defaultOpenState = defaultState === "expanded"
+    if (storedOpenState !== null) {
+        defaultOpenState = storedOpenState === "true"
+    }
+    const [internalOpenState, setInternalOpenState] = mmReactUseState<boolean>(defaultOpenState)
+
+
+    const currentOpenState = isOpen ?? internalOpenState
+    const handleOtherOpenState = mmReactUseCallback((state: boolean) => {
+        if (onOpenChange) {
+            onOpenChange(state)
+        }
+        setInternalOpenState(state)
+        localStorage.setItem(stateStoreName, `${state}`)
+    }, [currentOpenState, internalOpenState])
+
 
     const toggleSidebar = mmReactUseCallback(() => {
-
-    }, [])
+        return isMobile ? setMobileOpenState((openState) => !openState) : handleOtherOpenState(!currentOpenState)
+    }, [isOpen, currentOpenState, internalOpenState, setMobileOpenState])
 
     mmReactUseEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -57,14 +73,22 @@ export function DefaultSidebarProvider(
         }
         window.addEventListener("keydown", handleKeyDown)
         return () => window.removeEventListener("keydown", handleKeyDown)
-    }, [toggleSidebar])
+    }, [toggleSidebar, sidebarShortcutKey])
 
+    const stateName = currentOpenState ? "expanded" : "collapsed"
     const contextValue = mmReactUseMemo<WebSidebarContexProps>(() => (
         {
             isMobile,
-            toggleSidebar
+            toggleSidebar,
+            mobileOpenState,
+            setMobileOpenState,
+            stateName,
+            currentOpenState,
+            sidebarWidth,
+            sidebarIconWidth,
+            sidebarWidthMobile
         }
-    ), [])
+    ), [stateName, currentOpenState, isMobile, toggleSidebar, handleOtherOpenState, mobileOpenState, setMobileOpenState])
 
     return (
         <SidebarContext.Provider value={contextValue}>
