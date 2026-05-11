@@ -4,7 +4,7 @@ import {
   CollapsibleContent as CollapsibleContentPrimitive
 } from "@radix-ui/react-collapsible"
 import {UIComponentProps} from "mmcore";
-import {mergeWind} from "mfront-default-ui";
+import {mergeWind} from "../common/tailwind-utils";
 import "./assets/css/collapsible-animation.css"
 
 function Collapsible({...props}: UIComponentProps<typeof CollapsiblePrimitive>) {
