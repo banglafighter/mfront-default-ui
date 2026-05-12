@@ -1,5 +1,6 @@
 import {
-    DialogSlideFrom,
+    DialogSize,
+    DialogSlideFrom, DialogType,
     WebDialogBodyProps, WebDialogFooterProps,
     WebDialogGeneratorProps, WebDialogHeaderProps, WebDialogProps,
     WebDialogSubTitleProps,
@@ -81,7 +82,13 @@ export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", s
     const getBodyProps = () => {
         const modifiedProps = {...bodyProps}
         modifiedProps.slideFrom = engine.getActionValue("slideFrom", modifiedProps.slideFrom) as DialogSlideFrom
+        modifiedProps.type = engine.getActionValue("type", modifiedProps.type) as DialogType
+        modifiedProps.dialogSize = engine.getActionValue("dialogSize", modifiedProps.dialogSize) as DialogSize
         return modifiedProps
+    }
+
+    const getBodyContent = () => {
+        return engine.getActionValue("body", body)
     }
 
     return (
@@ -89,7 +96,7 @@ export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", s
             <DefaultDialogBody {...getBodyProps()}>
                 {getHeader()}
                 <div className={mergeWind("overflow-y-auto", className)} {...props}>
-                    {body}
+                    {getBodyContent()}
                 </div>
                 {getFooter()}
             </DefaultDialogBody>
@@ -180,8 +187,8 @@ const dialogBodyVariations = makeClassVariance(
         variants: {
             type: {
                 dialog: "fixed top-[50%] left-[50%] z-50 flex flex-col w-full max-w-[calc(100%-1rem)] max-h-[calc(100%-1rem)] translate-x-[-50%] translate-y-[-50%] gap-2 rounded-lg border bg-background p-5 shadow-lg duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
+                alert: "fixed top-[50%] left-[50%] z-50 flex flex-col w-full max-w-[calc(100%-1rem)] max-h-[calc(100%-1rem)] translate-x-[-50%] translate-y-[-50%] gap-2 rounded-lg border bg-background p-5 shadow-lg duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
                 drawer: "fixed z-50 bg-background p-5 gap-2 flex flex-col  shadow-lg transition ease-in-out data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:animate-in data-[state=open]:duration-500",
-                alert: "",
             },
             slideFrom: {
                 right: "inset-y-0 right-0 h-full w-3/4 border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm",
@@ -190,6 +197,7 @@ const dialogBodyVariations = makeClassVariance(
                 bottom: "inset-x-0 bottom-0 h-auto max-h-[calc(100%-10rem)] border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
             },
             dialogSize: {
+                tiny: "max-w-sm",
                 small: "max-w-lg",
                 medium: "max-w-2xl",
                 large: "max-w-6xl",
@@ -201,7 +209,6 @@ const dialogBodyVariations = makeClassVariance(
 
 
 export function DefaultDialogBody({className, children, showCloseButton = true, type = "dialog", dialogSize = "small", slideFrom = "right", ...props}: WebDialogBodyProps) {
-
     let variations: Record<string, string> = {
         type: type
     }
@@ -210,8 +217,9 @@ export function DefaultDialogBody({className, children, showCloseButton = true, 
         variations["dialogSize"] = dialogSize
     } else if (type === "drawer") {
         variations["slideFrom"] = slideFrom
-    }else if (type === "alert") {
+    } else if (type === "alert") {
         showCloseButton = false
+        variations["dialogSize"] = dialogSize
     }
 
     return (
