@@ -1,4 +1,5 @@
 import {
+    DialogSlideFrom,
     WebDialogBodyProps, WebDialogFooterProps,
     WebDialogGeneratorProps, WebDialogHeaderProps, WebDialogProps,
     WebDialogSubTitleProps,
@@ -14,27 +15,29 @@ import {
     Description as DialogDescriptionPrimitive,
 } from "@radix-ui/react-dialog"
 import {makeClassVariance, mergeWind} from "./../common/tailwind-utils";
-import {mmReactUseCallback, UIComponentProps, UINode} from "mmcore";
+import {MixType, mmReactUseCallback, UIComponentProps, UINode} from "mmcore";
 import {XIcon} from "lucide-react";
 
 
-export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", slideFrom = "right", className, defaultOpen, onOpenChange, modal, title, subTitle, header, footer, footerActionButtons, body, ...props}: WebDialogGeneratorProps) {
+export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", slideFrom = "right", className, modal, title, subTitle, header, footer, footerActionButtons, body, engine, showCloseButton, ...props}: WebDialogGeneratorProps) {
 
     const getHeader = mmReactUseCallback(() => {
         let isEmpty: boolean = true
         let titleContent: UINode = ""
         let subTitleContent: UINode = ""
+        let _title = engine.getActionValue("title", title)
+        let _subTitle = engine.getActionValue("subTitle", subTitle)
 
         if (header) {
             isEmpty = false
         } else {
-            if (title) {
+            if (_title) {
                 isEmpty = false
-                titleContent = (<DefaultDialogTitle>{titleContent}</DefaultDialogTitle>)
+                titleContent = (<DefaultDialogTitle>{_title}</DefaultDialogTitle>)
             }
-            if (subTitle) {
+            if (_subTitle) {
                 isEmpty = false
-                subTitleContent = (<DefaultDialogSubTitle>{subTitle}</DefaultDialogSubTitle>)
+                subTitleContent = (<DefaultDialogSubTitle>{_subTitle}</DefaultDialogSubTitle>)
             }
         }
 
@@ -68,9 +71,22 @@ export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", s
         return ""
     }, [])
 
+    const bodyProps : Record<string, MixType | undefined> = {
+        "slideFrom": slideFrom,
+        "dialogSize": dialogSize,
+        "type": type,
+        "showCloseButton": showCloseButton,
+    }
+
+    const getBodyProps = () => {
+        const modifiedProps = {...bodyProps}
+        modifiedProps.slideFrom = engine.getActionValue("slideFrom", modifiedProps.slideFrom) as DialogSlideFrom
+        return modifiedProps
+    }
+
     return (
-        <DefaultDialog onOpenChange={onOpenChange} modal={modal} defaultOpen={defaultOpen}>
-            <DefaultDialogBody type={type} slideFrom={slideFrom} dialogSize={dialogSize}>
+        <DefaultDialog open={engine.isOpen} onOpenChange={engine.close} modal={modal}>
+            <DefaultDialogBody {...getBodyProps()}>
                 {getHeader()}
                 <div className={mergeWind("overflow-y-auto", className)} {...props}>
                     {body}
