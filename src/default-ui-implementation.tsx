@@ -27,6 +27,13 @@ import {DefaultSidebar} from "./default-ui/default-sidebar";
 import {DefaultSidebarContent} from "./default-ui/default-sidebar-content";
 import {DefaultSidebarProvider} from "./default-ui/default-sidebar-provider";
 import {DefaultSidebarToggler} from "./default-ui/default-sidebar-toggler";
+import {
+    DefaultDialog,
+    DefaultDialogBody,
+    DefaultDialogFooter, DefaultDialogGenerator,
+    DefaultDialogHeader, DefaultDialogSubTitle,
+    DefaultDialogTitle
+} from "./default-ui/default-dialog";
 
 
 export const DefaultUIComponent: UIComponentSpec = {
@@ -59,7 +66,16 @@ export const DefaultUIComponent: UIComponentSpec = {
     Sidebar: DefaultSidebar,
     SidebarContent: DefaultSidebarContent,
     SidebarProvider: DefaultSidebarProvider,
-    SidebarToggler: DefaultSidebarToggler
+    SidebarToggler: DefaultSidebarToggler,
+
+    Dialog: DefaultDialog,
+    DialogHeader: DefaultDialogHeader,
+    DialogFooter: DefaultDialogFooter,
+    DialogBody: DefaultDialogBody,
+    DialogTitle: DefaultDialogTitle,
+    DialogSubTitle: DefaultDialogSubTitle,
+    DialogGenerator: DefaultDialogGenerator,
+
 }
 
 export const DefaultUIAction: UIActionSpec = {
