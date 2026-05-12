@@ -22,7 +22,7 @@ import {XIcon} from "lucide-react";
 import {DefaultButton} from "./default-button";
 
 
-export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", slideFrom = "right", className, modal, title, subTitle, header, footer, footerActionButtons, body, engine, showCloseButton, ...props}: WebDialogGeneratorProps) {
+export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", slideFrom = "right", className, modal, title, subTitle, header, footer, footerActionButtons, body, engine, showCloseButton, disableBlockClose, ...props}: WebDialogGeneratorProps) {
 
     const getHeader = mmReactUseCallback(() => {
         let isEmpty: boolean = true
@@ -101,6 +101,7 @@ export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", s
         "dialogSize": dialogSize,
         "type": type,
         "showCloseButton": showCloseButton,
+        "disableBlockClose": disableBlockClose,
     }
 
     const getBodyProps = () => {
@@ -108,6 +109,7 @@ export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", s
         modifiedProps.slideFrom = engine.getActionValue("slideFrom", modifiedProps.slideFrom) as DialogSlideFrom
         modifiedProps.type = engine.getActionValue("type", modifiedProps.type) as DialogType
         modifiedProps.dialogSize = engine.getActionValue("dialogSize", modifiedProps.dialogSize) as DialogSize
+        modifiedProps.disableBlockClose = engine.getActionValue<boolean>("disableBlockClose", modifiedProps.disableBlockClose as boolean)
         return modifiedProps
     }
 
@@ -232,7 +234,7 @@ const dialogBodyVariations = makeClassVariance(
 )
 
 
-export function DefaultDialogBody({className, children, showCloseButton = true, type = "dialog", dialogSize = "small", slideFrom = "right", ...props}: WebDialogBodyProps) {
+export function DefaultDialogBody({className, children, showCloseButton = true, type = "dialog", dialogSize = "small", slideFrom = "right", disableBlockClose, ...props}: WebDialogBodyProps) {
     let variations: Record<string, string> = {
         type: type
     }
@@ -255,6 +257,11 @@ export function DefaultDialogBody({className, children, showCloseButton = true, 
                     dialogBodyVariations(variations),
                     className
                 )}
+                onPointerDownOutside={(e) => {
+                    if (disableBlockClose) {
+                        e.preventDefault()
+                    }
+                }}
                 {...props}
             >
                 {children}
