@@ -1,4 +1,5 @@
 import {
+    DialogFooterActionButton,
     DialogSize,
     DialogSlideFrom, DialogType,
     WebDialogBodyProps, WebDialogFooterProps,
@@ -18,6 +19,7 @@ import {
 import {makeClassVariance, mergeWind} from "./../common/tailwind-utils";
 import {MixType, mmReactUseCallback, UIComponentProps, UINode} from "mmcore";
 import {XIcon} from "lucide-react";
+import {DefaultButton} from "./default-button";
 
 
 export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", slideFrom = "right", className, modal, title, subTitle, header, footer, footerActionButtons, body, engine, showCloseButton, ...props}: WebDialogGeneratorProps) {
@@ -26,8 +28,8 @@ export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", s
         let isEmpty: boolean = true
         let titleContent: UINode = ""
         let subTitleContent: UINode = ""
-        let _title = engine.getActionValue("title", title)
-        let _subTitle = engine.getActionValue("subTitle", subTitle)
+        let _title = engine.getActionValue<UINode>("title", title)
+        let _subTitle = engine.getActionValue<UINode>("subTitle", subTitle)
 
         if (header) {
             isEmpty = false
@@ -54,21 +56,43 @@ export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", s
         return ""
     }, [])
 
+
+
     const getFooter = mmReactUseCallback(() => {
         let isEmpty: boolean = true
+        let buttons: UINode = ""
         if (footer) {
             isEmpty = false
         } else {
-
+            const _footerActionButtons = engine.getActionValue<DialogFooterActionButton[]>("footerActionButtons", footerActionButtons)
+            if (_footerActionButtons) {
+                isEmpty = false
+                buttons = (
+                    <>
+                        {_footerActionButtons.map((props: DialogFooterActionButton, index: number) => (
+                            <DefaultButton
+                                key={index}
+                                variant={props.variant}
+                                size={props.size}
+                                onClick={() => {
+                                    if (props.onClick) {
+                                        props.onClick(props.data)
+                                    }
+                                }}
+                            >{props.label}</DefaultButton>
+                        ))}
+                    </>
+                )
+            }
         }
         if (!isEmpty) {
             return (
                 <DefaultDialogFooter>
                     {footer}
+                    {buttons}
                 </DefaultDialogFooter>
             )
         }
-
         return ""
     }, [])
 
@@ -88,7 +112,7 @@ export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", s
     }
 
     const getBodyContent = () => {
-        return engine.getActionValue("body", body)
+        return engine.getActionValue<UINode>("body", body)
     }
 
     return (
