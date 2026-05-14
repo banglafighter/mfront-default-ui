@@ -45,6 +45,7 @@ import {
     DefaultTHead,
     DefaultTR
 } from "./default-ui/default-table";
+import {DefaultTableGenerator} from "./default-ui/default-table-generator";
 
 
 export const DefaultUIComponent: UIComponentSpec = {
@@ -97,6 +98,7 @@ export const DefaultUIComponent: UIComponentSpec = {
     TR: DefaultTR,
     TH: DefaultTH,
     TD: DefaultTD,
+    TableGenerator: DefaultTableGenerator,
 
 }
 
