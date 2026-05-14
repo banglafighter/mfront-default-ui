@@ -35,6 +35,7 @@ import {
     DefaultDialogTitle
 } from "./default-ui/default-dialog";
 import {DefaultImage} from "./default-ui/default-image";
+import {DefaultTab} from "./default-ui/default-tab";
 
 
 export const DefaultUIComponent: UIComponentSpec = {
@@ -78,6 +79,7 @@ export const DefaultUIComponent: UIComponentSpec = {
     DialogGenerator: DefaultDialogGenerator,
 
     Image: DefaultImage,
+    Tab: DefaultTab
 
 }
 
