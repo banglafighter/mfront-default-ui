@@ -36,6 +36,15 @@ import {
 } from "./default-ui/default-dialog";
 import {DefaultImage} from "./default-ui/default-image";
 import {DefaultTab} from "./default-ui/default-tab";
+import {
+    DefaultTable,
+    DefaultTBody,
+    DefaultTD,
+    DefaultTFoot,
+    DefaultTH,
+    DefaultTHead,
+    DefaultTR
+} from "./default-ui/default-table";
 
 
 export const DefaultUIComponent: UIComponentSpec = {
@@ -79,7 +88,15 @@ export const DefaultUIComponent: UIComponentSpec = {
     DialogGenerator: DefaultDialogGenerator,
 
     Image: DefaultImage,
-    Tab: DefaultTab
+    Tab: DefaultTab,
+
+    Table: DefaultTable,
+    THead: DefaultTHead,
+    TFoot: DefaultTFoot,
+    TBody: DefaultTBody,
+    TR: DefaultTR,
+    TH: DefaultTH,
+    TD: DefaultTD,
 
 }
 
