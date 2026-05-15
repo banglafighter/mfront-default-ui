@@ -1,6 +1,6 @@
 import {SortDirection, WebTableGeneratorColumnProps, WebTableGeneratorProps} from "mmcore-ui";
 import {DefaultTable, DefaultTBody, DefaultTD, DefaultTH, DefaultTHead, DefaultTR} from "./default-table";
-import {mmReactUseCallback, mmReactUseEffect, mmReactUseRef, mmReactUseState, UINode} from "mmcore";
+import {mmReactUseCallback, mmReactUseRef, mmReactUseState, UINode} from "mmcore";
 import {mergeWind} from "mfront-default-ui";
 import {ArrowDownNarrowWide, ArrowDownUp, ArrowUpWideNarrow} from "lucide-react";
 
