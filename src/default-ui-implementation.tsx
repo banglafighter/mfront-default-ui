@@ -46,6 +46,7 @@ import {
     DefaultTR
 } from "./default-ui/default-table";
 import {DefaultTableGenerator} from "./default-ui/default-table-generator";
+import {DefaultPagination} from "./default-ui/default-pagination";
 
 
 export const DefaultUIComponent: UIComponentSpec = {
@@ -99,6 +100,7 @@ export const DefaultUIComponent: UIComponentSpec = {
     TH: DefaultTH,
     TD: DefaultTD,
     TableGenerator: DefaultTableGenerator,
+    Pagination: DefaultPagination,
 
 }
 
