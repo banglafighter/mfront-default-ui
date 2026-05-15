@@ -79,7 +79,7 @@ export function DefaultPagination({className, currentPage, totalPage, itemPerPag
         return (
             <DefaultButton
                 variant={active ? "primary" : "outline"}
-                className={mergeWind("h-8")}
+                className={mergeWind("h-8", "cursor-pointer")}
                 disabled={disabled || active}
                 onClick={() => {
                     if (!disabled && !active && onChangePagination) {
