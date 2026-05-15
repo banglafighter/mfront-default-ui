@@ -47,6 +47,7 @@ import {
 } from "./default-ui/default-table";
 import {DefaultTableGenerator} from "./default-ui/default-table-generator";
 import {DefaultPagination} from "./default-ui/default-pagination";
+import {DefaultFileField} from "./default-ui/default-file-field";
 
 
 export const DefaultUIComponent: UIComponentSpec = {
@@ -74,6 +75,7 @@ export const DefaultUIComponent: UIComponentSpec = {
     FieldGenerator: DefaultFieldGenerator,
     Textarea: DefaultTextarea,
     SelectField: DefaultSelectField,
+    FileField: DefaultFileField,
     Dropdown: DefaultDropdown,
 
     Sidebar: DefaultSidebar,
@@ -101,7 +103,6 @@ export const DefaultUIComponent: UIComponentSpec = {
     TD: DefaultTD,
     TableGenerator: DefaultTableGenerator,
     Pagination: DefaultPagination,
-
 }
 
 export const DefaultUIAction: UIActionSpec = {
