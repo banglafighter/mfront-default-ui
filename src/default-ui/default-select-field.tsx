@@ -15,7 +15,7 @@ import {UICommonUtil, useFieldHelper} from "mfront-ui";
 import {DefaultInputFrame} from "./default-input-frame";
 
 
-export function DefaultSelectField({options, labelKey, valueKey, multiple, customOption, defaultValue, createNewItem, loadNewItem, placeholder, emptyOptionContent = "List is empty", name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, engine, ...props}: WebSelectFieldProps) {
+export function DefaultSelectField({options, labelKey, valueKey, multiple, customOption, defaultValue, createNewItem, loadNewItem, placeholder, emptyOptionContent = "List is empty", name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, engine, showClear = true, ...props}: WebSelectFieldProps) {
     const [value, setValue] = mmReactUseState<Record<string, MixType>[]>([])
     const [dynamicOptions, setDynamicOptions] = mmReactUseState<Record<string, MixType>[]>([])
     const [showEmptyOption, setShowEmptyOption] = mmReactUseState<boolean>(true)
@@ -40,7 +40,7 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
     }, [value, valueKey]);
 
     const getSingleInput = () => {
-        return (<ComboboxInput placeholder={placeholder} showClear={true}/>)
+        return (<ComboboxInput placeholder={placeholder} showClear={showClear}/>)
     }
 
     const getMultiInput = () => {
