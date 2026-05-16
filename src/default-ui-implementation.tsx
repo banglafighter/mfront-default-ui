@@ -50,6 +50,7 @@ import {DefaultPagination} from "./default-ui/default-pagination";
 import {DefaultFileField} from "./default-ui/default-file-field";
 import {DefaultCheckField} from "./default-ui/default-check-field";
 import {DefaultPopover} from "./default-ui/default-popover";
+import {DefaultCalendar} from "./default-ui/default-calendar";
 
 
 export const DefaultUIComponent: UIComponentSpec = {
@@ -107,6 +108,7 @@ export const DefaultUIComponent: UIComponentSpec = {
     TD: DefaultTD,
     TableGenerator: DefaultTableGenerator,
     Pagination: DefaultPagination,
+    Calendar: DefaultCalendar,
 }
 
 export const DefaultUIAction: UIActionSpec = {
