@@ -1,5 +1,5 @@
 import {WebInputProps} from "mmcore-ui";
-import {mergeWind} from "mfront-default-ui";
+import {mergeWind} from "./../common/tailwind-utils"
 
 
 export function DefaultInput({type, className, ...props}: WebInputProps) {

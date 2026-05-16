@@ -26,8 +26,8 @@ export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", s
 
     const getHeader = mmReactUseCallback(() => {
         let isEmpty: boolean = true
-        let titleContent: UINode = ""
-        let subTitleContent: UINode = ""
+        let titleContent: UINode = null
+        let subTitleContent: UINode = null
         let _title = engine.getActionValue<UINode>("title", title)
         let _subTitle = engine.getActionValue<UINode>("subTitle", subTitle)
 
@@ -53,7 +53,7 @@ export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", s
                 </DefaultDialogHeader>
             )
         }
-        return ""
+        return null
     }, [])
 
 
