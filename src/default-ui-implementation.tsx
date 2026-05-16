@@ -48,6 +48,7 @@ import {
 import {DefaultTableGenerator} from "./default-ui/default-table-generator";
 import {DefaultPagination} from "./default-ui/default-pagination";
 import {DefaultFileField} from "./default-ui/default-file-field";
+import {DefaultCheckField} from "./default-ui/default-check-field";
 
 
 export const DefaultUIComponent: UIComponentSpec = {
@@ -76,6 +77,7 @@ export const DefaultUIComponent: UIComponentSpec = {
     Textarea: DefaultTextarea,
     SelectField: DefaultSelectField,
     FileField: DefaultFileField,
+    CheckField: DefaultCheckField,
     Dropdown: DefaultDropdown,
 
     Sidebar: DefaultSidebar,

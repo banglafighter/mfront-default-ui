@@ -60,7 +60,7 @@ function generate12DigitNumber() {
     return num.toString();
 }
 
-function getLabel(labelKey: string, label?: string, required?: boolean, labelNext?: UINode) {
+function getLabel(labelKey: string, label?: string, required?: boolean, labelNext?: UINode, isChildFirst?: boolean) {
     if (!label) {
         return ""
     }
@@ -72,7 +72,7 @@ function getLabel(labelKey: string, label?: string, required?: boolean, labelNex
             "has-[>[data-tag=input-frame]]:w-full has-[>[data-tag=input-frame]]:flex-col has-[>[data-tag=input-frame]]:rounded-md has-[>[data-tag=input-frame]]:border [&>*]:data-[tag=input-frame]:p-4",
             "has-data-[state=checked]:border-primary has-data-[state=checked]:bg-primary/5 dark:has-data-[state=checked]:bg-primary/10",
         )}>
-            {requiredSymbol} {label}
+            {!isChildFirst ? requiredSymbol : ""} {label} {isChildFirst ? requiredSymbol : ""}
         </label>
     )
 
@@ -124,13 +124,13 @@ export function DefaultInputFrame({element, className, label, labelNext, require
 
     let childBeforeContent: UINode = (
         <>
-            {!isChildFirst ? getLabel(labelKey, label, required, labelNext) : ""}
+            {!isChildFirst ? getLabel(labelKey, label, required, labelNext, isChildFirst) : ""}
         </>
     )
 
     let childAfterContent: UINode = (
         <>
-            {isChildFirst ? getLabel(labelKey, label, required, labelNext) : ""}
+            {isChildFirst ? getLabel(labelKey, label, required, labelNext, isChildFirst) : ""}
             {messageText}
         </>
     )

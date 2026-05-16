@@ -1,7 +1,7 @@
 import {WebFileFieldProps} from "mmcore-ui";
 import {mergeWind} from "./../common/tailwind-utils";
 import {DefaultInputFrame} from "./default-input-frame";
-import {UICommonUtil, useFieldHelper} from "mfront-ui";
+import {UICommonUtil} from "mfront-ui";
 import {MixType, UINode} from "mmcore";
 import Dropzone, {DropzoneState} from "react-dropzone";
 import {CloudUpload} from "lucide-react";
@@ -31,9 +31,9 @@ export function DefaultFileField(
     let _centerContent: UINode = centerContent
     if (!_centerContent) {
         _centerContent = (
-            <div className={"flex gap-2 text-lg font-medium"}>
+            <span className={"flex gap-2 text-lg font-medium"}>
                 <CloudUpload/> Drop your {multiple ? "files" : "file"} here
-            </div>
+            </span>
         )
     }
     return (
