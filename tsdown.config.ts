@@ -11,7 +11,9 @@ export default defineConfig({
         alwaysBundle: [
             /^@radix-ui\//,
             /^@base-ui\//,
+            /^@floating-ui\//,
 
+            "react-remove-scroll-bar",
             "clsx",
             "tailwind-merge",
             "class-variance-authority",
