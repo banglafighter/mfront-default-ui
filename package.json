@@ -85,6 +85,10 @@
     "@tailwindcss/vite": "*",
     "tailwindcss": "*"
   },
+  "peerDependencies": {
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
   "license": "Apache-2.0",
   "main": "src/index.ts",
   "module": "src/index.ts",
