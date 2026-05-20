@@ -10,10 +10,11 @@ import {useSidebarContext} from "./default-sidebar-provider";
 import {MmReactFragment, mmReactUseCallback, UIComponentProps, UINode} from "mmcore";
 import {ChevronRight} from "lucide-react";
 import {Collapsible, CollapsibleContent, CollapsibleTrigger} from "../internal/colapsible";
+import {useRouteNav} from "mfront";
 
 
 export function DefaultSidebar({menu, header, headerAttrs, footer, footerAttrs, body, bodyAttrs, menuBefore, menuAfter, ...props}: WebSidebarProps) {
-
+    const {navigate} = useRouteNav()
     const headerContent = mmReactUseCallback(() => {
         if (!header) {
             return ""
@@ -47,7 +48,7 @@ export function DefaultSidebar({menu, header, headerAttrs, footer, footerAttrs, 
         return (
             <SidebarBodyBlock {...bodyAttrs}>
                 {menuBefore}
-                {getSidebarMenu(menu)}
+                {getSidebarMenu(menu, navigate)}
                 {menuAfter}
             </SidebarBodyBlock>
         )
@@ -62,7 +63,7 @@ export function DefaultSidebar({menu, header, headerAttrs, footer, footerAttrs, 
     )
 }
 
-export function getSidebarMenu(menu?: SidebarMenuItemProps[]) {
+export function getSidebarMenu(menu?: SidebarMenuItemProps[], navigate?: Function) {
     return (
         <>
             {menu?.map((item: SidebarMenuItemProps, index: number) => {
@@ -70,11 +71,11 @@ export function getSidebarMenu(menu?: SidebarMenuItemProps[]) {
                     return (
                         <SidebarGroupBlock key={index}>
                             <SidebarGroupLabelBlock>{item.grouped.labelContent}</SidebarGroupLabelBlock>
-                            {getMenuAndNestingMenu(item.grouped.items, index)}
+                            {getMenuAndNestingMenu(item.grouped.items, index, navigate)}
                         </SidebarGroupBlock>
                     )
                 } else if (item.single) {
-                    return getMenuAndNestingMenu(item.single, index)
+                    return getMenuAndNestingMenu(item.single, index, navigate)
                 }
 
             })}
@@ -82,7 +83,7 @@ export function getSidebarMenu(menu?: SidebarMenuItemProps[]) {
     )
 }
 
-function getMenuAndNestingMenu(items?: SidebarNestedMenuProps[], keyIndex?: number) {
+function getMenuAndNestingMenu(items?: SidebarNestedMenuProps[], keyIndex?: number, navigate?: Function) {
 
     const _getSubMenu = (submenu?: SidebarMenuItemBaseProps[], subIndex?: number) => {
         if (!submenu) {
@@ -93,7 +94,19 @@ function getMenuAndNestingMenu(items?: SidebarNestedMenuProps[], keyIndex?: numb
                 {submenu?.map((item: SidebarMenuItemBaseProps, index: number) => {
                     return (
                         <SidebarMenuSubItemBlock key={index} {...item.menuContentAttrs}>
-                            <SidebarMenuSubActionBlock size={item.size} isActive={false}>{item.menuContent}</SidebarMenuSubActionBlock>
+                            <SidebarMenuSubActionBlock
+                                size={item.size}
+                                isActive={false}
+                                onClick={() => {
+                                    if (item.action) {
+                                        item.action(item.actionData)
+                                    } else if (item.navUrl && navigate) {
+                                        navigate(item.navUrl)
+                                    }
+                                }}
+                            >
+                                {item.menuContent}
+                            </SidebarMenuSubActionBlock>
                         </SidebarMenuSubItemBlock>
                     )
                 })}
@@ -121,7 +134,18 @@ function getMenuAndNestingMenu(items?: SidebarNestedMenuProps[], keyIndex?: numb
 
         return (
             <MmReactFragment key={`action-${index}`}>
-                <SidebarMenuItemActionBlock variant={item.variant} size={item.size} isActive={false}>
+                <SidebarMenuItemActionBlock
+                    variant={item.variant}
+                    size={item.size}
+                    isActive={false}
+                    onClick={() => {
+                        if (item.action) {
+                            item.action(item.actionData)
+                        } else if (item.navUrl && navigate) {
+                            navigate(item.navUrl)
+                        }
+                    }}
+                >
                     {item.menuContent}
                     {_collapsibleContent}
                 </SidebarMenuItemActionBlock>
