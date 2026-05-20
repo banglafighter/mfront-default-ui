@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@source "./src";
+@source "./";
 @theme inline {
     --color-foreground: var(--foreground);
     --color-background: var(--background);
