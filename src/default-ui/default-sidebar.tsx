@@ -156,7 +156,7 @@ function getMenuAndNestingMenu(items?: SidebarNestedMenuProps[], keyIndex?: numb
 
     const _getMenuItem = (item: SidebarNestedMenuProps, index: number, collapsible: boolean) => {
         return (
-            <SidebarMenuItemBlock key={index} {...item.menuContentAttrs}>
+            <SidebarMenuItemBlock {...item.menuContentAttrs}>
                 {collapsible ? <CollapsibleTrigger className={"flex w-full items-center"}>{_getItemAction(item, true, index)}</CollapsibleTrigger> : _getItemAction(item, false, index)}
                 {collapsible ? <CollapsibleContent asChild>{_getSubMenu(item.nested, index)}</CollapsibleContent> : _getSubMenu(item.nested, index)}
             </SidebarMenuItemBlock>
