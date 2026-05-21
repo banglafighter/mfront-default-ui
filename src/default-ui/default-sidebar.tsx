@@ -9,7 +9,7 @@ import {makeClassVariance, mergeWind} from "../common/tailwind-utils";
 import {useSidebarContext} from "./default-sidebar-provider";
 import {MmReactFragment, UIComponentProps, UINode} from "mmcore";
 import {ChevronRight} from "lucide-react";
-import {Collapsible, CollapsibleContent, CollapsibleTrigger} from "../internal/colapsible";
+import {InternalCollapsible, InternalCollapsibleContent, InternalCollapsibleTrigger} from "../internal/colapsible";
 import {useRouteNav} from "mfront";
 
 
@@ -157,8 +157,8 @@ function getMenuAndNestingMenu(items?: SidebarNestedMenuProps[], keyIndex?: numb
     const _getMenuItem = (item: SidebarNestedMenuProps, index: number, collapsible: boolean) => {
         return (
             <SidebarMenuItemBlock {...item.menuContentAttrs}>
-                {collapsible ? <CollapsibleTrigger className={"flex w-full items-center"}>{_getItemAction(item, true, index)}</CollapsibleTrigger> : _getItemAction(item, false, index)}
-                {collapsible ? <CollapsibleContent asChild>{_getSubMenu(item.nested, index)}</CollapsibleContent> : _getSubMenu(item.nested, index)}
+                {collapsible ? <InternalCollapsibleTrigger className={"flex w-full items-center"}>{_getItemAction(item, true, index)}</InternalCollapsibleTrigger> : _getItemAction(item, false, index)}
+                {collapsible ? <InternalCollapsibleContent asChild>{_getSubMenu(item.nested, index)}</InternalCollapsibleContent> : _getSubMenu(item.nested, index)}
             </SidebarMenuItemBlock>
         )
     }
@@ -169,9 +169,9 @@ function getMenuAndNestingMenu(items?: SidebarNestedMenuProps[], keyIndex?: numb
                 return (
                     <MmReactFragment key={`smb-${index}`}>
                         {item.collapsible ? (
-                            <Collapsible asChild className="group/collapsible" >
+                            <InternalCollapsible asChild className="group/collapsible" >
                                 {_getMenuItem(item, index, true)}
-                            </Collapsible>
+                            </InternalCollapsible>
                         ) : _getMenuItem(item, index, false)}
                     </MmReactFragment>
                 )

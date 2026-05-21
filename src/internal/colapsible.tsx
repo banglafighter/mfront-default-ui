@@ -7,11 +7,11 @@ import {UIComponentProps} from "mmcore";
 import {mergeWind} from "../common/tailwind-utils";
 import "./assets/css/collapsible-animation.css"
 
-function Collapsible({...props}: UIComponentProps<typeof CollapsiblePrimitive>) {
+function InternalCollapsible({...props}: UIComponentProps<typeof CollapsiblePrimitive>) {
   return <CollapsiblePrimitive data-tag="collapsible" {...props} />
 }
 
-function CollapsibleTrigger({...props}: UIComponentProps<typeof CollapsibleTriggerPrimitive>) {
+function InternalCollapsibleTrigger({...props}: UIComponentProps<typeof CollapsibleTriggerPrimitive>) {
   return (
       <CollapsibleTriggerPrimitive
           data-tag="collapsible-trigger"
@@ -20,7 +20,7 @@ function CollapsibleTrigger({...props}: UIComponentProps<typeof CollapsibleTrigg
   )
 }
 
-function CollapsibleContent({className, ...props}: UIComponentProps<typeof CollapsibleContentPrimitive>) {
+function InternalCollapsibleContent({className, ...props}: UIComponentProps<typeof CollapsibleContentPrimitive>) {
   return (
       <CollapsibleContentPrimitive
           data-tag="collapsible-content"
@@ -36,7 +36,7 @@ function CollapsibleContent({className, ...props}: UIComponentProps<typeof Colla
 }
 
 export {
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent
+  InternalCollapsible,
+  InternalCollapsibleTrigger,
+  InternalCollapsibleContent
 }
