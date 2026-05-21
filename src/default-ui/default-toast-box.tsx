@@ -22,9 +22,11 @@ function getTransition(transitionType?: string) {
 }
 
 function getPosition(positionType?: string) {
-    let position: any = "top-center"
-    if (positionType === "bottom") {
-        position = "top-bottom"
+    let position: string = "top-center"
+    if (positionType === "top") {
+        position = "top-center"
+    }else if (positionType === "bottom") {
+        position = "bottom-center"
     } else if (positionType !== undefined) {
         position = MMUtil.camelToKebab(positionType)
     }
