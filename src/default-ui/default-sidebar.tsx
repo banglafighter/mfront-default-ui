@@ -7,7 +7,7 @@ import {
 } from "mmcore-ui";
 import {makeClassVariance, mergeWind} from "../common/tailwind-utils";
 import {useSidebarContext} from "./default-sidebar-provider";
-import {MmReactFragment, mmReactUseCallback, UIComponentProps, UINode} from "mmcore";
+import {MmReactFragment, UIComponentProps, UINode} from "mmcore";
 import {ChevronRight} from "lucide-react";
 import {Collapsible, CollapsibleContent, CollapsibleTrigger} from "../internal/colapsible";
 import {useRouteNav} from "mfront";
@@ -15,29 +15,29 @@ import {useRouteNav} from "mfront";
 
 export function DefaultSidebar({menu, header, headerAttrs, footer, footerAttrs, body, bodyAttrs, menuBefore, menuAfter, ...props}: WebSidebarProps) {
     const {navigate} = useRouteNav()
-    const headerContent = mmReactUseCallback(() => {
+    const headerContent = () => {
         if (!header) {
-            return ""
+            return null
         }
         return (
             <SidebarHeaderBlock {...headerAttrs}>
                 {header}
             </SidebarHeaderBlock>
         )
-    }, [header])
+    }
 
-    const footerContent = mmReactUseCallback(() => {
+    const footerContent = () => {
         if (!footer) {
-            return ""
+            return null
         }
         return (
             <SidebarFooterBlock {...footerAttrs}>
                 {footer}
             </SidebarFooterBlock>
         )
-    }, [footer])
+    }
 
-    const bodyContent = mmReactUseCallback(() => {
+    const bodyContent = () => {
         if (body) {
             return (
                 <SidebarBodyBlock {...bodyAttrs}>
@@ -52,7 +52,7 @@ export function DefaultSidebar({menu, header, headerAttrs, footer, footerAttrs, 
                 {menuAfter}
             </SidebarBodyBlock>
         )
-    }, [body, menuBefore, menuAfter])
+    }
 
     return (
         <SidebarBlock {...props}>
@@ -87,7 +87,7 @@ function getMenuAndNestingMenu(items?: SidebarNestedMenuProps[], keyIndex?: numb
 
     const _getSubMenu = (submenu?: SidebarMenuItemBaseProps[], subIndex?: number) => {
         if (!submenu) {
-            return ""
+            return null
         }
         return (
             <SidebarMenuSubBlock key={"menu-subitem-" + subIndex}>
