@@ -12,14 +12,24 @@ import {UIComponentProps} from "mmcore";
 export function DefaultTab({className, items, defaultTabId, selectType = "line", orientation = "horizontal", ...props}: WebTabProps) {
     return (
         <Tabs defaultValue={defaultTabId} orientation={orientation} className={className}>
-            <TabsList variant={selectType} >
-                {items.map((item: WebTabItemProps, index: number) => (
-                    <TabsTrigger value={item.tabId} key={index}>{item.labelContent}</TabsTrigger>
-                ))}
+            <TabsList variant={selectType}>
+                {items.map((item: WebTabItemProps, index: number) => {
+                    if (item.isHidden) {
+                        return null
+                    }
+                    return (
+                        <TabsTrigger value={item.tabId} key={index}>{item.labelContent}</TabsTrigger>
+                    )
+                })}
             </TabsList>
-            {items.map((item: WebTabItemProps, index: number) => (
-                <TabsContent value={item.tabId} key={index}>{item.component}</TabsContent>
-            ))}
+            {items.map((item: WebTabItemProps, index: number) => {
+                if (item.isHidden) {
+                    return null
+                }
+                return (
+                    <TabsContent value={item.tabId} key={index}>{item.component}</TabsContent>
+                )
+            })}
         </Tabs>
     )
 }
