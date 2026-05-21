@@ -90,7 +90,7 @@ function getMenuAndNestingMenu(items?: SidebarNestedMenuProps[], keyIndex?: numb
             return null
         }
         return (
-            <SidebarMenuSubBlock key={"menu-subitem-" + subIndex}>
+            <SidebarMenuSubBlock>
                 {submenu?.map((item: SidebarMenuItemBaseProps, index: number) => {
                     return (
                         <SidebarMenuSubItemBlock key={index} {...item.menuContentAttrs}>
