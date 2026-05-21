@@ -52,7 +52,7 @@ export function DefaultSidebar({menu, header, headerAttrs, footer, footerAttrs, 
                 {menuAfter}
             </SidebarBodyBlock>
         )
-    }, [body])
+    }, [body, menuBefore, menuAfter])
 
     return (
         <SidebarBlock {...props}>
