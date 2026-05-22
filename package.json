@@ -1,6 +1,6 @@
 {
   "name": "mfront-default-ui",
-  "version": "0.0.5-alpha.55",
+  "version": "0.0.5-alpha.57",
   "description": "mFront UI Default Implementation",
   "scripts": {
     "build": "tsdown && node scripts/copy-css.js",
