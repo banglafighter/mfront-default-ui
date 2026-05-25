@@ -83,7 +83,6 @@ export function DefaultPagination({className, currentPage, totalPage, itemPerPag
                 disabled={disabled || active}
                 onClick={() => {
                     if (!disabled && !active && onChangePagination) {
-                        console.log("Clicked", page);
                         onChangePagination(page)
                     }
                 }}
@@ -134,7 +133,7 @@ export function DefaultPagination({className, currentPage, totalPage, itemPerPag
                         }
                     </MmReactFragment>
                 )}
-                {_currentPage < totalPage && renderButton(_previousIcon, _currentPage - 1)}
+                {_currentPage < totalPage && renderButton(_previousIcon, _currentPage + 1)}
             </DefaultButtonGroup>
         </div>
     )
