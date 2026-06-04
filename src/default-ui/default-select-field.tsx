@@ -1,5 +1,5 @@
 import {WebSelectFieldProps} from "mmcore-ui";
-import {MixType, mmReactUseCallback, mmReactUseMemo, mmReactUseState} from "mmcore";
+import {MixType, MMReactChangeEvent, mmReactUseCallback, mmReactUseMemo, mmReactUseState} from "mmcore";
 import { Combobox as BasicUICombobox } from "@base-ui/react"
 import {
     SharedFieldGroup,
@@ -13,6 +13,7 @@ import {CheckIcon, ChevronDownIcon, XIcon} from "lucide-react";
 import styles from "./assets/css/default-select-field.module.css"
 import {UICommonUtil, useFieldHelper} from "mfront-ui";
 import {DefaultInputFrame} from "./default-input-frame";
+import {_t} from "mfront";
 
 
 export function DefaultSelectField({options, labelKey, valueKey, multiple, customOption, defaultValue, createNewItem, loadNewItem, placeholder, emptyOptionContent = "List is empty", name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, engine, showClear = true, ...props}: WebSelectFieldProps) {
@@ -24,7 +25,6 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
 
     const {fieldRef, handleChange} = useFieldHelper<HTMLSelectElement>({name, defaultValue, engine, onChange})
     const {gridItemProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
-
 
 
     const mergedItems = mmReactUseMemo(() => {
@@ -56,15 +56,33 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
         )
     }
     const onValueChange = mmReactUseCallback((selectedValue: any) => {
+        let processedValue: any = null
         if (Array.isArray(selectedValue)) {
             setValue(selectedValue);
+            processedValue = []
+            selectedValue.map(item =>{
+                processedValue.push(item[valueKey])
+            })
         } else {
             let value: any = []
             if (selectedValue !== null && selectedValue !== undefined) {
                 value.push(selectedValue)
             }
             setValue(value);
+            processedValue = selectedValue[valueKey]
         }
+        const event = {
+            target: {
+                name,
+                value: processedValue,
+            } as HTMLSelectElement,
+            currentTarget: {
+                name,
+                value: processedValue,
+            } as HTMLSelectElement,
+            raw: selectedValue,
+        } as unknown as MMReactChangeEvent<HTMLSelectElement>
+        handleChange(event)
     }, []);
 
     const ignoreItemIfSelected = mmReactUseCallback((item: any) => {
@@ -127,7 +145,7 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
             content = (
                 <>
                     <span className={styles.spinner}/>
-                    Searching…
+                    {_t("Searching...")}
                 </>
             )
         }

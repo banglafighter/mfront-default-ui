@@ -8,7 +8,7 @@ import {DefaultSelectField} from "./default-select-field";
 
 const PAGE_DOTS = "...";
 
-export function DefaultPagination({className, currentPage, totalPage, itemPerPage, previousIcon, nextIcon, onChangeItemPerPage, itemPerPageOptions, onChangePagination, siblingCount = 1, ellipsisIcon, ...props}: WebPaginationProps) {
+export function DefaultPagination({className, currentPage, totalPage, itemPerPage, previousIcon, nextIcon, onChangeItemPerPage, itemPerPageOptions, onChangePagination, siblingCount = 1, ellipsisIcon, itemPerPageOptionValue = 25, ...props}: WebPaginationProps) {
     const [_currentPage, _setCurrentPage] = mmReactUseState(currentPage)
     const [_itemPerPage, _setItemPerPage] = mmReactUseState(itemPerPage)
 
@@ -115,11 +115,17 @@ export function DefaultPagination({className, currentPage, totalPage, itemPerPag
         <div className={mergeWind("flex gap-2", className)} {...props}>
             <DefaultSelectField
                 options={itemPerPageOptions ? itemPerPageOptions : itemPerPageDefaultOptions}
+                defaultValue={itemPerPageOptionValue}
                 labelKey={"label"}
                 valueKey={"value"}
                 name={"country"}
                 className={"w-15"}
                 showClear={false}
+                onChange={(event: any) => {
+                    if (onChangeItemPerPage) {
+                        onChangeItemPerPage(event.target.value);
+                    }
+                }}
             />
             <DefaultButtonGroup orientation={"horizontal"} className={"h-8"}>
                 {_currentPage > 1 && renderButton(_nextIcon, _currentPage - 1)}
