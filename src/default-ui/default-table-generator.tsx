@@ -66,6 +66,7 @@ export function DefaultTableGenerator(
         isExternalRow,
         renderRow,
         skipRenderedRow,
+        externalRowWrapperClassName,
         ...props
     }: WebTableGeneratorProps) {
     const currentlySortingColumn = mmReactUseRef<string>("")
@@ -73,6 +74,19 @@ export function DefaultTableGenerator(
     const _sortIcon: UINode = sortIcon ?? <ArrowDownUp size={14}/>
     const _sortAscIcon: UINode = sortAscIcon ?? <ArrowDownNarrowWide size={14}/>
     const _sortDescIcon: UINode = sortDescIcon ?? <ArrowUpWideNarrow  size={14}/>
+
+    const renderExternalRow = mmReactUseCallback(() => {
+        if (!isExternalRow || !renderRow) {
+            return
+        }
+        const dataList: Record<string, UINode>[] = engine.dataList
+        const columns: WebTableGeneratorColumnProps[] = engine.getColumns()
+        return (
+            <div className={externalRowWrapperClassName}>
+                {dataList.map((row: Record<string, UINode>, index: number) => renderRow(row, dataList, columns, index))}
+            </div>
+        )
+    }, [engine.dataList])
 
     const getTableBody = mmReactUseCallback(() => {
         if (isExternalRow) {
@@ -117,7 +131,7 @@ export function DefaultTableGenerator(
 
     return (
         <div {...props}>
-            <DefaultTable>
+            <DefaultTable containerContent={renderExternalRow()}>
                 <DefaultTHead>
                     <DefaultTR>
                         {engine.getColumns().map((column: WebTableGeneratorColumnProps, index: number) => {

@@ -7,9 +7,10 @@ import {
     WebTRProps
 } from "mmcore-ui";
 import {mergeWind} from "mfront-default-ui";
+import {UINode} from "mmcore";
 
 
-export function DefaultTable({className, ...props}: WebTableProps) {
+export function DefaultTable({className, containerContent = null, ...props}: WebTableProps & { containerContent?: UINode | null}) {
     return (
         <div
             data-tag="table-container"
@@ -20,6 +21,7 @@ export function DefaultTable({className, ...props}: WebTableProps) {
                 className={mergeWind("w-full caption-bottom text-sm", className)}
                 {...props}
             />
+            {containerContent}
         </div>
     )
 }
