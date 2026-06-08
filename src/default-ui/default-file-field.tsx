@@ -1,8 +1,8 @@
 import {WebFileFieldProps} from "mmcore-ui";
 import {mergeWind} from "./../common/tailwind-utils";
 import {DefaultInputFrame} from "./default-input-frame";
-import {toast, UICommonUtil} from "mfront-ui";
-import {MixType, mmReactUseState, UINode} from "mmcore";
+import {toast, UICommonUtil, useFieldHelper} from "mfront-ui";
+import {MixType, MMReactChangeEvent, mmReactUseState, UINode} from "mmcore";
 import Dropzone, {DropzoneState, FileRejection} from "react-dropzone";
 import {CloudUpload} from "lucide-react";
 import {_t} from "mfront";
@@ -25,10 +25,14 @@ export function DefaultFileField(
         minSize,
         maxSize,
         centerContent,
+        mimeType,
+        defaultValue,
+        onChange,
+        acceptFileExtensions,
         ...props
     }: WebFileFieldProps) {
     const [internalError, setInternalError] = mmReactUseState<string | null>(null)
-    // const {fieldRef, handleChange} = useFieldHelper<HTMLSelectElement>({name, defaultValue, engine, onChange})
+    const {handleChange} = useFieldHelper<HTMLInputElement>({name, defaultValue, engine, onChange})
     const {gridItemProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
 
     let _centerContent: UINode = centerContent
@@ -40,6 +44,35 @@ export function DefaultFileField(
         )
     }
 
+    const formatBytes = (bytes: number = 0) => {
+        if (bytes === 0) {
+            return "0 Bytes"
+        }
+        const k = 1024;
+        const sizes = ["Bytes", "KB", "MB", "GB"];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+    }
+
+    const getErrorMessage = (code: string) => {
+        switch (code) {
+            case "file-too-large":
+                return `File is larger than ${formatBytes(maxSize)}`;
+            case "file-too-small":
+                return "File is too small";
+            case "file-invalid-type":
+                return "Invalid file type";
+            case "too-many-files":
+                return "Too many files selected";
+            default:
+                return "File upload failed";
+        }
+    }
+
+    const trimComma = (message: string) => {
+        return message.replace(/^,+|,+$/g, "")
+    }
+
     const handleRejectedFiles = (fileRejections: FileRejection[]) => {
         let error: string | null = null
         if (!multiple && fileRejections.length > 0) {
@@ -47,8 +80,11 @@ export function DefaultFileField(
         } else {
             for (let rejections of fileRejections) {
                 for (let eachError of rejections.errors) {
-                    error = error ? `, ${_t(eachError.message)}` : _t(eachError.message)
+                    error = `, ${_t(getErrorMessage(eachError.code))}`
                 }
+            }
+            if (error) {
+                error = trimComma(error)
             }
         }
         setInternalError(error)
@@ -61,7 +97,48 @@ export function DefaultFileField(
     }
 
     const handleAcceptedFiles = (acceptedFiles: File[], fileRejections: FileRejection[]) => {
+        if (fileRejections && fileRejections.length > 0) {
+            return
+        }
+        let value: any = acceptedFiles[0]
+        if (multiple) {
+            value = []
+            for (let acceptFile of acceptedFiles) {
+                value.push(acceptFile)
+            }
+        }
+        const event = {
+            target: {
+                name,
+                value: value,
+            } as HTMLInputElement,
+            currentTarget: {
+                name,
+                value: value,
+            } as HTMLInputElement,
+        } as MMReactChangeEvent<HTMLInputElement>
+        handleChange(event)
+    }
 
+    const _acceptedFiles = mimeType ? {[mimeType]: acceptFileExtensions ?? []} : undefined
+
+    const getHints = () => {
+        let messages: string[] = []
+        if (acceptFileExtensions) {
+            messages.push(`Allowed file types: ${acceptFileExtensions.join(", ")}`)
+        }
+        if (maxSize) {
+            messages.push(`File size must not exceed ${formatBytes(maxSize)}`)
+        }
+        if (minSize) {
+            messages.push(`File size must be at least ${formatBytes(minSize)}`)
+        }
+        if (messages.length > 0) {
+            return (
+                <p className={"text-secondary font-bold"}>{messages.join(", ")}</p>
+            )
+        }
+        return null
     }
 
     return (
@@ -78,6 +155,7 @@ export function DefaultFileField(
             element={(labelId: string) => (
                 <>
                     <Dropzone
+                        accept={_acceptedFiles}
                         multiple={multiple}
                         maxFiles={maxFiles}
                         minSize={minSize}
@@ -105,6 +183,7 @@ export function DefaultFileField(
                                             {_centerContent}
                                         </p>
                                         {internalError && <p className={"text-danger font-bold"}>{internalError}</p>}
+                                        {getHints()}
                                     </div>
                                 </div>
                             )
