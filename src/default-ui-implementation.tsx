@@ -51,6 +51,7 @@ import {DefaultFileField} from "./default-ui/default-file-field";
 import {DefaultCheckField} from "./default-ui/default-check-field";
 import {DefaultPopover} from "./default-ui/default-popover";
 import {DefaultCalendar} from "./default-ui/default-calendar";
+import {DefaultBadge} from "./default-ui/default-badge";
 
 
 export const DefaultUIComponent: UIComponentSpec = {
@@ -58,6 +59,7 @@ export const DefaultUIComponent: UIComponentSpec = {
     Button: DefaultButton,
     Separator: DefaultSeparator,
     ButtonGroup: DefaultButtonGroup,
+    Badge: DefaultBadge,
     Loader: DefaultLoader,
 
     Card: DefaultCard,
