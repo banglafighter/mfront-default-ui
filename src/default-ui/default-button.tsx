@@ -34,10 +34,11 @@ export const buttonClassAndVariants = makeClassVariance(
     }
 )
 
-export function DefaultButton({className, variant = "primary", size = "default", ...props}: WebButtonProps) {
+export function DefaultButton({className, variant = "primary", size = "default", type = "button", ...props}: WebButtonProps) {
     const ButtonTag = "button"
     return (
         <ButtonTag
+            type={type}
             className={mergeWind(buttonClassAndVariants({variant, size, className}))}
             {...props}
         />
