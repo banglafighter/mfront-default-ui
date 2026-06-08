@@ -29,8 +29,10 @@ export function DefaultFileField(
         defaultValue,
         onChange,
         acceptFileExtensions,
+        preview,
         ...props
     }: WebFileFieldProps) {
+    const [fileValue, setFileValue] = mmReactUseState<File | File[] | null>(null)
     const [internalError, setInternalError] = mmReactUseState<string | null>(null)
     const {handleChange} = useFieldHelper<HTMLInputElement>({name, defaultValue, engine, onChange})
     const {gridItemProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
@@ -117,6 +119,7 @@ export function DefaultFileField(
                 value: value,
             } as HTMLInputElement,
         } as MMReactChangeEvent<HTMLInputElement>
+        setFileValue(value)
         handleChange(event)
     }
 
@@ -139,6 +142,36 @@ export function DefaultFileField(
             )
         }
         return null
+    }
+
+    const getPrview = () => {
+        let previewValue: any = defaultValue
+        let isFile: boolean = false
+        if (fileValue) {
+            isFile = true
+            previewValue = fileValue
+        }
+
+        if (previewValue && !Array.isArray(previewValue)) {
+            previewValue = [previewValue]
+        }
+
+        if (preview && previewValue) {
+            return preview(multiple, isFile, previewValue)
+        }
+        if (!previewValue) {
+            return null
+        }
+
+        return (
+            <ul>
+                {previewValue.map((value: string | File, index: number) => {
+                    return (
+                        <li key={index}>{value instanceof File ? value.name : value}</li>
+                    )
+                })}
+            </ul>
+        )
     }
 
     return (
@@ -189,6 +222,7 @@ export function DefaultFileField(
                             )
                         }}
                     </Dropzone>
+                    {getPrview()}
                 </>
             )}/>
     )
