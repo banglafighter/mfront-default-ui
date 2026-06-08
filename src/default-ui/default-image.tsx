@@ -83,7 +83,7 @@ function getPlaceholder(text: string, width = 400, height = 400) {
 
 
 export function DefaultImage({className, src, alt, loading = "lazy", decoding = "async", ratio, height, width, shape = "rounded", fallbackSrc, fallback, isDirectLoading, avatar, thumb, ...props}: WebImageProps) {
-    const [onLoading, setOnLoading] = mmReactUseState(true);
+    const [onLoading, setOnLoading] = mmReactUseState(true)
 
     const style: Record<string, any> = {}
     if (ratio) {

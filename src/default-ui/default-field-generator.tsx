@@ -1,13 +1,15 @@
 import {
     WebDefaultInputFieldPropsBase,
     WebFieldEngineProps,
-    WebFieldGeneratorProps, WebFieldGroupProps, WebSelectFieldProps,
+    WebFieldGeneratorProps, WebFieldGroupProps, WebFileFieldProps, WebSelectFieldProps,
 } from "mmcore-ui";
-import {SelectField, UICommonUtil} from "mfront-ui";
+import {UICommonUtil} from "mfront-ui";
 import {MixType} from "mmcore";
 import {makeClassVariance, mergeWind} from "mfront-default-ui";
 import {DefaultFieldGroup} from "./default-field-group";
 import PasswordField from "../internal/password-field";
+import {DefaultSelectField} from "./default-select-field";
+import {DefaultFileField} from "./default-file-field";
 
 
 const fieldGeneratorVariants = makeClassVariance(
@@ -57,7 +59,10 @@ function getField(spec: WebDefaultInputFieldPropsBase, index: number, engine: We
             return (<DefaultFieldGroup {...textareaProps} type={"textarea"} key={index} engine={engine}/>)
         case "select":
             const selectProps = fieldSpec as WebSelectFieldProps
-            return (<SelectField {...selectProps} key={index} engine={engine}/>)
+            return (<DefaultSelectField {...selectProps} key={index} engine={engine}/>)
+        case "file":
+            const fileProps = fieldSpec as WebFileFieldProps
+            return (<DefaultFileField {...fileProps} key={index} engine={engine}/>)
     }
     return ""
 }
