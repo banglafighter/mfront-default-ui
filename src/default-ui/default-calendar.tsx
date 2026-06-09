@@ -14,12 +14,15 @@ import {mmReactUseEffect, mmReactUseRef, UIComponentProps} from "mmcore";
 import {buttonClassAndVariants, DefaultButton} from "./default-button";
 
 
-export function DefaultCalendar({selectionMode = "single", monthYearSelection = "dropdown", onSelect, selected, ...props}: WebCalendarProps) {
+export function DefaultCalendar({numberOfMonths, onSelect, selected, selectionMode = "single", monthYearSelection = "dropdown", ...props}: WebCalendarProps) {
   let mode: any = selectionMode;
   return (
         <DayPickerCalendar
             captionLayout={monthYearSelection}
             mode={mode}
+            onSelect={onSelect}
+            selected={selected}
+            numberOfMonths={numberOfMonths}
         />
     )
 }

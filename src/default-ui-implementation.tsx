@@ -52,6 +52,7 @@ import {DefaultCheckField} from "./default-ui/default-check-field";
 import {DefaultPopover} from "./default-ui/default-popover";
 import {DefaultCalendar} from "./default-ui/default-calendar";
 import {DefaultBadge} from "./default-ui/default-badge";
+import {DefaultDateTimeField} from "./default-ui/default-date-time-field";
 
 
 export const DefaultUIComponent: UIComponentSpec = {
@@ -111,6 +112,7 @@ export const DefaultUIComponent: UIComponentSpec = {
     TableGenerator: DefaultTableGenerator,
     Pagination: DefaultPagination,
     Calendar: DefaultCalendar,
+    DateTimeField: DefaultDateTimeField,
 }
 
 export const DefaultUIAction: UIActionSpec = {
