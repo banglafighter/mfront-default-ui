@@ -1,4 +1,5 @@
 import {
+    WebCheckFieldProps,
     WebDateTimeFieldProps,
     WebDefaultInputFieldPropsBase,
     WebFieldEngineProps,
@@ -12,6 +13,7 @@ import PasswordField from "../internal/password-field";
 import {DefaultSelectField} from "./default-select-field";
 import {DefaultFileField} from "./default-file-field";
 import {DefaultDateTimeField} from "./default-date-time-field";
+import {DefaultCheckField} from "./default-check-field";
 
 
 const fieldGeneratorVariants = makeClassVariance(
@@ -68,6 +70,9 @@ function getField(spec: WebDefaultInputFieldPropsBase, index: number, engine: We
         case "date":
             const dateProps = fieldSpec as WebDateTimeFieldProps
             return (<DefaultDateTimeField {...dateProps} key={index} engine={engine}/>)
+        case "checkbox":
+            const checkboxProps = fieldSpec as WebCheckFieldProps
+            return (<DefaultCheckField {...checkboxProps} key={index} engine={engine}/>)
     }
     return ""
 }

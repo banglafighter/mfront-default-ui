@@ -123,7 +123,20 @@ export function DefaultFileField(
         handleChange(event)
     }
 
-    const _acceptedFiles = mimeType ? {[mimeType]: acceptFileExtensions ?? []} : undefined
+    let _acceptedFiles: any = undefined
+    if (mimeType) {
+        _acceptedFiles = {}
+        if (!acceptFileExtensions || !acceptFileExtensions.length) {
+            _acceptedFiles[`${mimeType}*`] = []
+        } else if (acceptFileExtensions.length >= 1) {
+            for (const extension of acceptFileExtensions) {
+                const key = `${mimeType}${extension}`
+                if (!(key in _acceptedFiles)) {
+                    _acceptedFiles[key] = [`.${extension}`]
+                }
+            }
+        }
+    }
 
     const getHints = () => {
         let messages: string[] = []

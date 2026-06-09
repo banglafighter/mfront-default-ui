@@ -1,7 +1,7 @@
 import {WebCheckFieldProps} from "mmcore-ui";
 import {DefaultInputFrame} from "./default-input-frame";
-import {UICommonUtil} from "mfront-ui";
-import {MixType, UIComponentProps} from "mmcore";
+import {UICommonUtil, useFieldHelper} from "mfront-ui";
+import {MixType, MMReactChangeEvent, UIComponentProps} from "mmcore";
 import {
     Checkbox as CheckboxPrimitive,
     Indicator as CheckboxIndicatorPrimitive
@@ -28,10 +28,36 @@ export function DefaultCheckField(
         isError,
         id,
         engine,
+        onChange,
+        defaultValue,
         ...props
     }: WebCheckFieldProps) {
-        // const {fieldRef, handleChange} = useFieldHelper<HTMLSelectElement>({name, defaultValue, engine, onChange})
+    const {setFieldValue} = useFieldHelper<HTMLInputElement>({name, defaultValue, engine, onChange})
     const {gridItemProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
+
+    const handleFieldChange = (checked: boolean) => {
+        const event = {
+            target: {
+                name,
+                type: "checkbox",
+                checked,
+            },
+            currentTarget: {
+                name,
+                type: "checkbox",
+                checked,
+            },
+        } as unknown as MMReactChangeEvent<HTMLInputElement>;
+        setFieldValue(name, checked, event)
+    }
+
+    const isDefaultChecked = (): boolean => {
+        if (defaultValue) {
+            return true
+        }
+        return false
+    }
+
     return (
         <DefaultInputFrame
             label={label}
@@ -40,26 +66,30 @@ export function DefaultCheckField(
             errorText={errorText}
             hintsText={hintsText}
             isError={isError}
-            className={className}
+            className={mergeWind("self-center", className)}
             orientation={"horizontal"}
             isChildFirst={true}
             id={id}
             {...gridItemProps}
             element={(labelId: string) => {
-                if (type === "switch"){
+                if (type === "switch") {
                     return (
                         <Switch
                             id={labelId}
                             name={name}
                             aria-invalid={isError}
+                            onCheckedChange={handleFieldChange}
+                            defaultChecked={isDefaultChecked()}
                         />
                     )
-                }else {
+                } else {
                     return (
                         <Checkbox
                             id={labelId}
                             name={name}
                             aria-invalid={isError}
+                            onCheckedChange={handleFieldChange}
+                            defaultChecked={isDefaultChecked()}
                         />
                     )
                 }
