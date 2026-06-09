@@ -1,4 +1,5 @@
 import {
+    WebDateTimeFieldProps,
     WebDefaultInputFieldPropsBase,
     WebFieldEngineProps,
     WebFieldGeneratorProps, WebFieldGroupProps, WebFileFieldProps, WebSelectFieldProps,
@@ -10,6 +11,7 @@ import {DefaultFieldGroup} from "./default-field-group";
 import PasswordField from "../internal/password-field";
 import {DefaultSelectField} from "./default-select-field";
 import {DefaultFileField} from "./default-file-field";
+import {DefaultDateTimeField} from "./default-date-time-field";
 
 
 const fieldGeneratorVariants = makeClassVariance(
@@ -63,6 +65,9 @@ function getField(spec: WebDefaultInputFieldPropsBase, index: number, engine: We
         case "file":
             const fileProps = fieldSpec as WebFileFieldProps
             return (<DefaultFileField {...fileProps} key={index} engine={engine}/>)
+        case "date":
+            const dateProps = fieldSpec as WebDateTimeFieldProps
+            return (<DefaultDateTimeField {...dateProps} key={index} engine={engine}/>)
     }
     return ""
 }
