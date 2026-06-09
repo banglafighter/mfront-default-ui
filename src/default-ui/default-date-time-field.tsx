@@ -1,11 +1,11 @@
-import {CalendarMonthYearSelection, PopoverPosition, WebDateTimeFieldProps} from "mmcore-ui";
+import {CalendarMonthYearSelection, FieldValueType, PopoverPosition, WebDateTimeFieldProps} from "mmcore-ui";
 import { format } from "date-fns"
 import {DefaultPopover} from "./default-popover";
 import {Button, UICommonUtil, useFieldHelper} from "mfront-ui";
 import {CalendarIcon} from "lucide-react";
 import {useState} from "mfront";
 import {DefaultInputFrame} from "./default-input-frame";
-import {MixType, MMReactChangeEvent} from "mmcore";
+import {MixType, MMReactChangeEvent, mmReactUseEffect} from "mmcore";
 import {DefaultCalendar} from "./default-calendar";
 import {DateRange} from "react-day-picker";
 import DateTimeFormatter from "../common/date-time-formatter";
@@ -66,6 +66,8 @@ export function DefaultDateTimeField(
                     monthYearSelection={monthYearSelection}
                     displayFormat={displayFormat}
                     handleChange={handleInputChange}
+                    defaultValue={defaultValue}
+                    valueFormat={valueFormat}
                 />
             )
         }
@@ -77,6 +79,8 @@ export function DefaultDateTimeField(
                 monthYearSelection={monthYearSelection}
                 displayFormat={displayFormat}
                 handleChange={handleInputChange}
+                defaultValue={defaultValue}
+                valueFormat={valueFormat}
             />
         )
     }
@@ -104,10 +108,18 @@ interface CalendarInput {
     monthYearSelection?: CalendarMonthYearSelection
     handleChange?: (selected: Date | DateRange | undefined) => void
     displayFormat?: string
+    valueFormat?: string
+    defaultValue?: FieldValueType
 }
 
-function CalendarSingleInput({placeholder, labelId, position, monthYearSelection, displayFormat, ...props}: CalendarInput) {
+function CalendarSingleInput({placeholder, labelId, position, monthYearSelection, displayFormat, defaultValue, handleChange, valueFormat, ...props}: CalendarInput) {
     const [date, setDate] = useState<Date>()
+    mmReactUseEffect(() => {
+        if (defaultValue && valueFormat) {
+            setDate(DateTimeFormatter.getDateFromSting(defaultValue as string, valueFormat))
+        }
+    }, [defaultValue])
+
     return (
         <DefaultPopover
             position={position}
@@ -130,6 +142,9 @@ function CalendarSingleInput({placeholder, labelId, position, monthYearSelection
                         selected={date}
                         onSelect={(selected: any) =>{
                             setDate(selected)
+                            if (handleChange) {
+                                handleChange(selected)
+                            }
                         }}
                     />
                 </div>
@@ -138,7 +153,7 @@ function CalendarSingleInput({placeholder, labelId, position, monthYearSelection
     )
 }
 
-function CalendarRangeInput({placeholder, labelId, position, monthYearSelection, ...props}: CalendarInput) {
+function CalendarRangeInput({placeholder, labelId, position, monthYearSelection, defaultValue, handleChange, ...props}: CalendarInput) {
     const [date, setDate] = useState<DateRange | undefined>()
     return (
         <DefaultPopover
@@ -174,7 +189,9 @@ function CalendarRangeInput({placeholder, labelId, position, monthYearSelection,
                         numberOfMonths={2}
                         onSelect={(selected: any) =>{
                             setDate(selected)
-                            console.log(selected)
+                            if (handleChange) {
+                                handleChange(selected)
+                            }
                         }}
                     />
                 </div>
