@@ -5,15 +5,10 @@ import {
     WebFieldEngineProps,
     WebFieldGeneratorProps, WebFieldGroupProps, WebFileFieldProps, WebSelectFieldProps,
 } from "mmcore-ui";
-import {UICommonUtil} from "mfront-ui";
+import {CheckField, DateTimeField, FieldGroup, FileField, SelectField, UICommonUtil} from "mfront-ui";
 import {MixType} from "mmcore";
 import {makeClassVariance, mergeWind} from "mfront-default-ui";
-import {DefaultFieldGroup} from "./default-field-group";
 import PasswordField from "../internal/password-field";
-import {DefaultSelectField} from "./default-select-field";
-import {DefaultFileField} from "./default-file-field";
-import {DefaultDateTimeField} from "./default-date-time-field";
-import {DefaultCheckField} from "./default-check-field";
 
 
 const fieldGeneratorVariants = makeClassVariance(
@@ -54,27 +49,27 @@ function getField(spec: WebDefaultInputFieldPropsBase, index: number, engine: We
     switch (specType) {
         case "text":
             const textProps = fieldSpec as WebFieldGroupProps
-            return (<DefaultFieldGroup {...textProps} type={textProps.type} key={index} engine={engine}/>)
+            return (<FieldGroup {...textProps} type={textProps.type} key={index} engine={engine}/>)
         case "password":
             const passwordProps = fieldSpec as WebFieldGroupProps
             return (<PasswordField {...passwordProps} key={index} engine={engine}/>)
         case "textarea":
             const textareaProps = fieldSpec as WebFieldGroupProps
-            return (<DefaultFieldGroup {...textareaProps} type={"textarea"} key={index} engine={engine}/>)
+            return (<FieldGroup {...textareaProps} type={"textarea"} key={index} engine={engine}/>)
         case "select":
             const selectProps = fieldSpec as WebSelectFieldProps
-            return (<DefaultSelectField {...selectProps} key={index} engine={engine}/>)
+            return (<SelectField {...selectProps} key={index} engine={engine}/>)
         case "file":
             const fileProps = fieldSpec as WebFileFieldProps
-            return (<DefaultFileField {...fileProps} key={index} engine={engine}/>)
+            return (<FileField {...fileProps} key={index} engine={engine}/>)
         case "date":
             const dateProps = fieldSpec as WebDateTimeFieldProps
-            return (<DefaultDateTimeField {...dateProps} key={index} engine={engine}/>)
+            return (<DateTimeField {...dateProps} key={index} engine={engine}/>)
         case "checkbox":
             const checkboxProps = fieldSpec as WebCheckFieldProps
-            return (<DefaultCheckField {...checkboxProps} key={index} engine={engine}/>)
+            return (<CheckField {...checkboxProps} key={index} engine={engine}/>)
     }
-    return ""
+    return null
 }
 
 export default function DefaultFieldGenerator ({className, engine, layout = "grid", ...props}: WebFieldGeneratorProps){
