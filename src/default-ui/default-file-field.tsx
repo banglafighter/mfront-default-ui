@@ -30,6 +30,7 @@ export function DefaultFileField(
         onChange,
         acceptFileExtensions,
         preview,
+        relativeUrl,
         ...props
     }: WebFileFieldProps) {
     const [fileValue, setFileValue] = mmReactUseState<File | File[] | null>(null)
@@ -170,7 +171,7 @@ export function DefaultFileField(
         }
 
         if (preview && previewValue) {
-            return preview(multiple, isFile, previewValue)
+            return preview(multiple, isFile, previewValue, relativeUrl)
         }
         if (!previewValue) {
             return null
