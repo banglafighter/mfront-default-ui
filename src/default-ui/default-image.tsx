@@ -1,6 +1,6 @@
 import {WebImageProps} from "mmcore-ui";
 import {makeClassVariance, mergeWind} from "../common/tailwind-utils";
-import {mmReactUseEffect, mmReactUseState} from "mmcore";
+import {mmReactUseEffect, mmReactUseMemo, mmReactUseState} from "mmcore";
 
 const imageVariations = makeClassVariance(
     "aspect-square object-cover",
@@ -83,7 +83,8 @@ function getPlaceholder(text: string, width = 400, height = 400) {
 
 
 export function DefaultImage({className, src, alt, loading = "lazy", decoding = "async", ratio, height, width, shape = "rounded", fallbackSrc, fallback, isDirectLoading, avatar, thumb, ...props}: WebImageProps) {
-    const [onLoading, setOnLoading] = mmReactUseState(true)
+    const [loadingImage, setLoadingImage] = mmReactUseState(!isDirectLoading);
+    const [hasError, setHasError] = mmReactUseState(false);
 
     const style: Record<string, any> = {}
     if (ratio) {
@@ -91,23 +92,38 @@ export function DefaultImage({className, src, alt, loading = "lazy", decoding = 
     }
 
     mmReactUseEffect(() => {
-        if (!isDirectLoading) {
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.onload = () => {
-                setOnLoading(false);
-            };
-            img.src = src;
-        }
-    }, [src]);
-
-    const getImageSource = () => {
         if (isDirectLoading) {
-            return src
+            setLoadingImage(false);
+            setHasError(false);
+            return;
         }
-        const placeholder = fallbackSrc ? fallbackSrc : getPlaceholder(fallback || "")
-        return onLoading ? placeholder : src
-    }
+
+        setLoadingImage(true);
+        setHasError(false);
+
+        const image = new Image();
+
+        image.onload = () => {
+            setLoadingImage(false);
+        };
+
+        image.onerror = () => {
+            setLoadingImage(false);
+            setHasError(true);
+        };
+
+        image.src = src;
+        return () => {
+            image.onload = null;
+            image.onerror = null;
+        };
+    }, [src, isDirectLoading]);
+
+    const placeholder = mmReactUseMemo(() => {
+        return fallbackSrc ?? getPlaceholder(fallback || "FB");
+    }, [fallbackSrc, fallback]);
+
+    const imageSrc = isDirectLoading ? src : (hasError || loadingImage ? placeholder : src);
 
     const getSizeClass = () => {
         if (!height && !width) {
@@ -120,7 +136,7 @@ export function DefaultImage({className, src, alt, loading = "lazy", decoding = 
         <span className={mergeWind(imageWrapperVariations({avatar, thumb}), className)}>
             <img
                 loading={loading}
-                src={getImageSource()}
+                src={imageSrc}
                 alt={alt}
                 decoding={decoding}
                 style={style}
@@ -130,6 +146,11 @@ export function DefaultImage({className, src, alt, loading = "lazy", decoding = 
                     imageVariations({shape}),
                     getSizeClass(),
                 )}
+                onError={() => {
+                    if (!hasError) {
+                        setHasError(true);
+                    }
+                }}
             />
         </span>
     )
