@@ -1,11 +1,16 @@
-import {WebFileFieldProps} from "mmcore-ui";
+import {FieldValueType, WebFileFieldProps} from "mmcore-ui";
 import {mergeWind} from "./../common/tailwind-utils";
 import {DefaultInputFrame} from "./default-input-frame";
-import {toast, UICommonUtil, useFieldHelper} from "mfront-ui";
+import {
+    setInputElementVirtualRef,
+    toast,
+    UICommonUtil,
+    useFieldHelper
+} from "mfront-ui";
 import {MixType, MMReactChangeEvent, mmReactUseState, UINode} from "mmcore";
 import Dropzone, {DropzoneState, FileRejection} from "react-dropzone";
 import {CloudUpload} from "lucide-react";
-import {_t} from "mfront";
+import {_t, useState} from "mfront";
 
 
 export function DefaultFileField(
@@ -35,8 +40,13 @@ export function DefaultFileField(
     }: WebFileFieldProps) {
     const [fileValue, setFileValue] = mmReactUseState<File | File[] | null>(null)
     const [internalError, setInternalError] = mmReactUseState<string | null>(null)
-    const {handleChange} = useFieldHelper<HTMLInputElement>({name, defaultValue, engine, onChange})
+    const {fieldRef, handleChange} = useFieldHelper<HTMLInputElement>({name, defaultValue, engine, onChange})
     const {gridItemProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
+    const [inputValue, setInputValue] = useState<FieldValueType>()
+
+    setInputElementVirtualRef(fieldRef, {
+        setValue: (value: string) => (setInputValue(value))
+    })
 
     let _centerContent: UINode = centerContent
     if (!_centerContent) {
@@ -159,7 +169,7 @@ export function DefaultFileField(
     }
 
     const getPrview = () => {
-        let previewValue: any = defaultValue
+        let previewValue: any = inputValue
         let isFile: boolean = false
         if (fileValue) {
             isFile = true

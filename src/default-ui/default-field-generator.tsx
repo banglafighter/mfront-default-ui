@@ -40,7 +40,7 @@ const fieldGeneratorVariants = makeClassVariance(
     }
 )
 
-function getField(spec: WebDefaultInputFieldPropsBase, index: number, engine: WebFieldEngineProps) {
+function getField(spec: WebDefaultInputFieldPropsBase, index: number, engine: WebFieldEngineProps, extraConfig: Record<string, any> = {}) {
     const {specType, ...fieldSpec} = spec;
     if (spec.isHidden) {
         return ""
@@ -61,6 +61,9 @@ function getField(spec: WebDefaultInputFieldPropsBase, index: number, engine: We
             return (<SelectField {...selectProps} key={index} engine={engine}/>)
         case "file":
             const fileProps = fieldSpec as WebFileFieldProps
+            if (extraConfig && extraConfig.relativeUrl) {
+                fileProps.relativeUrl = extraConfig.relativeUrl
+            }
             return (<FileField {...fileProps} key={index} engine={engine}/>)
         case "date":
             const dateProps = fieldSpec as WebDateTimeFieldProps
@@ -72,13 +75,13 @@ function getField(spec: WebDefaultInputFieldPropsBase, index: number, engine: We
     return null
 }
 
-export default function DefaultFieldGenerator ({className, engine, layout = "grid", ...props}: WebFieldGeneratorProps){
+export default function DefaultFieldGenerator ({className, engine, layout = "grid", extraConfig, ...props}: WebFieldGeneratorProps){
     const {gridProps, otherProps} = UICommonUtil.extractGridProps(props as Record<string, MixType>)
 
     return (
         <div {...otherProps} className={mergeWind(fieldGeneratorVariants({layout, ...gridProps}), className)} key={`fg-${engine.version}`}>
             {engine.fieldSpecList().map((spec: WebDefaultInputFieldPropsBase, index: number)=> {
-                return getField(spec, index, engine)
+                return getField(spec, index, engine, extraConfig)
             })}
         </div>
     )
