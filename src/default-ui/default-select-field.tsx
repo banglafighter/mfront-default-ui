@@ -1,4 +1,4 @@
-import {WebSelectFieldProps} from "mmcore-ui";
+import {FieldValueType, WebSelectFieldProps} from "mmcore-ui";
 import {MixType, MMReactChangeEvent, mmReactUseCallback, mmReactUseMemo, mmReactUseState} from "mmcore";
 import { Combobox as BasicUICombobox } from "@base-ui/react"
 import {
@@ -11,9 +11,9 @@ import {mergeWind} from "mfront-default-ui";
 import {DefaultButton} from "./default-button";
 import {CheckIcon, ChevronDownIcon, XIcon} from "lucide-react";
 import styles from "./assets/css/default-select-field.module.css"
-import {UICommonUtil, useFieldHelper} from "mfront-ui";
+import {setSelectElementElementVirtualRef, UICommonUtil, useFieldHelper} from "mfront-ui";
 import {DefaultInputFrame} from "./default-input-frame";
-import {_t} from "mfront";
+import {_t, useState} from "mfront";
 
 
 export function DefaultSelectField({options, labelKey, valueKey, multiple, customOption, defaultValue, createNewItem, loadNewItem, placeholder, emptyOptionContent = "List is empty", name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, engine, showClear = true, ...props}: WebSelectFieldProps) {
@@ -25,6 +25,11 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
 
     const {fieldRef, handleChange} = useFieldHelper<HTMLSelectElement>({name, defaultValue, engine, onChange})
     const {gridItemProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
+    const [inputValue, setInputValue] = useState<FieldValueType>()
+
+    setSelectElementElementVirtualRef(fieldRef, {
+        setValue: (value: string) => (setInputValue(value))
+    })
 
 
     const mergedItems = mmReactUseMemo(() => {
@@ -56,7 +61,7 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
         )
     }
     const onValueChange = mmReactUseCallback((selectedValue: any) => {
-        let processedValue: any = null
+        let processedValue: any = ""
         if (Array.isArray(selectedValue)) {
             setValue(selectedValue);
             processedValue = []
@@ -69,7 +74,9 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
                 value.push(selectedValue)
             }
             setValue(value);
-            processedValue = selectedValue[valueKey]
+            if (selectedValue !== null && selectedValue !== undefined) {
+                processedValue = selectedValue[valueKey]
+            }
         }
         const event = {
             target: {
@@ -168,15 +175,15 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
             className={className}
             id={id}
             {...gridItemProps}
+            key={`${inputValue}`}
             element={(labelId: string) => (
                 <ComboboxPrimitive
-                    ref={fieldRef}
                     items={mergedItems}
                     onValueChange={onValueChange}
                     onInputValueChange={onInputValueChange}
                     {...conditionalProps}
                     multiple={multiple}
-                    defaultValue={defaultValue}
+                    defaultValue={inputValue}
                     onOpenChangeComplete={(open: boolean) => {
                         setShowEmptyOption(true)
                     }}

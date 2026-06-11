@@ -1,6 +1,6 @@
-import {WebCheckFieldProps} from "mmcore-ui";
+import {FieldValueType, WebCheckFieldProps} from "mmcore-ui";
 import {DefaultInputFrame} from "./default-input-frame";
-import {UICommonUtil, useFieldHelper} from "mfront-ui";
+import {setInputElementVirtualRef, UICommonUtil, useFieldHelper} from "mfront-ui";
 import {MixType, MMReactChangeEvent, UIComponentProps} from "mmcore";
 import {
     Checkbox as CheckboxPrimitive,
@@ -12,6 +12,7 @@ import {
 } from "@radix-ui/react-switch";
 import {mergeWind} from "./../common/tailwind-utils";
 import {CheckIcon} from "lucide-react";
+import {useState} from "mfront";
 
 
 export function DefaultCheckField(
@@ -32,8 +33,13 @@ export function DefaultCheckField(
         defaultValue,
         ...props
     }: WebCheckFieldProps) {
-    const {setFieldValue} = useFieldHelper<HTMLInputElement>({name, defaultValue, engine, onChange})
+    const {fieldRef, setFieldValue} = useFieldHelper<HTMLInputElement>({name, defaultValue, engine, onChange})
     const {gridItemProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
+    const [inputValue, setInputValue] = useState<FieldValueType>()
+
+    setInputElementVirtualRef(fieldRef, {
+        setValue: (value: string) => (setInputValue(value))
+    })
 
     const handleFieldChange = (checked: boolean) => {
         const event = {
@@ -52,10 +58,7 @@ export function DefaultCheckField(
     }
 
     const isDefaultChecked = (): boolean => {
-        if (defaultValue) {
-            return true
-        }
-        return false
+        return inputValue !== undefined && inputValue === "true";
     }
 
     return (
@@ -75,6 +78,7 @@ export function DefaultCheckField(
                 if (type === "switch") {
                     return (
                         <Switch
+                            key={`${isDefaultChecked()}`}
                             id={labelId}
                             name={name}
                             aria-invalid={isError}
@@ -85,6 +89,7 @@ export function DefaultCheckField(
                 } else {
                     return (
                         <Checkbox
+                            key={`${isDefaultChecked()}`}
                             id={labelId}
                             name={name}
                             aria-invalid={isError}

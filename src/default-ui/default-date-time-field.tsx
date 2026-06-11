@@ -1,11 +1,11 @@
 import {CalendarMonthYearSelection, FieldValueType, PopoverPosition, WebDateTimeFieldProps} from "mmcore-ui";
 import { format } from "date-fns"
 import {DefaultPopover} from "./default-popover";
-import {Button, UICommonUtil, useFieldHelper} from "mfront-ui";
+import {Button, setInputElementVirtualRef, UICommonUtil, useFieldHelper} from "mfront-ui";
 import {CalendarIcon} from "lucide-react";
 import {useState} from "mfront";
 import {DefaultInputFrame} from "./default-input-frame";
-import {MixType, MMReactChangeEvent, mmReactUseEffect} from "mmcore";
+import {MixType, MMReactChangeEvent, mmReactUseEffect, mmReactUseRef} from "mmcore";
 import {DefaultCalendar} from "./default-calendar";
 import {DateRange} from "react-day-picker";
 import DateTimeFormatter from "../common/date-time-formatter";
@@ -33,8 +33,13 @@ export function DefaultDateTimeField(
         dateInputType = "single",
         ...props
     }: WebDateTimeFieldProps) {
-    const {handleChange} = useFieldHelper<HTMLInputElement>({name, defaultValue, engine, onChange})
+    const {fieldRef, handleChange} = useFieldHelper<HTMLInputElement>({name, defaultValue, engine, onChange})
     const {gridItemProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
+    const [inputValue, setInputValue] = useState<FieldValueType>()
+
+    setInputElementVirtualRef(fieldRef, {
+        setValue: (value: string) => (setInputValue(value))
+    })
 
     const handleInputChange = (selected: Date | DateRange | undefined) => {
         let value: any = null
@@ -66,7 +71,7 @@ export function DefaultDateTimeField(
                     monthYearSelection={monthYearSelection}
                     displayFormat={displayFormat}
                     handleChange={handleInputChange}
-                    defaultValue={defaultValue}
+                    defaultValue={inputValue}
                     valueFormat={valueFormat}
                 />
             )
@@ -79,7 +84,7 @@ export function DefaultDateTimeField(
                 monthYearSelection={monthYearSelection}
                 displayFormat={displayFormat}
                 handleChange={handleInputChange}
-                defaultValue={defaultValue}
+                defaultValue={inputValue}
                 valueFormat={valueFormat}
             />
         )
