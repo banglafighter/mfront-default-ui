@@ -11,7 +11,7 @@ export function DefaultCard({className, ...props}: WebCardProps) {
     return (
         <div
             className={mergeWind(
-                "flex flex-col gap-1 rounded-xl border bg-card py-6 text-card-foreground shadow-sm",
+                "flex flex-col gap-1 rounded-sm border bg-card py-6 text-card-foreground shadow-sm",
                 className)}
             {...props}
         />

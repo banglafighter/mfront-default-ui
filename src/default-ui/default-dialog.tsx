@@ -16,13 +16,16 @@ import {
     Title as DialogTitlePrimitive,
     Description as DialogDescriptionPrimitive,
 } from "@radix-ui/react-dialog"
+import {
+    VisuallyHidden
+} from "@radix-ui/react-visually-hidden"
 import {makeClassVariance, mergeWind} from "./../common/tailwind-utils";
 import {MixType, mmReactUseCallback, UIComponentProps, UINode} from "mmcore";
 import {XIcon} from "lucide-react";
 import {DefaultButton} from "./default-button";
 
 
-export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", slideFrom = "right", className, modal, title, subTitle, header, footer, footerActionButtons, body, engine, showCloseButton, disableBlockClose, ...props}: WebDialogGeneratorProps) {
+export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", slideFrom = "right", className, modal, title, subTitle, header, footer, footerActionButtons, body, engine, showCloseButton, disableBlockClose, dialogBodyClassName, ...props}: WebDialogGeneratorProps) {
 
     const getHeader = mmReactUseCallback(() => {
         let isEmpty: boolean = true
@@ -53,7 +56,12 @@ export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", s
                 </DefaultDialogHeader>
             )
         }
-        return null
+        return (
+            <VisuallyHidden>
+                <DialogTitlePrimitive></DialogTitlePrimitive>
+                <DialogDescriptionPrimitive></DialogDescriptionPrimitive>
+            </VisuallyHidden>
+        )
     }, [])
 
 
@@ -119,7 +127,7 @@ export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", s
 
     return (
         <DefaultDialog open={engine.isOpen} onOpenChange={engine.close} modal={modal}>
-            <DefaultDialogBody {...getBodyProps()}>
+            <DefaultDialogBody {...getBodyProps()} className={dialogBodyClassName}>
                 {getHeader()}
                 <div className={mergeWind("overflow-y-auto", className)} {...props}>
                     {getBodyContent()}
@@ -212,8 +220,8 @@ const dialogBodyVariations = makeClassVariance(
     {
         variants: {
             type: {
-                dialog: "fixed top-[50%] left-[50%] z-50 flex flex-col w-full max-w-[calc(100%-1rem)] max-h-[calc(100%-1rem)] translate-x-[-50%] translate-y-[-50%] gap-2 rounded-lg border bg-background p-5 shadow-lg duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
-                alert: "fixed top-[50%] left-[50%] z-50 flex flex-col w-full max-w-[calc(100%-1rem)] max-h-[calc(100%-1rem)] translate-x-[-50%] translate-y-[-50%] gap-2 rounded-lg border bg-background p-5 shadow-lg duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
+                dialog: "fixed top-[50%] left-[50%] z-50 flex flex-col w-full max-w-[calc(100%-1rem)] max-h-[calc(100%-1rem)] translate-x-[-50%] translate-y-[-50%] gap-2 rounded-sm border bg-background p-5 shadow-lg duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
+                alert: "fixed top-[50%] left-[50%] z-50 flex flex-col w-full max-w-[calc(100%-1rem)] max-h-[calc(100%-1rem)] translate-x-[-50%] translate-y-[-50%] gap-2 rounded-sm border bg-background p-5 shadow-lg duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
                 drawer: "fixed z-50 bg-background p-5 gap-2 flex flex-col  shadow-lg transition ease-in-out data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:animate-in data-[state=open]:duration-500",
             },
             slideFrom: {
