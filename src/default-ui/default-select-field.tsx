@@ -137,7 +137,7 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
                     isMulti={multiple}
                     isClearable={showClear}
                     isLoading={isLoading}
-                    placeholder={placeholder}
+                    placeholder={placeholder ? placeholder : _t("Select an option")}
 
                     options={selectOptions}
                     onChange={onValueChange}
