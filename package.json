@@ -15,8 +15,6 @@
     "release": "pnpm run build && pnpm run version:release && pnpm run publish:release"
   },
   "dependencies": {
-    "@base-ui/react": "^1.4.1",
-    "@base-ui/utils": "^0.2.8",
     "@date-fns/tz": "^1.4.1",
     "@floating-ui/core": "^1.7.5",
     "@floating-ui/dom": "^1.7.6",
