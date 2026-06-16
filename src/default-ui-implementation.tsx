@@ -53,9 +53,11 @@ import {DefaultPopover} from "./default-ui/default-popover";
 import {DefaultCalendar} from "./default-ui/default-calendar";
 import {DefaultBadge} from "./default-ui/default-badge";
 import {DefaultDateTimeField} from "./default-ui/default-date-time-field";
+import {DefaultAccordion} from "./default-ui/default-accordion";
 
 
 export const DefaultUIComponent: UIComponentSpec = {
+    Accordion: DefaultAccordion,
     ToastBox: DefaultToastBox,
     Button: DefaultButton,
     Separator: DefaultSeparator,
