@@ -1,6 +1,5 @@
 import {FieldValueType, WebSelectFieldProps} from "mmcore-ui";
 import {MixType, MMReactChangeEvent, mmReactUseCallback, mmReactUseMemo, mmReactUseRef, mmReactUseState} from "mmcore";
-import styles from "./assets/css/default-select-field.module.css"
 import {Loader, setSelectElementElementVirtualRef, UICommonUtil, useFieldHelper} from "mfront-ui";
 import {DefaultInputFrame} from "./default-input-frame";
 import {_t} from "mfront";
@@ -149,8 +148,8 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
                     unstyled={true}
                     classNames={{
                         control: ({isFocused}) => mergeWind(
-                            "flex min-h-8 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-within:outline-none focus-within:ring-1 focus-within:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
-                            isFocused && "ring-1 ring-ring border-ring",
+                            "flex min-h-8 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
+                            isFocused && "border-muted-foreground/40 shadow-sm outline-none ring-0",
                             isError && "border-danger focus-within:ring-danger border-danger"
                         ),
                         valueContainer: () => "flex flex-wrap gap-1 items-center gap-1.5",
