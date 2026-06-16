@@ -19,12 +19,12 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
 
     setSelectElementElementVirtualRef(fieldRef, {
         setValue: (value: FieldValueType) => {
-            setSelectExistingValue()
+            setSelectExistingValue(value)
         }
     })
 
-    const setSelectExistingValue = mmReactUseCallback(() => {
-        const inputValue = engine?.getFieldValue(name)
+    const setSelectExistingValue = mmReactUseCallback((value: FieldValueType) => {
+        const inputValue = engine ? engine.getFieldValue(name) : value
         if (!inputValue) {
             return multiple ? [] : undefined;
         }
