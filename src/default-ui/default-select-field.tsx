@@ -1,18 +1,17 @@
 import {FieldValueType, WebSelectFieldProps} from "mmcore-ui";
 import {MixType, MMReactChangeEvent, mmReactUseCallback, mmReactUseMemo, mmReactUseRef, mmReactUseState} from "mmcore";
 import styles from "./assets/css/default-select-field.module.css"
-import {setSelectElementElementVirtualRef, UICommonUtil, useFieldHelper} from "mfront-ui";
+import {Loader, setSelectElementElementVirtualRef, UICommonUtil, useFieldHelper} from "mfront-ui";
 import {DefaultInputFrame} from "./default-input-frame";
-import {_t, useState} from "mfront";
+import {_t} from "mfront";
 import Select, { MultiValue, SingleValue, components } from "react-select";
 import {mergeWind} from "mfront-default-ui";
-import {ChevronDownIcon, XIcon} from "lucide-react";
+import {ChevronDownIcon, Loader as LoaderIcon, XIcon} from "lucide-react";
 
 
-export function DefaultSelectField({options, labelKey, valueKey, multiple, customOption, defaultValue, createNewItem, loadNewItem, placeholder, emptyOptionContent = "List is empty", name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, engine, showClear = true, ...props}: WebSelectFieldProps) {
+export function DefaultSelectField({options, labelKey, valueKey, multiple, customOption, defaultValue, createNewItem, loadNewItem, placeholder, emptyOptionContent = "No options", name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, engine, showClear = true, ...props}: WebSelectFieldProps) {
     const reactSelectRef = mmReactUseRef<any>(null);
     const [dynamicOptions, setDynamicOptions] = mmReactUseState<Record<string, MixType>[]>([])
-    const [showEmptyOption, setShowEmptyOption] = mmReactUseState<boolean>(true)
     const [isLoading, setLoading] = mmReactUseState<boolean>(false)
     const [searchText, setSearchText] = mmReactUseState('')
 
@@ -81,6 +80,45 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
         handleChange(event);
     }, [name, multiple, handleChange])
 
+    const onInputChange = mmReactUseCallback((inputValue: string) => {
+        const trimmed = inputValue.trim();
+        setSearchText(trimmed);
+
+        if (loadNewItem && !isLoading && trimmed !== '') {
+            let refinedSearchText = trimmed.toLowerCase();
+            let willCall: boolean = !selectOptions.some((item: any) => (String(item?.[labelKey]).toLowerCase().includes(refinedSearchText)));
+            if (!willCall) {
+                return
+            }
+            loadNewItem((isLoading: boolean) => {
+                setLoading(isLoading);
+            }, (newOptions: Array<any>) => {
+                setDynamicOptions(prev => [
+                    ...prev,
+                    ...newOptions
+                ]);
+                setLoading(false)
+            })
+        }
+
+    }, [isLoading, loadNewItem])
+
+    const getNoOptionsContent = mmReactUseCallback(() => {
+        if (createNewItem) {
+            return (
+                <div className={"w-full cursor-pointer"} onClick={() => {
+                    createNewItem(searchText, (newOptions: Array<any>) => {
+                        setDynamicOptions(prev => [
+                            ...prev,
+                            ...newOptions
+                        ]);
+                    })
+                }}>{emptyOptionContent}</div>
+            )
+        }
+        return emptyOptionContent;
+    }, [])
+
     return (
         <DefaultInputFrame
             label={label}
@@ -103,16 +141,17 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
 
                     options={selectOptions}
                     onChange={onValueChange}
+                    onInputChange={onInputChange}
 
-                    noOptionsMessage={() => isLoading ? _t("Searching...") : emptyOptionContent}
+                    noOptionsMessage={getNoOptionsContent}
 
-                    components={{ DropdownIndicator, ClearIndicator, MultiValueRemove }}
+                    components={{ DropdownIndicator, ClearIndicator, MultiValueRemove, LoadingMessage }}
                     unstyled={true}
                     classNames={{
                         control: ({isFocused}) => mergeWind(
                             "flex min-h-8 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-within:outline-none focus-within:ring-1 focus-within:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
                             isFocused && "ring-1 ring-ring border-ring",
-                            isError && "border-destructive focus-within:ring-destructive border-danger"
+                            isError && "border-danger focus-within:ring-danger border-danger"
                         ),
                         valueContainer: () => "flex flex-wrap gap-1 items-center gap-1.5",
                         placeholder: () => "text-muted-foreground text-sm",
@@ -129,8 +168,8 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
                             isFocused && "bg-accent text-accent-foreground cursor-pointer",
                             isSelected && "bg-accent text-accent-foreground font-medium"
                         ),
-                        noOptionsMessage: () => "text-sm text-muted-foreground text-center py-6",
-                        loadingMessage: () => "text-sm text-muted-foreground text-center py-6"
+                        noOptionsMessage: () => "text-sm text-muted-foreground text-center py-2",
+                        loadingMessage: () => "text-sm text-muted-foreground text-center py-2"
                     }}
                     styles={{
                         control: (base) => ({
@@ -165,5 +204,16 @@ const MultiValueRemove = (props: any) => (
         <XIcon className="h-3 w-3 text-muted-foreground hover:text-foreground" />
     </components.MultiValueRemove>
 );
+
+const LoadingMessage = (props: any) => {
+    return (
+        <components.LoadingMessage {...props}>
+            <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
+                <Loader size={"sm"} speed={1} icon={LoaderIcon}/>
+                <span>{_t("Loading...")}</span>
+            </div>
+        </components.LoadingMessage>
+    );
+};
 
 
