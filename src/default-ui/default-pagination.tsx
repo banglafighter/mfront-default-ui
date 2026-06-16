@@ -114,12 +114,13 @@ export function DefaultPagination({className, currentPage, totalPage, itemPerPag
     return (
         <div className={mergeWind("flex gap-2", className)} {...props}>
             <DefaultSelectField
-                options={itemPerPageOptions ? itemPerPageOptions : itemPerPageDefaultOptions}
                 defaultValue={itemPerPageOptionValue}
+                options={itemPerPageOptions ? itemPerPageOptions : itemPerPageDefaultOptions}
                 labelKey={"label"}
                 valueKey={"value"}
-                name={"country"}
-                className={"w-15"}
+                name={"itemPerPage"}
+                className={"w-18"}
+                placeholder={" "}
                 showClear={false}
                 onChange={(event: any) => {
                     if (onChangeItemPerPage) {

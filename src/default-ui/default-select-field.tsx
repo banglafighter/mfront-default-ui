@@ -39,7 +39,7 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
             reactSelectRef.current.setValue(processedValue)
         }
 
-    }, [multiple]);
+    }, [multiple, defaultValue]);
 
     const selectOptions = mmReactUseMemo(() => {
         const uniqueMap = new Map();
