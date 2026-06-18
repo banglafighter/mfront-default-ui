@@ -10,11 +10,11 @@ import {mergeWind} from "mfront-default-ui";
 import {UINode} from "mmcore";
 
 
-export function DefaultTable({className, containerContent = null, ...props}: WebTableProps & { containerContent?: UINode | null}) {
+export function DefaultTable({className, wrapperClassName, containerContent = null, ...props}: WebTableProps & { containerContent?: UINode | null}) {
     return (
         <div
             data-tag="table-container"
-            className="relative w-full overflow-x-auto"
+            className={wrapperClassName ? wrapperClassName : "relative w-full overflow-x-auto"}
         >
             <table
                 data-tag="table"

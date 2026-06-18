@@ -40,7 +40,7 @@ const fieldGeneratorVariants = makeClassVariance(
     }
 )
 
-function getField(spec: WebDefaultInputFieldPropsBase, index: number, engine: WebFieldEngineProps, extraConfig: Record<string, any> = {}) {
+export function getFieldFromSpec(spec: WebDefaultInputFieldPropsBase, index: number, engine: WebFieldEngineProps, extraConfig: Record<string, any> = {}) {
     const {specType, ...fieldSpec} = spec;
     if (spec.isHidden) {
         return ""
@@ -81,7 +81,7 @@ export default function DefaultFieldGenerator ({className, engine, layout = "gri
     return (
         <div {...otherProps} className={mergeWind(fieldGeneratorVariants({layout, ...gridProps}), className)} key={`fg-${engine.version}`}>
             {engine.fieldSpecList().map((spec: WebDefaultInputFieldPropsBase, index: number)=> {
-                return getField(spec, index, engine, extraConfig)
+                return getFieldFromSpec(spec, index, engine, extraConfig)
             })}
         </div>
     )
