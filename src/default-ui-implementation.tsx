@@ -54,6 +54,13 @@ import {DefaultCalendar} from "./default-ui/default-calendar";
 import {DefaultBadge} from "./default-ui/default-badge";
 import {DefaultDateTimeField} from "./default-ui/default-date-time-field";
 import {DefaultAccordion} from "./default-ui/default-accordion";
+import {
+    DefaultItem,
+    DefaultItemAction,
+    DefaultItemBody, DefaultItemMedia,
+    DefaultItemSubTitle,
+    DefaultItemTitle
+} from "./default-ui/default-item";
 
 
 export const DefaultUIComponent: UIComponentSpec = {
@@ -72,6 +79,13 @@ export const DefaultUIComponent: UIComponentSpec = {
     CardTitle: DefaultCardTitle,
     CardSubTitle: DefaultCardSubTitle,
     CardAction: DefaultCardAction,
+
+    Item: DefaultItem,
+    ItemBody: DefaultItemBody,
+    ItemTitle: DefaultItemTitle,
+    ItemSubTitle: DefaultItemSubTitle,
+    ItemAction: DefaultItemAction,
+    ItemMedia: DefaultItemMedia,
 
     Grid: DefaultGrid,
     GridItem: DefaultGridItem,
