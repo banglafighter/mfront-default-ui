@@ -51,7 +51,7 @@ export function DefaultItemTitle({className, ...props}: WebItemTitleProps) {
 
 export function DefaultItemSubTitle({className, ...props}: WebItemSubTitleProps) {
     return (
-        <p
+        <div
             data-tag="item-subtitle"
             className={mergeWind(
                 "line-clamp-2 text-sm leading-normal font-normal text-balance text-muted-foreground",
