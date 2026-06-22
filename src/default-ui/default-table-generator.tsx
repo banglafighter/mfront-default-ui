@@ -4,11 +4,11 @@ import {mmReactUseCallback, mmReactUseRef, mmReactUseState, UINode} from "mmcore
 import {mergeWind} from "mfront-default-ui";
 import {ArrowDownNarrowWide, ArrowDownUp, ArrowUpWideNarrow} from "lucide-react";
 
-function SortableTH({sortable, headerContent, columnName, sortIcon, sortAscIcon, sortDescIcon, onClickSort, columnClassName, currentlySortingColumn}: WebTableGeneratorColumnProps & WebTableGeneratorProps & {currentlySortingColumn: string}) {
+function SortableTH({sortable, label, name, sortIcon, sortAscIcon, sortDescIcon, onClickSort, columnClassName, currentlySortingColumn}: WebTableGeneratorColumnProps & WebTableGeneratorProps & {currentlySortingColumn: string}) {
     const [sortDirection, setSortDirection] = mmReactUseState<string>("")
 
     if (!sortable) {
-        return (<DefaultTH className={columnClassName}>{headerContent}</DefaultTH>)
+        return (<DefaultTH className={columnClassName}>{label}</DefaultTH>)
     }
 
     const handleOnClickSort = mmReactUseCallback(() => {
@@ -21,13 +21,13 @@ function SortableTH({sortable, headerContent, columnName, sortIcon, sortAscIcon,
 
         setSortDirection(_sortDirection)
         if (onClickSort) {
-            onClickSort(_sortDirection as SortDirection, columnName)
+            onClickSort(_sortDirection as SortDirection, name)
         }
 
     }, [sortDirection, currentlySortingColumn, onClickSort])
 
     const getSortIcon = mmReactUseCallback(() => {
-        if (currentlySortingColumn !== columnName) {
+        if (currentlySortingColumn !== name) {
             return sortIcon
         }
 
@@ -44,7 +44,7 @@ function SortableTH({sortable, headerContent, columnName, sortIcon, sortAscIcon,
         <DefaultTH className={mergeWind("cursor-pointer", columnClassName)} onClick={handleOnClickSort}>
             <div className="flex items-center gap-1">
                 <span>{getSortIcon()}</span>
-                {headerContent}
+                {label}
             </div>
         </DefaultTH>
     )
@@ -109,12 +109,12 @@ export function DefaultTableGenerator(
                                 }
 
                                 let value: UINode = ""
-                                if (row[column.columnName] !== undefined){
-                                    value = row[column.columnName]
+                                if (row[column.name] !== undefined){
+                                    value = row[column.name]
                                 }
 
                                 if (column.customize) {
-                                    value = column.customize(row, dataList, column.columnName, column.headerContent)
+                                    value = column.customize(row, dataList, column.name, column.label)
                                 }
                                 return (
                                     <DefaultTD key={index} className={column.columnClassName}>
@@ -146,9 +146,9 @@ export function DefaultTableGenerator(
                                     sortIcon={_sortIcon}
                                     sortAscIcon={_sortAscIcon}
                                     sortDescIcon={_sortDescIcon}
-                                    headerContent={column.headerContent}
+                                    label={column.label}
                                     sortable={column.sortable}
-                                    columnName={column.columnName}
+                                    name={column.name}
                                     engine={engine}
                                     onClickSort={(sortDirection: SortDirection, columnName: string) => {
                                         currentlySortingColumn.current = columnName
