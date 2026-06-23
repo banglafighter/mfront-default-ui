@@ -58,7 +58,7 @@ export function DefaultCheckField(
     }
 
     const isDefaultChecked = (): boolean => {
-        return inputValue !== undefined && inputValue === "true";
+        return inputValue !== undefined && (inputValue === "true" || inputValue === true);
     }
 
     return (
