@@ -41,9 +41,9 @@ const fieldGeneratorVariants = makeClassVariance(
 )
 
 export function getFieldFromSpec(spec: WebDefaultInputFieldPropsBase, index: number, engine: WebFieldEngineProps, extraConfig: Record<string, any> = {}) {
-    const {specType, ...fieldSpec} = spec;
-    if (spec.isHidden) {
-        return ""
+    const {specType, isHidden, ...fieldSpec} = spec;
+    if (isHidden) {
+        return null
     }
 
     switch (specType) {
