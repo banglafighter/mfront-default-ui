@@ -13,6 +13,7 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
     const [dynamicOptions, setDynamicOptions] = mmReactUseState<Record<string, MixType>[]>([])
     const [isLoading, setLoading] = mmReactUseState<boolean>(false)
     const [searchText, setSearchText] = mmReactUseState('')
+    const isInternalUpdateHappen = mmReactUseRef<boolean>(false);
 
     const {fieldRef, handleChange} = useFieldHelper<HTMLSelectElement>({name, defaultValue, engine, onChange})
     const {gridItemProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
@@ -24,6 +25,7 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
     })
 
     const setSelectExistingValue = mmReactUseCallback((value: FieldValueType) => {
+        isInternalUpdateHappen.current = true;
         const inputValue = engine ? engine.getFieldValue(name) : value
         if (!inputValue) {
             return multiple ? [] : undefined;
@@ -39,7 +41,7 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
             reactSelectRef.current.setValue(processedValue)
         }
 
-    }, [multiple, defaultValue]);
+    }, [multiple, defaultValue, name, engine]);
 
     const selectOptions = mmReactUseMemo(() => {
         const uniqueMap = new Map();
@@ -58,6 +60,11 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
     }, [dynamicOptions, options, valueKey, labelKey, customOption]);
 
     const onValueChange = mmReactUseCallback((newValue: SingleValue<any> | MultiValue<any>) => {
+        if (isInternalUpdateHappen.current) {
+            isInternalUpdateHappen.current = false
+            return
+        }
+
         let processedValue: any = "";
         let rawSelection: any = null;
 
@@ -188,21 +195,21 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
 
 const DropdownIndicator = (props: any) => (
     <components.DropdownIndicator {...props}>
-        <ChevronDownIcon className="h-4 w-4 opacity-50" />
+        <ChevronDownIcon className="h-4 w-4 opacity-50"/>
     </components.DropdownIndicator>
-);
+)
 
 const ClearIndicator = (props: any) => (
     <components.ClearIndicator {...props}>
-        <XIcon className="h-3 w-3 opacity-50 hover:opacity-100 transition-opacity" />
+        <XIcon className="h-3 w-3 opacity-50 hover:opacity-100 transition-opacity"/>
     </components.ClearIndicator>
-);
+)
 
 const MultiValueRemove = (props: any) => (
     <components.MultiValueRemove {...props}>
-        <XIcon className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+        <XIcon className="h-3 w-3 text-muted-foreground hover:text-foreground"/>
     </components.MultiValueRemove>
-);
+)
 
 const LoadingMessage = (props: any) => {
     return (
@@ -212,7 +219,7 @@ const LoadingMessage = (props: any) => {
                 <span>{_t("Loading...")}</span>
             </div>
         </components.LoadingMessage>
-    );
-};
+    )
+}
 
 
