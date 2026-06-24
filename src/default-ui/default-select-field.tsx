@@ -1,5 +1,8 @@
 import {FieldValueType, WebSelectFieldProps} from "mmcore-ui";
-import {MixType, MMReactChangeEvent, mmReactUseCallback, mmReactUseMemo, mmReactUseRef, mmReactUseState} from "mmcore";
+import {
+    MixType, MMReactChangeEvent, mmReactUseCallback,
+    mmReactUseEffect, mmReactUseMemo, mmReactUseRef, mmReactUseState
+} from "mmcore";
 import {Loader, setSelectElementElementVirtualRef, UICommonUtil, useFieldHelper} from "mfront-ui";
 import {DefaultInputFrame} from "./default-input-frame";
 import {_t} from "mfront";
@@ -8,21 +11,34 @@ import {mergeWind} from "mfront-default-ui";
 import {ChevronDownIcon, Loader as LoaderIcon, XIcon} from "lucide-react";
 
 
-export function DefaultSelectField({options, labelKey, valueKey, multiple, customOption, defaultValue, createNewItem, loadNewItem, placeholder, emptyOptionContent = "No options", name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, engine, showClear = true, ...props}: WebSelectFieldProps) {
+export function DefaultSelectField({options, labelKey, valueKey, multiple, customOption, defaultValue, createNewItem, loadNewItem, placeholder, emptyOptionContent = "No options", name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, engine, showClear = true, isTagMode = false, ...props}: WebSelectFieldProps) {
     const reactSelectRef = mmReactUseRef<any>(null);
-    const [dynamicOptions, setDynamicOptions] = mmReactUseState<Record<string, MixType>[]>([])
+    const [dynamicOptions, setDynamicOptions] = mmReactUseState<Record<string, MixType>[]>(() => {
+        if (engine) {
+            return engine.getSelectOptionCache(name)
+        }
+        return []
+    })
     const [isLoading, setLoading] = mmReactUseState<boolean>(false)
-    const [searchText, setSearchText] = mmReactUseState('')
+    const [searchText, setSearchText] = mmReactUseState<any>('')
     const isInternalUpdateHappen = mmReactUseRef<boolean>(false);
 
     const {fieldRef, handleChange} = useFieldHelper<HTMLSelectElement>({name, defaultValue, engine, onChange})
     const {gridItemProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
+
+
+    mmReactUseEffect(() => {
+        if (engine) {
+            engine.setSelectOptionCache(name, dynamicOptions)
+        }
+    }, [dynamicOptions]);
 
     setSelectElementElementVirtualRef(fieldRef, {
         setValue: (value: FieldValueType) => {
             setSelectExistingValue(value)
         }
     })
+
 
     const setSelectExistingValue = mmReactUseCallback((value: FieldValueType) => {
         isInternalUpdateHappen.current = true;
@@ -41,7 +57,7 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
             reactSelectRef.current.setValue(processedValue)
         }
 
-    }, [multiple, defaultValue, name, engine]);
+    }, [multiple, defaultValue, name, engine])
 
     const selectOptions = mmReactUseMemo(() => {
         const uniqueMap = new Map();
@@ -57,7 +73,7 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
             }
         });
         return Array.from(uniqueMap.values());
-    }, [dynamicOptions, options, valueKey, labelKey, customOption]);
+    }, [dynamicOptions, options, valueKey, labelKey, customOption])
 
     const onValueChange = mmReactUseCallback((newValue: SingleValue<any> | MultiValue<any>) => {
         if (isInternalUpdateHappen.current) {
@@ -110,6 +126,9 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
     }, [isLoading, loadNewItem])
 
     const getNoOptionsContent = mmReactUseCallback(() => {
+        if (isTagMode) {
+            return null
+        }
         if (createNewItem) {
             return (
                 <div className={"w-full cursor-pointer"} onClick={() => {
@@ -123,7 +142,43 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
             )
         }
         return emptyOptionContent;
-    }, [])
+    }, [searchText, emptyOptionContent, createNewItem, isTagMode])
+
+
+    const createNewTagModeSelectItem = mmReactUseCallback((event: any) => {
+        if (!isTagMode) {
+            return
+        }
+        if (event.key === 'Enter' || event.key === ',') {
+            const trimmedSearch = searchText.trim();
+            if (trimmedSearch && createNewItem) {
+                event.preventDefault();
+                createNewItem(trimmedSearch, (newOptions: Array<any>) => {
+                    setDynamicOptions(prev => [...prev, ...newOptions])
+                    const formattedNewOptions = newOptions.map(item => ({
+                        value: item[valueKey],
+                        label: customOption ? customOption(item, labelKey, valueKey, options) : String(item[labelKey]),
+                        raw: item
+                    }));
+                    if (reactSelectRef.current) {
+                        if (multiple) {
+                            const currentSelection = reactSelectRef.current.getValue() || [];
+                            reactSelectRef.current.setValue([...currentSelection, ...formattedNewOptions]);
+                        } else {
+                            if (formattedNewOptions.length > 0) {
+                                reactSelectRef.current.setValue(formattedNewOptions[0]);
+                            }
+                        }
+                    }
+                    setSearchText('');
+                });
+            }
+        }
+    }, [isTagMode, searchText, createNewItem, multiple, valueKey, labelKey, customOption, options])
+
+    const handleKeyDown = mmReactUseCallback((event: any) => {
+        createNewTagModeSelectItem(event)
+    }, [createNewTagModeSelectItem])
 
     return (
         <DefaultInputFrame
@@ -148,9 +203,8 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
                     options={selectOptions}
                     onChange={onValueChange}
                     onInputChange={onInputChange}
-
+                    onKeyDown={handleKeyDown}
                     noOptionsMessage={getNoOptionsContent}
-
                     components={{ DropdownIndicator, ClearIndicator, MultiValueRemove, LoadingMessage }}
                     unstyled={true}
                     classNames={{
