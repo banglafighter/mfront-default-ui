@@ -53,7 +53,7 @@ export function DefaultTBody({className, ...props}: WebTBodyProps) {
     return (
         <tbody
             data-tag="table-body"
-            className={mergeWind("[&_tr:last-child]:border-0", className)}
+            className={mergeWind(className)}
             {...props}
         />
     )
@@ -64,7 +64,7 @@ export function DefaultTR({className, ...props}: WebTRProps) {
     <tr
       data-tag="table-row"
       className={mergeWind(
-        "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+        "border-b border-r border-l transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
         className
       )}
       {...props}
