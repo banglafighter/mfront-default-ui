@@ -18,7 +18,7 @@ export function DefaultTable({className, wrapperClassName, containerContent = nu
         >
             <table
                 data-tag="table"
-                className={mergeWind("w-full caption-bottom text-sm", className)}
+                className={mergeWind("w-full caption-bottom text-md", className)}
                 {...props}
             />
             {containerContent}
