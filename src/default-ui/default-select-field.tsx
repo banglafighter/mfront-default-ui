@@ -11,7 +11,7 @@ import {mergeWind} from "mfront-default-ui";
 import {ChevronDownIcon, Loader as LoaderIcon, XIcon} from "lucide-react";
 
 
-export function DefaultSelectField({options, labelKey, valueKey, multiple, customOption, defaultValue, createNewItem, loadNewItem, placeholder, emptyOptionContent = "No options", name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, engine, showClear = true, isTagMode = false, ...props}: WebSelectFieldProps) {
+export function DefaultSelectField({options, labelKey, valueKey, multiple, customOption, defaultValue, createNewItem, loadNewItem, placeholder, emptyOptionContent = "No options", name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, engine, loadUrlItem, showClear = true, isTagMode = false, ...props}: WebSelectFieldProps) {
     const reactSelectRef = mmReactUseRef<any>(null);
     const [dynamicOptions, setDynamicOptions] = mmReactUseState<Record<string, MixType>[]>(() => {
         if (engine) {
@@ -32,6 +32,16 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
             engine.setSelectOptionCache(name, dynamicOptions)
         }
     }, [dynamicOptions]);
+
+    mmReactUseEffect(() => {
+        if (loadUrlItem) {
+            loadUrlItem().then((items: Record<string, MixType>[]) => {
+                if (items) {
+                    setDynamicOptions(items)
+                }
+            })
+        }
+    }, []);
 
     setSelectElementElementVirtualRef(fieldRef, {
         setValue: (value: FieldValueType) => {
