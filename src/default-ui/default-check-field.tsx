@@ -31,6 +31,7 @@ export function DefaultCheckField(
         engine,
         onChange,
         defaultValue,
+        sendValue,
         ...props
     }: WebCheckFieldProps) {
     const {fieldRef, setFieldValue} = useFieldHelper<HTMLInputElement>({name, defaultValue, engine, onChange})
@@ -46,19 +47,30 @@ export function DefaultCheckField(
             target: {
                 name,
                 type: "checkbox",
+                sendValue: sendValue,
                 checked,
             },
             currentTarget: {
                 name,
                 type: "checkbox",
+                sendValue: sendValue,
                 checked,
             },
         } as unknown as MMReactChangeEvent<HTMLInputElement>;
-        setFieldValue(name, checked, event)
+
+        const value = sendValue !== undefined ? sendValue : checked
+        setFieldValue(name, value, event)
     }
 
     const isDefaultChecked = (): boolean => {
-        return inputValue !== undefined && (inputValue === "true" || inputValue === true);
+        if (inputValue === undefined) {
+            return false
+        } else if (inputValue === "true" || inputValue === true) {
+            return true
+        } else if (sendValue !== undefined && inputValue === sendValue) {
+            return true
+        }
+        return false
     }
 
     return (
