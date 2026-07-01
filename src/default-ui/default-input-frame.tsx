@@ -60,7 +60,7 @@ function generate12DigitNumber() {
     return num.toString();
 }
 
-function getLabel(labelKey: string, label?: string, required?: boolean, labelNext?: UINode, isChildFirst?: boolean) {
+function getLabel(labelKey: string, label?: string | UINode, required?: boolean, labelNext?: UINode, isChildFirst?: boolean) {
     if (!label) {
         return ""
     }
