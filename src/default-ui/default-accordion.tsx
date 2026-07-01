@@ -1,4 +1,4 @@
-import {WebAccordionItemProps, WebAccordionProps, WebInputProps} from "mmcore-ui";
+import {WebAccordionItemProps, WebAccordionProps} from "mmcore-ui";
 import {mergeWind} from "./../common/tailwind-utils"
 import {UIComponentProps} from "mmcore";
 
@@ -13,8 +13,12 @@ import {ChevronDownIcon} from "lucide-react";
 
 
 export function DefaultAccordion({selectType, className, defaultAccordionId, items}: WebAccordionProps) {
+    const otherProps: Record<string, any> = {}
+    if (selectType === "single") {
+        otherProps["collapsible"] = true
+    }
     return (
-        <Accordion className={className} type={selectType as any} defaultValue={defaultAccordionId} collapsible={true}>
+        <Accordion className={className} type={selectType as any} defaultValue={defaultAccordionId} {...otherProps}>
             {items.map((item: WebAccordionItemProps, index: number) => {
                 return (
                     <AccordionItem key={index} value={item.accordionId} className={item.itemClassName}>
@@ -35,7 +39,7 @@ function AccordionItem({className, ...props}: UIComponentProps<typeof AccordionI
     return (
         <AccordionItemPrimitive
             data-tag="accordion-item"
-            className={mergeWind("border-b last:border-b-0", className)}
+            className={mergeWind("border-b", className)}
             {...props}
         />
     )
