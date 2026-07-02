@@ -49,6 +49,21 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
         }
     })
 
+    const selectOptions = mmReactUseMemo(() => {
+        const uniqueMap = new Map();
+        const formatOption = (item: Record<string, MixType>) => ({
+            value: item[valueKey],
+            label: customOption ? customOption(item, labelKey, valueKey, options) : String(item[labelKey]),
+            raw: item
+        });
+
+        [...dynamicOptions, ...options].forEach(item => {
+            if (item && item[valueKey] !== undefined) {
+                uniqueMap.set(String(item[valueKey]), formatOption(item));
+            }
+        });
+        return Array.from(uniqueMap.values());
+    }, [dynamicOptions, options, valueKey, labelKey, customOption])
 
     const setSelectExistingValue = mmReactUseCallback((value: FieldValueType) => {
         isInternalUpdateHappen.current = true;
@@ -66,24 +81,16 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
         if (processedValue && reactSelectRef.current) {
             reactSelectRef.current.setValue(processedValue)
         }
+    }, [multiple, defaultValue, name, engine, selectOptions])
 
-    }, [multiple, defaultValue, name, engine])
-
-    const selectOptions = mmReactUseMemo(() => {
-        const uniqueMap = new Map();
-        const formatOption = (item: Record<string, MixType>) => ({
-            value: item[valueKey],
-            label: customOption ? customOption(item, labelKey, valueKey, options) : String(item[labelKey]),
-            raw: item
-        });
-
-        [...dynamicOptions, ...options].forEach(item => {
-            if (item && item[valueKey] !== undefined) {
-                uniqueMap.set(String(item[valueKey]), formatOption(item));
+    mmReactUseEffect(() => {
+        if (selectOptions.length > 0) {
+            const currentValue = engine ? engine.getFieldValue(name) : defaultValue;
+            if (currentValue) {
+                setSelectExistingValue(currentValue);
             }
-        });
-        return Array.from(uniqueMap.values());
-    }, [dynamicOptions, options, valueKey, labelKey, customOption])
+        }
+    }, [selectOptions, engine, name, defaultValue, setSelectExistingValue]);
 
     const onValueChange = mmReactUseCallback((newValue: SingleValue<any> | MultiValue<any>) => {
         if (isInternalUpdateHappen.current) {
