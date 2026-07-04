@@ -48,8 +48,8 @@ export function DefaultDropdown({className, trigger, items, size, position = "en
 
     const getItem = mmReactUseCallback((item: DropdownItemProps, key: number) => {
         const itemProps: Record<string, any> = {}
-        if (item.hideMe) {
-            return ""
+        if (item.isHidden) {
+            return null
         }
 
         if (item.action) {

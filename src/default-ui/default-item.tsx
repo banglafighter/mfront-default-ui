@@ -41,7 +41,7 @@ export function DefaultItemTitle({className, ...props}: WebItemTitleProps) {
         <div
             data-tag="item-title"
             className={mergeWind(
-                "flex w-fit items-center gap-1 text-sm leading-snug font-medium",
+                "flex w-fit items-center gap-1 text-sm leading-snug font-medium truncate",
                 className
             )}
             {...props}
@@ -54,7 +54,7 @@ export function DefaultItemSubTitle({className, ...props}: WebItemSubTitleProps)
         <div
             data-tag="item-subtitle"
             className={mergeWind(
-                "line-clamp-2 text-sm leading-normal font-normal text-balance text-muted-foreground",
+                "line-clamp-2 text-xs leading-normal font-normal text-balance text-muted-foreground truncate",
                 "[&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary",
                 className
             )}
@@ -94,8 +94,8 @@ const itemVariants = makeClassVariance(
                 muted: "bg-muted/50",
             },
             size: {
-                sm: "gap-2 p-2",
-                default: "gap-2.5 px-4 py-3",
+                sm: "gap-1 p-1",
+                default: "gap-2 px-4 py-3",
             },
         },
         defaultVariants: {
