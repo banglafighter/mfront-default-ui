@@ -16,7 +16,7 @@ import {mergeWind} from "mfront-default-ui";
 import {ChevronRightIcon} from "lucide-react";
 
 
-export function DefaultDropdown({className, trigger, items, size, position = "end", ...props}: WebDropdownProps) {
+export function DefaultDropdown({className, trigger, items, size, position = "end", side, contentClassName, ...props}: WebDropdownProps) {
 
     const generateGroup = mmReactUseCallback((groupItem: DropdownItemProps, key: number) => {
         return (
@@ -62,11 +62,11 @@ export function DefaultDropdown({className, trigger, items, size, position = "en
 
         return (
             <MmReactFragment key={key}>
+                {item.separator && <RadixDropdownSeparator/>}
                 <RadixDropdownItem {...itemProps}>
                     {item.nameContent}
                     {item.shortcut && <RadixDropdownShortcut>{item.shortcut}</RadixDropdownShortcut>}
                 </RadixDropdownItem>
-                {item.separator && <RadixDropdownSeparator/>}
             </MmReactFragment>
         )
     }, [])
@@ -88,7 +88,7 @@ export function DefaultDropdown({className, trigger, items, size, position = "en
             <RadixDropdownTrigger asChild>
                 {trigger}
             </RadixDropdownTrigger>
-            {items.length > 0 && <RadixDropdownContent className="w-40" align={position}>{generateItem(items)}</RadixDropdownContent>}
+            {items.length > 0 && <RadixDropdownContent className={contentClassName} align={position} side={side}>{generateItem(items)}</RadixDropdownContent>}
         </RadixDropdown>
     )
 }
@@ -100,16 +100,17 @@ function RadixDropdown({ ...props }: UIComponentProps<typeof RadixDropdownPrimit
 
 function RadixDropdownItem({ className, inset, variant = "default", ...props }: UIComponentProps<typeof Item> & {inset?: boolean, variant?: "default" | "destructive" }) {
   return (
-    <Item
-      data-tag="dropdown-menu-item"
-      data-inset={inset}
-      data-variant={variant}
-      className={mergeWind(
-        "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive!",
-        className
-      )}
-      {...props}
-    />
+      <Item
+          data-tag="dropdown-menu-item"
+          data-inset={inset}
+          data-variant={variant}
+          className={mergeWind(
+              "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive!",
+              "cursor-pointer",
+              className
+          )}
+          {...props}
+      />
   )
 }
 
@@ -136,12 +137,13 @@ function RadixDropdownTrigger({...props }: UIComponentProps<typeof Trigger>) {
   )
 }
 
-function RadixDropdownContent({ className, sideOffset = 4, ...props }: UIComponentProps<typeof Content>) {
+function RadixDropdownContent({ className, sideOffset = 4, side, ...props }: UIComponentProps<typeof Content>) {
   return (
     <Portal>
       <Content
         data-tag="dropdown-menu-content"
         sideOffset={sideOffset}
+        side={side}
         className={mergeWind(
           "z-50 max-h-(--radix-dropdown-menu-content-available-height) min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
           className
