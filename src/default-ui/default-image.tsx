@@ -24,6 +24,7 @@ const imageWrapperVariations = makeClassVariance(
                 small: "size-6",
                 medium: "size-10",
                 large: "size-12",
+                exLarge: "size-16",
             },
             thumb: {
                 card: "w-[150px] h-[150px]",
