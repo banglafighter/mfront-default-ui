@@ -63,7 +63,7 @@ export function DefaultDropdown({className, trigger, items, size, position = "en
         return (
             <MmReactFragment key={key}>
                 {item.separator && <RadixDropdownSeparator/>}
-                <RadixDropdownItem {...itemProps}>
+                <RadixDropdownItem {...itemProps} isRawContent={item.isRawContent}>
                     {item.nameContent}
                     {item.shortcut && <RadixDropdownShortcut>{item.shortcut}</RadixDropdownShortcut>}
                 </RadixDropdownItem>
@@ -98,20 +98,27 @@ function RadixDropdown({ ...props }: UIComponentProps<typeof RadixDropdownPrimit
   return <RadixDropdownPrimitive data-tag="dropdown-menu" {...props} />
 }
 
-function RadixDropdownItem({ className, inset, variant = "default", ...props }: UIComponentProps<typeof Item> & {inset?: boolean, variant?: "default" | "destructive" }) {
-  return (
-      <Item
-          data-tag="dropdown-menu-item"
-          data-inset={inset}
-          data-variant={variant}
-          className={mergeWind(
-              "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive!",
-              "cursor-pointer",
-              className
-          )}
-          {...props}
-      />
-  )
+function RadixDropdownItem({ className, inset, variant = "default", isRawContent, ...props }: UIComponentProps<typeof Item> & {inset?: boolean, isRawContent?: boolean, variant?: "default" | "destructive" }) {
+    if (isRawContent) {
+        return (
+            <div className={className}>
+                {props.children}
+            </div>
+        )
+    }
+    return (
+        <Item
+            data-tag="dropdown-menu-item"
+            data-inset={inset}
+            data-variant={variant}
+            className={mergeWind(
+                "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive!",
+                "cursor-pointer",
+                className
+            )}
+            {...props}
+        />
+    )
 }
 
 function RadixDropdownShortcut({className, ...props }: UIComponentProps<"span">) {
