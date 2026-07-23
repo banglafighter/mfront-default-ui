@@ -210,6 +210,7 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
             {...gridItemProps}
             element={(labelId: string) => (
                 <Select
+                    menuPortalTarget={document.body}
                     ref={reactSelectRef}
                     id={labelId}
                     isMulti={multiple}
