@@ -211,6 +211,8 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
             element={(labelId: string) => (
                 <Select
                     menuPortalTarget={document.body}
+                    menuPosition="fixed"
+                    menuPlacement="auto"
                     ref={reactSelectRef}
                     id={labelId}
                     isMulti={multiple}
