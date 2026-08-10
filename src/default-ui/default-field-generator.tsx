@@ -5,7 +5,7 @@ import {
     WebFieldEngineProps,
     WebFieldGeneratorProps, WebFieldGroupProps, WebFileFieldProps, WebSelectFieldProps,
 } from "mmcore-ui";
-import {CheckField, DateTimeField, FieldGroup, FileField, SelectField, UICommonUtil} from "mfront-ui";
+import {CheckField, DateTimeField, FieldGroup, FileField, GridItem, SelectField, UICommonUtil} from "mfront-ui";
 import {MixType} from "mmcore";
 import {makeClassVariance, mergeWind} from "mfront-default-ui";
 import PasswordField from "../internal/password-field";
@@ -71,6 +71,13 @@ export function getFieldFromSpec(spec: WebDefaultInputFieldPropsBase, index: num
         case "checkbox":
             const checkboxProps = fieldSpec as WebCheckFieldProps
             return (<CheckField {...checkboxProps} key={index} engine={engine}/>)
+        case "break" as any:
+            const breakProps = fieldSpec as WebCheckFieldProps
+            return (
+                <GridItem colSpan={breakProps.colSpan} key={index}>
+                    {breakProps.content}
+                </GridItem>
+            )
     }
     return null
 }
