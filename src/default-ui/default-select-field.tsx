@@ -11,7 +11,7 @@ import {mergeWind} from "mfront-default-ui";
 import {ChevronDownIcon, Loader as LoaderIcon, XIcon} from "lucide-react";
 
 
-export function DefaultSelectField({options, labelKey, valueKey, multiple, customOption, defaultValue, createNewItem, loadNewItem, placeholder, emptyOptionContent = "No options", name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, engine, loadUrlItem, showClear = true, isTagMode = false, isSearchable = true, ...props}: WebSelectFieldProps) {
+export function DefaultSelectField({options, labelKey, valueKey, multiple, customOption, defaultValue, createNewItem, loadNewItem, placeholder, emptyOptionContent = "No options", name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, engine, loadUrlItem, createTagOptions, showClear = true, isTagMode = false, isSearchable = true, ...props}: WebSelectFieldProps) {
     const reactSelectRef = mmReactUseRef<any>(null);
     const isInternalUpdateHappen = mmReactUseRef<boolean>(false);
 
@@ -68,6 +68,12 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
 
     const setSelectExistingValue = mmReactUseCallback((value: FieldValueType) => {
         const select = reactSelectRef.current
+
+        if (isTagMode && !selectOptions.length && createTagOptions) {
+            createTagOptions(value, (newOptions: Array<any>) => {
+                mergeDynamicOptions(newOptions);
+            })
+        }
 
         if (!select) {
             return
