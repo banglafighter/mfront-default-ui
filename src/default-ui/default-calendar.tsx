@@ -39,8 +39,10 @@ function DayPickerCalendar({
 }: UIComponentProps<typeof DayPicker> & { buttonVariant?: ButtonVariant }) {
   const defaultClassNames = getDefaultClassNames()
 
+  const currentYear = new Date().getFullYear();
   return (
     <DayPicker
+      endMonth={new Date(currentYear + 12, 11)}
       showOutsideDays={showOutsideDays}
       className={mergeWind(
         "group/calendar bg-background p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-tag=popover-content]_&]:bg-transparent",
