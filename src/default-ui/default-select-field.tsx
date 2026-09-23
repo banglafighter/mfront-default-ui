@@ -13,7 +13,6 @@ import {ChevronDownIcon, Loader as LoaderIcon, XIcon} from "lucide-react";
 
 export function DefaultSelectField({options, labelKey, valueKey, multiple, customOption, defaultValue, createNewItem, loadNewItem, placeholder, emptyOptionContent = "No options", name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, engine, loadUrlItem, createTagOptions, showClear = true, isTagMode = false, isSearchable = true, ...props}: WebSelectFieldProps) {
     const reactSelectRef = mmReactUseRef<any>(null);
-    const isInternalUpdateHappen = mmReactUseRef<boolean>(false);
 
     const [dynamicOptions, setDynamicOptions] = mmReactUseState<Record<string, MixType>[]>(() => {
         if (engine) {
@@ -23,6 +22,12 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
     })
     const [isLoading, setLoading] = mmReactUseState<boolean>(false)
     const [searchText, setSearchText] = mmReactUseState<any>('')
+    const [selectedValue, setSelectedValue] = mmReactUseState<FieldValueType>(() => {
+        if (engine) {
+            return engine.getFieldValue(name)
+        }
+        return defaultValue
+    })
 
     const {fieldRef, handleChange} = useFieldHelper<HTMLSelectElement>({name, defaultValue, engine, onChange})
     const {gridItemProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
@@ -67,48 +72,22 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
     }, [dynamicOptions, options, valueKey, labelKey, customOption])
 
     const setSelectExistingValue = mmReactUseCallback((value: FieldValueType) => {
-        const select = reactSelectRef.current
-
-        if (isTagMode && !selectOptions.length && createTagOptions) {
-            createTagOptions(value, (newOptions: Array<any>) => {
-                mergeDynamicOptions(newOptions);
-            })
-        }
-
-        if (!select) {
-            return
-        }
-
-        isInternalUpdateHappen.current = true
+        setSelectedValue(value)
 
         if (
             value === undefined ||
             value === null ||
             value === ""
         ) {
-            select.setValue(multiple ? [] : null)
             return
         }
 
-        if (multiple) {
-            const valuesArray = Array.isArray(value) ? value : [value]
-
-            const processedValue = selectOptions.filter(opt =>
-                valuesArray.some(item =>
-                    String(item) === String(opt.value)
-                )
-            )
-
-            select.setValue(processedValue)
-            return
+        if (isTagMode && !selectOptions.length && createTagOptions) {
+            createTagOptions(value, (newOptions: Array<any>) => {
+                mergeDynamicOptions(newOptions);
+            })
         }
-
-        const processedValue = selectOptions.find(opt =>
-            String(opt.value) === String(value)
-        )
-
-        select.setValue(processedValue ?? null)
-    }, [multiple, selectOptions])
+    }, [isTagMode, selectOptions, createTagOptions])
 
     setSelectElementElementVirtualRef(fieldRef, {
         setValue: (value: FieldValueType) => {
@@ -116,26 +95,38 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
         }
     })
 
+
     mmReactUseEffect(() => {
         const currentValue = engine
             ? engine.getFieldValue(name)
             : defaultValue
 
-        if (
-            currentValue === undefined ||
-            currentValue === null ||
-            currentValue === ""
-        ) {
-            if (selectOptions.length === 0) {
-                return
-            }
+        setSelectExistingValue(currentValue)
+    }, [engine, name, defaultValue])
 
-            setSelectExistingValue(currentValue)
-            return
+    const processedSelectedValue = mmReactUseMemo(() => {
+        if (
+            selectedValue === undefined ||
+            selectedValue === null ||
+            selectedValue === ""
+        ) {
+            return multiple ? [] : null
         }
 
-        setSelectExistingValue(currentValue)
-    }, [selectOptions, engine, name, defaultValue, setSelectExistingValue]);
+        if (multiple) {
+            const valuesArray = Array.isArray(selectedValue) ? selectedValue : [selectedValue]
+
+            return selectOptions.filter(opt =>
+                valuesArray.some(item =>
+                    String(item) === String(opt.value)
+                )
+            )
+        }
+
+        return selectOptions.find(opt =>
+            String(opt.value) === String(selectedValue)
+        ) ?? null
+    }, [selectedValue, multiple, selectOptions])
 
     const processValueChange = mmReactUseCallback((
         newValue: SingleValue<any> | MultiValue<any>
@@ -153,6 +144,8 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
             rawSelection = single ? single.raw : null;
         }
 
+        setSelectedValue(processedValue)
+
         const event = {
             target: {name, value: processedValue} as HTMLSelectElement,
             currentTarget: {name, value: processedValue} as HTMLSelectElement,
@@ -165,11 +158,6 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
     const onValueChange = mmReactUseCallback((
         newValue: SingleValue<any> | MultiValue<any>
     ) => {
-        if (isInternalUpdateHappen.current) {
-            isInternalUpdateHappen.current = false
-            return
-        }
-
         processValueChange(newValue)
     }, [processValueChange])
 
@@ -270,13 +258,9 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
                                 )
                             ];
 
-                            isInternalUpdateHappen.current = true
-                            reactSelectRef.current.setValue(newSelection);
                             processValueChange(newSelection);
                         } else {
                             if (formattedNewOptions.length > 0) {
-                                isInternalUpdateHappen.current = true
-                                reactSelectRef.current.setValue(formattedNewOptions[0]);
                                 processValueChange(formattedNewOptions[0]);
                             }
                         }
@@ -316,6 +300,7 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
                     isSearchable={isSearchable}
                     placeholder={placeholder ? placeholder : _t("Select an option")}
 
+                    value={processedSelectedValue}
                     options={selectOptions}
                     onChange={onValueChange}
                     onInputChange={onInputChange}
@@ -363,11 +348,13 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
     )
 }
 
+
 const DropdownIndicator = (props: any) => (
     <components.DropdownIndicator {...props}>
         <ChevronDownIcon className="h-4 w-4 opacity-50"/>
     </components.DropdownIndicator>
 )
+
 
 const ClearIndicator = (props: any) => (
     <components.ClearIndicator {...props}>
@@ -375,11 +362,13 @@ const ClearIndicator = (props: any) => (
     </components.ClearIndicator>
 )
 
+
 const MultiValueRemove = (props: any) => (
     <components.MultiValueRemove {...props}>
         <XIcon className="h-3 w-3 text-muted-foreground hover:text-foreground"/>
     </components.MultiValueRemove>
 )
+
 
 const LoadingMessage = (props: any) => {
     return (
