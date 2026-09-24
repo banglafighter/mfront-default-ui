@@ -11,7 +11,7 @@ import {mergeWind} from "mfront-default-ui";
 import {ChevronDownIcon, Loader as LoaderIcon, XIcon} from "lucide-react";
 
 
-export function DefaultSelectField({options, labelKey, valueKey, multiple, customOption, defaultValue, createNewItem, loadNewItem, placeholder, emptyOptionContent = "No options", name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, engine, loadUrlItem, createTagOptions, showClear = true, isTagMode = false, isSearchable = true, ...props}: WebSelectFieldProps) {
+export function DefaultSelectField({options, labelKey, valueKey, multiple, customOption, defaultValue, createNewItem, loadNewItem, placeholder, emptyOptionContent = "No options", name, className, label, labelNext, required, errorText, hintsText, isError, inputClassName, id, onChange, engine, loadUrlItem, createTagOptions, searchKeys, showClear = true, isTagMode = false, isSearchable = true, ...props}: WebSelectFieldProps) {
     const reactSelectRef = mmReactUseRef<any>(null);
 
     const [dynamicOptions, setDynamicOptions] = mmReactUseState<Record<string, MixType>[]>(() => {
@@ -276,6 +276,37 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
         createNewTagModeSelectItem(event)
     }, [createNewTagModeSelectItem])
 
+    const filterOption = mmReactUseCallback((option: any, inputValue: string) => {
+        const searchValue = inputValue.trim().toLocaleLowerCase()
+
+        if (!searchValue) {
+            return true
+        }
+
+        if (!searchKeys || searchKeys.length === 0) {
+            return String(option.label ?? "")
+                .toLocaleLowerCase()
+                .includes(searchValue)
+        }
+
+        const raw = option.data?.raw
+
+        return searchKeys.some(key => {
+            const value = raw?.[key]
+
+            if (
+                value === undefined ||
+                value === null
+            ) {
+                return false
+            }
+
+            return String(value)
+                .toLocaleLowerCase()
+                .includes(searchValue)
+        })
+    }, [searchKeys])
+
     return (
         <DefaultInputFrame
             label={label}
@@ -289,9 +320,9 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
             {...gridItemProps}
             element={(labelId: string) => (
                 <Select
-                    menuPortalTarget={document.body}
-                    menuPosition="fixed"
+                    menuPosition="absolute"
                     menuPlacement="auto"
+                    menuShouldScrollIntoView={false}
                     ref={reactSelectRef}
                     id={labelId}
                     isMulti={multiple}
@@ -299,6 +330,8 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
                     isLoading={isLoading}
                     isSearchable={isSearchable}
                     placeholder={placeholder ? placeholder : _t("Select an option")}
+
+                    filterOption={filterOption}
 
                     value={processedSelectedValue}
                     options={selectOptions}
@@ -323,7 +356,7 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
                         indicatorsContainer: () => "flex items-center gap-1 ml-auto text-muted-foreground",
                         menuPortal: () => "z-50",
                         menu: () => "mt-2 relative z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md animate-in fade-in-80 zoom-in-95 data-[side=bottom]:slide-in-from-top-2",
-                        menuList: () => "p-1 no-scrollbar max-h-72 overflow-y-auto overscroll-contain",
+                        menuList: () => "p-1 max-h-72 overflow-y-auto overscroll-contain",
                         option: ({isSelected, isFocused}) => mergeWind(
                             "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
                             isFocused && "bg-accent text-accent-foreground cursor-pointer",
