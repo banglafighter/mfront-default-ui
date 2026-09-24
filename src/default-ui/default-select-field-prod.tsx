@@ -131,7 +131,7 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
             if (!willCall) {
                 return
             }
-            loadNewItem((isLoading: boolean) => {
+            loadNewItem(trimmed, (isLoading: boolean) => {
                 setLoading(isLoading);
             }, (newOptions: Array<any>) => {
                 setDynamicOptions(prev => [
