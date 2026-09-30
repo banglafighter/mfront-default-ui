@@ -1,4 +1,5 @@
 import {
+    GridBase,
     WebCheckFieldProps,
     WebDateTimeFieldProps,
     WebDefaultInputFieldPropsBase,
@@ -9,6 +10,43 @@ import {CheckField, DateTimeField, FieldGroup, FileField, GridItem, SelectField,
 import {MixType} from "mmcore";
 import {makeClassVariance, mergeWind} from "mfront-default-ui";
 import PasswordField from "../internal/password-field";
+
+type ResponsiveSpan = {
+    mobile: GridBase
+    tablet: GridBase
+}
+
+
+const autoColSpan: Record<GridBase, ResponsiveSpan> = {
+    1: {mobile: 6, tablet: 3},
+    2: {mobile: 6, tablet: 4},
+    3: {mobile: 12, tablet: 6},
+    4: {mobile: 12, tablet: 6},
+    5: {mobile: 12, tablet: 6},
+    6: {mobile: 12, tablet: 6},
+    7: {mobile: 12, tablet: 12},
+    8: {mobile: 12, tablet: 12},
+    9: {mobile: 12, tablet: 12},
+    10: {mobile: 12, tablet: 12},
+    11: {mobile: 12, tablet: 12},
+    12: {mobile: 12, tablet: 12},
+}
+
+export function resolveAutoColSpan(props: any) {
+    const colSpan = props.colSpan as GridBase | undefined
+
+    if (!colSpan) {
+        return props
+    }
+
+    const auto = autoColSpan[colSpan]
+
+    return {
+        ...props,
+        colSpanMob: props.colSpanMob ?? auto.mobile,
+        colSpanTab: props.colSpanTab ?? auto.tablet
+    }
+}
 
 
 const fieldGeneratorVariants = makeClassVariance(
@@ -23,16 +61,16 @@ const fieldGeneratorVariants = makeClassVariance(
             colGap: {1: "gap-x-1", 2: "gap-x-2", 3: "gap-x-3", 4: "gap-x-4", 5: "gap-x-5", 6: "gap-x-6", 7: "gap-x-7", 8: "gap-x-8", 9: "gap-x-9", 10: "gap-x-10", 11: "gap-x-11", 12: "gap-x-12"},
             rowGap: {1: "gap-y-1", 2: "gap-y-2", 3: "gap-y-3", 4: "gap-y-4", 5: "gap-y-5", 6: "gap-y-6", 7: "gap-y-7", 8: "gap-y-8", 9: "gap-y-9", 10: "gap-y-10", 11: "gap-y-11", 12: "gap-y-12"},
 
-            colsMob: {1: "sm:grid-cols-1", 2: "sm:grid-cols-2", 3: "sm:grid-cols-3", 4: "sm:grid-cols-4", 5: "sm:grid-cols-5", 6: "sm:grid-cols-6", 7: "sm:grid-cols-7", 8: "sm:grid-cols-8", 9: "sm:grid-cols-9", 10: "sm:grid-cols-10", 11: "sm:grid-cols-11", 12: "sm:grid-cols-12", "full": "sm:grid-cols-full"},
-            colsTab: {1: "md:grid-cols-1 lg:grid-cols-1", 2: "md:grid-cols-2 lg:grid-cols-2", 3: "md:grid-cols-3 lg:grid-cols-3", 4: "md:grid-cols-4 lg:grid-cols-4", 5: "md:grid-cols-5 lg:grid-cols-5", 6: "md:grid-cols-6 lg:grid-cols-6", 7: "md:grid-cols-7 lg:grid-cols-7", 8: "md:grid-cols-8 lg:grid-cols-8", 9: "md:grid-cols-9 lg:grid-cols-9", 10: "md:grid-cols-10 lg:grid-cols-10", 11: "md:grid-cols-11 lg:grid-cols-11", 12: "md:grid-cols-12 lg:grid-cols-12", "full": "md:grid-cols-full lg:grid-cols-full"},
+            colsMob: {1: "max-md:grid-cols-1", 2: "max-md:grid-cols-2", 3: "max-md:grid-cols-3", 4: "max-md:grid-cols-4", 5: "max-md:grid-cols-5", 6: "max-md:grid-cols-6", 7: "max-md:grid-cols-7", 8: "max-md:grid-cols-8", 9: "max-md:grid-cols-9", 10: "max-md:grid-cols-10", 11: "max-md:grid-cols-11", 12: "max-md:grid-cols-12", "full": "max-md:grid-cols-full"},
+            colsTab: {1: "md:max-lg:grid-cols-1", 2: "md:max-lg:grid-cols-2", 3: "md:max-lg:grid-cols-3", 4: "md:max-lg:grid-cols-4", 5: "md:max-lg:grid-cols-5", 6: "md:max-lg:grid-cols-6", 7: "md:max-lg:grid-cols-7", 8: "md:max-lg:grid-cols-8", 9: "md:max-lg:grid-cols-9", 10: "md:max-lg:grid-cols-10", 11: "md:max-lg:grid-cols-11", 12: "md:max-lg:grid-cols-12", "full": "md:max-lg:grid-cols-full"},
             colsLarge: {1: "xl:grid-cols-1", 2: "xl:grid-cols-2", 3: "xl:grid-cols-3", 4: "xl:grid-cols-4", 5: "xl:grid-cols-5", 6: "xl:grid-cols-6", 7: "xl:grid-cols-7", 8: "xl:grid-cols-8", 9: "xl:grid-cols-9", 10: "xl:grid-cols-10", 11: "xl:grid-cols-11", 12: "xl:grid-cols-12", "full": "xl:grid-cols-full"},
 
-            rowsMob: {1: "sm:grid-rows-1", 2: "sm:grid-rows-2", 3: "sm:grid-rows-3", 4: "sm:grid-rows-4", 5: "sm:grid-rows-5", 6: "sm:grid-rows-6", 7: "sm:grid-rows-7", 8: "sm:grid-rows-8", 9: "sm:grid-rows-9", 10: "sm:grid-rows-10", 11: "sm:grid-rows-11", 12: "sm:grid-rows-12", "full": "sm:grid-rows-full"},
-            rowsTab: {1: "md:grid-rows-1 lg:grid-rows-1", 2: "md:grid-rows-2 lg:grid-rows-2", 3: "md:grid-rows-3 lg:grid-rows-3", 4: "md:grid-rows-4 lg:grid-rows-4", 5: "md:grid-rows-5 lg:grid-rows-5", 6: "md:grid-rows-6 lg:grid-rows-6", 7: "md:grid-rows-7 lg:grid-rows-7", 8: "md:grid-rows-8 lg:grid-rows-8", 9: "md:grid-rows-9 lg:grid-rows-9", 10: "md:grid-rows-10 lg:grid-rows-10", 11: "md:grid-rows-11 lg:grid-rows-11", 12: "md:grid-rows-12 lg:grid-rows-12", "full": "md:grid-rows-full lg:grid-rows-full"},
+            rowsMob: {1: "max-md:grid-rows-1", 2: "max-md:grid-rows-2", 3: "max-md:grid-rows-3", 4: "max-md:grid-rows-4", 5: "max-md:grid-rows-5", 6: "max-md:grid-rows-6", 7: "max-md:grid-rows-7", 8: "max-md:grid-rows-8", 9: "max-md:grid-rows-9", 10: "max-md:grid-rows-10", 11: "max-md:grid-rows-11", 12: "max-md:grid-rows-12", "full": "max-md:grid-rows-full"},
+            rowsTab: {1: "md:max-lg:grid-rows-1", 2: "md:max-lg:grid-rows-2", 3: "md:max-lg:grid-rows-3", 4: "md:max-lg:grid-rows-4", 5: "md:max-lg:grid-rows-5", 6: "md:max-lg:grid-rows-6", 7: "md:max-lg:grid-rows-7", 8: "md:max-lg:grid-rows-8", 9: "md:max-lg:grid-rows-9", 10: "md:max-lg:grid-rows-10", 11: "md:max-lg:grid-rows-11", 12: "md:max-lg:grid-rows-12", "full": "md:max-lg:grid-rows-full"},
             rowsLarge: {1: "xl:grid-rows-1", 2: "xl:grid-rows-2", 3: "xl:grid-rows-3", 4: "xl:grid-rows-4", 5: "xl:grid-rows-5", 6: "xl:grid-rows-6", 7: "xl:grid-rows-7", 8: "xl:grid-rows-8", 9: "xl:grid-rows-9", 10: "xl:grid-rows-10", 11: "xl:grid-rows-11", 12: "xl:grid-rows-12", "full": "xl:grid-rows-full"},
 
-            gapMob: {1: "sm:gap-1", 2: "sm:gap-2", 3: "sm:gap-3", 4: "sm:gap-4", 5: "sm:gap-5", 6: "sm:gap-6", 7: "sm:gap-7", 8: "sm:gap-8", 9: "sm:gap-9", 10: "sm:gap-10", 11: "sm:gap-11", 12: "sm:gap-12"},
-            gapTab: {1: "md:gap-1", 2: "md:gap-2", 3: "md:gap-3", 4: "md:gap-4", 5: "md:gap-5", 6: "md:gap-6", 7: "md:gap-7", 8: "md:gap-8", 9: "md:gap-9", 10: "md:gap-10", 11: "md:gap-11", 12: "md:gap-12"},
+            gapMob: {1: "max-md:gap-1", 2: "max-md:gap-2", 3: "max-md:gap-3", 4: "max-md:gap-4", 5: "max-md:gap-5", 6: "max-md:gap-6", 7: "max-md:gap-7", 8: "max-md:gap-8", 9: "max-md:gap-9", 10: "max-md:gap-10", 11: "max-md:gap-11", 12: "max-md:gap-12"},
+            gapTab: {1: "md:max-lg:gap-1", 2: "md:max-lg:gap-2", 3: "md:max-lg:gap-3", 4: "md:max-lg:gap-4", 5: "md:max-lg:gap-5", 6: "md:max-lg:gap-6", 7: "md:max-lg:gap-7", 8: "md:max-lg:gap-8", 9: "md:max-lg:gap-9", 10: "md:max-lg:gap-10", 11: "md:max-lg:gap-11", 12: "md:max-lg:gap-12"},
             layout: {
                 grid: "grid"
             }
@@ -41,10 +79,11 @@ const fieldGeneratorVariants = makeClassVariance(
 )
 
 export function getFieldFromSpec(spec: WebDefaultInputFieldPropsBase, index: number, engine: WebFieldEngineProps, extraConfig: Record<string, any> = {}) {
-    const {specType, isHidden, ...fieldSpec} = spec;
+    let {specType, isHidden, ...fieldSpec} = spec;
     if (isHidden) {
         return null
     }
+    fieldSpec = resolveAutoColSpan(fieldSpec)
 
     switch (specType) {
         case "text":
