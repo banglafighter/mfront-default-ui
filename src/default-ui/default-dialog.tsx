@@ -25,7 +25,7 @@ import {XIcon} from "lucide-react";
 import {DefaultButton} from "./default-button";
 
 
-export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", slideFrom = "right", className, modal, title, subTitle, header, footer, footerActionButtons, body, engine, showCloseButton, disableBlockClose, dialogBodyClassName, ...props}: WebDialogGeneratorProps) {
+export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", slideFrom = "right", className, modal, title, subTitle, header, footer, footerActionButtons, body, engine, showCloseButton, disableBlockClose, dialogBodyClassName, open, onOpenChange, ...props}: WebDialogGeneratorProps) {
 
     const getHeader = mmReactUseCallback(() => {
         let isEmpty: boolean = true
@@ -125,8 +125,22 @@ export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", s
         return engine.getActionValue<UINode>("body", body)
     }
 
+    const controlledByProps = open !== undefined
+    const dialogOpen = controlledByProps ? open : engine.isOpen
+
+    const handleOpenChange = (value: boolean) => {
+        if (controlledByProps) {
+            onOpenChange?.(value)
+            return
+        }
+
+        if (!value) {
+            engine.close()
+        }
+    }
+
     return (
-        <DefaultDialog open={engine.isOpen} onOpenChange={engine.close} modal={modal}>
+        <DefaultDialog open={dialogOpen} onOpenChange={handleOpenChange} modal={modal}>
             <DefaultDialogBody {...getBodyProps()} className={dialogBodyClassName}>
                 {getHeader()}
                 <div className={mergeWind("overflow-y-auto", className)} {...props}>

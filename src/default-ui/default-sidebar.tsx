@@ -11,6 +11,7 @@ import {MmReactFragment, UIComponentProps, UINode} from "mmcore";
 import {ChevronRight} from "lucide-react";
 import {InternalCollapsible, InternalCollapsibleContent, InternalCollapsibleTrigger} from "../internal/colapsible";
 import {useRouteNav} from "mfront";
+import {DialogGenerator, useDialogEngine} from "mfront-ui";
 
 
 export function DefaultSidebar({menu, header, headerAttrs, footer, footerAttrs, body, bodyAttrs, menuBefore, menuAfter, ...props}: WebSidebarProps) {
@@ -318,7 +319,8 @@ function SidebarFooterBlock({ className, ...props }: UIComponentProps<"div">) {
 }
 
 function SidebarBlock({className,  side = "left", variant = "sidebar", collapsible = "offcanvas", children, ...props}: WebSidebarProps) {
-    const {isMobile, stateName} = useSidebarContext()
+    const {isMobile, stateName, mobileOpenState, setMobileOpenState} = useSidebarContext()
+    const dialogEngine = useDialogEngine()
     if (collapsible === "none") {
         return (
             <div
@@ -335,7 +337,22 @@ function SidebarBlock({className,  side = "left", variant = "sidebar", collapsib
     }
 
     if (isMobile) {
-        // load dialog box with left sheet
+        return (
+            <DialogGenerator
+            engine={dialogEngine}
+            dialogBodyClassName={"w-[16rem] max-w-[16rem] p-0"}
+            body={
+                <div>
+                    {children}
+                </div>
+            }
+            open={mobileOpenState}
+            onOpenChange={setMobileOpenState}
+            type={"drawer"}
+            slideFrom={"left"}
+            showCloseButton={false}
+        />
+        )
     }
 
     return (
