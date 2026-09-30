@@ -94,19 +94,21 @@ function getMenuAndNestingMenu(items?: SidebarNestedMenuProps[], keyIndex?: numb
                 {submenu?.map((item: SidebarMenuItemBaseProps, index: number) => {
                     return (
                         <SidebarMenuSubItemBlock key={index} {...item.menuContentAttrs}>
-                            <SidebarMenuSubActionBlock
-                                size={item.size}
-                                isActive={false}
-                                onClick={() => {
-                                    if (item.action) {
-                                        item.action(item.actionData)
-                                    } else if (item.navUrl && navigate) {
-                                        navigate(item.navUrl)
-                                    }
-                                }}
-                            >
-                                {item.menuContent}
-                            </SidebarMenuSubActionBlock>
+                            <a href={item.navUrl ? item.navUrl : "#"} onClick={(event: any) =>{event.preventDefault();}}>
+                                <SidebarMenuSubActionBlock
+                                    size={item.size}
+                                    isActive={false}
+                                    onClick={() => {
+                                        if (item.action) {
+                                            item.action(item.actionData)
+                                        } else if (item.navUrl && navigate) {
+                                            navigate(item.navUrl)
+                                        }
+                                    }}
+                                >
+                                    {item.menuContent}
+                                </SidebarMenuSubActionBlock>
+                            </a>
                         </SidebarMenuSubItemBlock>
                     )
                 })}
