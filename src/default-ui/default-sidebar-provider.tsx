@@ -57,12 +57,11 @@ export function DefaultSidebarProvider(
         }
         setInternalOpenState(state)
         localStorage.setItem(stateStoreName, `${state}`)
-    }, [currentOpenState, internalOpenState])
-
+    }, [onOpenChange, stateStoreName])
 
     const toggleSidebar = mmReactUseCallback(() => {
         return isMobile ? setMobileOpenState((openState) => !openState) : handleOtherOpenState(!currentOpenState)
-    }, [isOpen, currentOpenState, internalOpenState, setMobileOpenState])
+    }, [isMobile, currentOpenState, handleOtherOpenState])
 
     mmReactUseEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
