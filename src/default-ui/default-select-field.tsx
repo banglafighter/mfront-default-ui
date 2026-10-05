@@ -342,20 +342,23 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
                     components={{DropdownIndicator, ClearIndicator, MultiValueRemove, LoadingMessage}}
                     unstyled={true}
                     classNames={{
+                        container: ({isFocused}) => mergeWind(
+                            "relative",
+                            isFocused && "z-[100]"
+                        ),
                         control: ({isFocused}) => mergeWind(
                             "flex min-h-8 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
                             isFocused && "border-muted-foreground/40 shadow-sm outline-none ring-0",
                             isError && "border-danger focus-within:ring-danger border-danger"
                         ),
-                        valueContainer: () => "flex flex-wrap gap-1 items-center gap-1.5",
+                        valueContainer: () => "flex flex-wrap items-center gap-1.5",
                         placeholder: () => "text-muted-foreground text-sm",
                         input: () => "text-foreground text-sm outline-none",
                         singleValue: () => "text-foreground text-sm",
                         multiValue: () => "flex items-center gap-1 rounded-sm bg-muted px-1.5 py-0.5 text-xs font-medium text-foreground",
                         multiValueLabel: () => "truncate max-w-[100px]",
                         indicatorsContainer: () => "flex items-center gap-1 ml-auto text-muted-foreground",
-                        menuPortal: () => "z-50",
-                        menu: () => "mt-2 relative z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md animate-in fade-in-80 zoom-in-95 data-[side=bottom]:slide-in-from-top-2",
+                        menu: () => "mt-2 relative z-[110] min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md animate-in fade-in-80 zoom-in-95 data-[side=bottom]:slide-in-from-top-2",
                         menuList: () => "p-1 max-h-72 overflow-y-auto overscroll-contain",
                         option: ({isSelected, isFocused}) => mergeWind(
                             "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
@@ -369,11 +372,6 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
                         control: (base) => ({
                             ...base,
                             minHeight: '2rem',
-                        }),
-                        menuPortal: (base) => ({
-                            ...base,
-                            zIndex: 99999,
-                            pointerEvents: 'auto'
                         }),
                     }}
                 />
