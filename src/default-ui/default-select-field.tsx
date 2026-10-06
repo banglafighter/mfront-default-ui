@@ -320,7 +320,7 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
             {...gridItemProps}
             element={(labelId: string) => (
                 <Select
-                    menuPosition="absolute"
+                    menuPosition="fixed"
                     menuPlacement="auto"
                     menuShouldScrollIntoView={false}
                     ref={reactSelectRef}

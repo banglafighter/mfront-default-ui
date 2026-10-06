@@ -1,3 +1,5 @@
+// TODO: REMOVE if all work good
+
 import {
     DialogFooterActionButton,
     DialogSize,
@@ -143,7 +145,7 @@ export function DefaultDialogGenerator({type = "dialog", dialogSize = "small", s
         <DefaultDialog open={dialogOpen} onOpenChange={handleOpenChange} modal={modal}>
             <DefaultDialogBody {...getBodyProps()} className={dialogBodyClassName}>
                 {getHeader()}
-                <div className={mergeWind("min-h-0 flex-1 overflow-y-auto", className)} {...props}>
+                <div className={mergeWind("overflow-y-auto", className)} {...props}>
                     {getBodyContent()}
                 </div>
                 {getFooter()}
@@ -167,7 +169,7 @@ export function DefaultDialogHeader({className, ...props}: WebDialogHeaderProps)
     return (
         <div
             data-tag="dialog-header"
-            className={mergeWind("flex shrink-0 flex-col gap-2", className)}
+            className={mergeWind("flex flex-col gap-2", className)}
             {...props}
         />
     )
@@ -178,7 +180,7 @@ export function DefaultDialogFooter({className, children, ...props}: WebDialogFo
         <div
             data-tag="dialog-footer"
             className={mergeWind(
-                "mt-auto flex shrink-0 flex-row justify-end gap-2",
+                "mt-auto flex flex-row justify-end gap-2",
                 className
             )}
             {...props}
@@ -234,8 +236,8 @@ const dialogBodyVariations = makeClassVariance(
     {
         variants: {
             type: {
-                dialog: "fixed inset-0 m-auto z-50 flex h-fit flex-col w-full max-w-[calc(100%-1rem)] max-h-[calc(100dvh-1rem)] overflow-hidden gap-2 rounded-sm border bg-background p-5 shadow-lg duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
-                alert: "fixed inset-0 m-auto z-50 flex h-fit flex-col w-full max-w-[calc(100%-1rem)] max-h-[calc(100dvh-1rem)] overflow-hidden gap-2 rounded-sm border bg-background p-5 shadow-lg duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
+                dialog: "fixed top-[50%] left-[50%] z-50 flex flex-col w-full max-w-[calc(100%-1rem)] max-h-[calc(100%-1rem)] translate-x-[-50%] translate-y-[-50%] gap-2 rounded-sm border bg-background p-5 shadow-lg duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
+                alert: "fixed top-[50%] left-[50%] z-50 flex flex-col w-full max-w-[calc(100%-1rem)] max-h-[calc(100%-1rem)] translate-x-[-50%] translate-y-[-50%] gap-2 rounded-sm border bg-background p-5 shadow-lg duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
                 drawer: "fixed z-50 bg-background p-5 gap-2 flex flex-col  shadow-lg transition ease-in-out data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:animate-in data-[state=open]:duration-500",
             },
             slideFrom: {
