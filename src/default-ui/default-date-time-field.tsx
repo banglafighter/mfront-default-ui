@@ -35,7 +35,11 @@ export function DefaultDateTimeField(
     }: WebDateTimeFieldProps) {
     const {fieldRef, handleChange} = useFieldHelper<HTMLInputElement>({name, defaultValue, engine, onChange})
     const {gridItemProps} = UICommonUtil.extractGridItemProps(props as Record<string, MixType>)
-    const [inputValue, setInputValue] = useState<FieldValueType>()
+    const [inputValue, setInputValue] = useState<FieldValueType>(defaultValue)
+
+    mmReactUseEffect(() => {
+        setInputValue(defaultValue)
+    }, [defaultValue])
 
     setInputElementVirtualRef(fieldRef, {
         setValue: (value: string) => (setInputValue(value))
@@ -44,9 +48,10 @@ export function DefaultDateTimeField(
     const handleInputChange = (selected: Date | DateRange | undefined) => {
         let value: any = null
         if (selected && selected instanceof Date) {
-            value = DateTimeFormatter.getFormattedDate(displayFormat, selected)
+            value = DateTimeFormatter.getFormattedDate(valueFormat, selected)
         }
         if (value) {
+            setInputValue(value)
             const event = {
                 target: {
                     name,
@@ -119,9 +124,16 @@ interface CalendarInput {
 
 function CalendarSingleInput({placeholder, labelId, position, monthYearSelection, displayFormat, defaultValue, handleChange, valueFormat, ...props}: CalendarInput) {
     const [date, setDate] = useState<Date>()
+    const [month, setMonth] = useState<Date>()
+
     mmReactUseEffect(() => {
         if (defaultValue && valueFormat) {
-            setDate(DateTimeFormatter.getDateFromSting(defaultValue as string, valueFormat))
+            const selectedDate = DateTimeFormatter.getDateFromSting(defaultValue as string, valueFormat)
+            setDate(selectedDate)
+            setMonth(selectedDate)
+        } else {
+            setDate(undefined)
+            setMonth(undefined)
         }
     }, [defaultValue])
 
@@ -145,8 +157,13 @@ function CalendarSingleInput({placeholder, labelId, position, monthYearSelection
                         monthYearSelection={monthYearSelection}
                         selectionMode="single"
                         selected={date}
+                        month={month}
+                        onMonthChange={setMonth}
                         onSelect={(selected: any) =>{
                             setDate(selected)
+                            if (selected) {
+                                setMonth(selected)
+                            }
                             if (handleChange) {
                                 handleChange(selected)
                             }
