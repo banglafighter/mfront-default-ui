@@ -1,43 +1,37 @@
 import {SortDirection, WebTableGeneratorColumnProps, WebTableGeneratorProps} from "mmcore-ui";
 import {DefaultTable, DefaultTBody, DefaultTD, DefaultTH, DefaultTHead, DefaultTR} from "./default-table";
-import {mmReactUseCallback, mmReactUseRef, mmReactUseState, UINode} from "mmcore";
+import {MmReactFragment, mmReactUseState, UINode} from "mmcore";
 import {mergeWind} from "mfront-default-ui";
 import {ArrowDownNarrowWide, ArrowDownUp, ArrowUpWideNarrow} from "lucide-react";
 
-function SortableTH({sortable, label, name, sortIcon, sortAscIcon, sortDescIcon, onClickSort, columnClassName, currentlySortingColumn}: WebTableGeneratorColumnProps & WebTableGeneratorProps & {currentlySortingColumn: string}) {
-    const [sortDirection, setSortDirection] = mmReactUseState<string>("")
+
+function SortableTH({sortable, label, name, sortIcon, sortAscIcon, sortDescIcon, onClickSort, columnClassName, sortDirection}: WebTableGeneratorColumnProps & WebTableGeneratorProps & {sortDirection?: SortDirection}) {
 
     if (!sortable) {
         return (<DefaultTH className={columnClassName}>{label}</DefaultTH>)
     }
 
-    const handleOnClickSort = mmReactUseCallback(() => {
-        let _sortDirection: string = "asc";
+    const handleOnClickSort = () => {
+        let _sortDirection: SortDirection = "asc";
         if (sortDirection === "asc") {
             _sortDirection = "desc"
         } else {
             _sortDirection = "asc"
         }
 
-        setSortDirection(_sortDirection)
         if (onClickSort) {
-            onClickSort(_sortDirection as SortDirection, name)
+            onClickSort(_sortDirection, name)
         }
+    }
 
-    }, [sortDirection, currentlySortingColumn, onClickSort])
-
-    const getSortIcon = mmReactUseCallback(() => {
-        if (currentlySortingColumn !== name) {
-            return sortIcon
-        }
-
+    const getSortIcon = () => {
         if (sortDirection === "asc") {
             return sortAscIcon
         } else if (sortDirection === "desc") {
             return sortDescIcon
         }
         return sortIcon
-    }, [sortDirection, currentlySortingColumn, onClickSort])
+    }
 
 
     return (
@@ -65,17 +59,18 @@ export function DefaultTableGenerator(
         sortDescIcon,
         isExternalRow,
         renderRow,
+        rowWrapper,
         skipRenderedRow,
         externalRowWrapperClassName,
         ...props
     }: WebTableGeneratorProps) {
-    const currentlySortingColumn = mmReactUseRef<string>("")
+    const [sortingState, setSortingState] = mmReactUseState<{column: string, direction: SortDirection} | null>(null)
 
     const _sortIcon: UINode = sortIcon ?? <ArrowDownUp size={14}/>
     const _sortAscIcon: UINode = sortAscIcon ?? <ArrowDownNarrowWide size={14}/>
-    const _sortDescIcon: UINode = sortDescIcon ?? <ArrowUpWideNarrow  size={14}/>
+    const _sortDescIcon: UINode = sortDescIcon ?? <ArrowUpWideNarrow size={14}/>
 
-    const renderExternalRow = mmReactUseCallback(() => {
+    const renderExternalRow = () => {
         if (!isExternalRow || !renderRow) {
             return
         }
@@ -83,12 +78,18 @@ export function DefaultTableGenerator(
         const columns: WebTableGeneratorColumnProps[] = engine.getColumns()
         return (
             <div className={externalRowWrapperClassName}>
-                {dataList.map((row: Record<string, UINode>, index: number) => renderRow(row, dataList, columns, index))}
+                {dataList.map((row: Record<string, UINode>, index: number) => {
+                    return (
+                        <MmReactFragment key={index}>
+                            {renderRow(row, dataList, columns, index)}
+                        </MmReactFragment>
+                    )
+                })}
             </div>
         )
-    }, [engine.dataList])
+    }
 
-    const getTableBody = mmReactUseCallback(() => {
+    const getTableBody = () => {
         if (isExternalRow) {
             return
         }
@@ -99,10 +100,15 @@ export function DefaultTableGenerator(
             <DefaultTBody>
                 {dataList.map((row: Record<string, UINode>, index: number) => {
                     if (renderRow) {
-                        return renderRow(row, dataList, columns, index)
+                        return (
+                            <MmReactFragment key={index}>
+                                {renderRow(row, dataList, columns, index)}
+                            </MmReactFragment>
+                        )
                     }
-                    return (
-                        <DefaultTR key={index}>
+
+                    const tableRow = (
+                        <DefaultTR>
                             {columns.map((column: WebTableGeneratorColumnProps, index: number) => {
                                 if (column.isHidden) {
                                     return
@@ -117,17 +123,26 @@ export function DefaultTableGenerator(
                                     value = column.customize(row, dataList, column.name, column.label)
                                 }
                                 return (
-                                    <DefaultTD key={index} className={column.columnClassName}>
+                                    <DefaultTD key={column.name || index} className={column.columnClassName}>
                                         {value}
                                     </DefaultTD>
                                 )
                             })}
                         </DefaultTR>
                     )
+
+                    return (
+                        <MmReactFragment key={index}>
+                            {rowWrapper
+                                ? rowWrapper(row, index, tableRow)
+                                : tableRow
+                            }
+                        </MmReactFragment>
+                    )
                 })}
             </DefaultTBody>
         )
-    }, [engine.dataList])
+    }
 
     return (
         <div {...props}>
@@ -139,7 +154,11 @@ export function DefaultTableGenerator(
                                 return
                             }
 
-                            const key = `${index}`
+                            const key = column.name || `${index}`
+                            const sortDirection = sortingState?.column === column.name
+                                ? sortingState.direction
+                                : undefined
+
                             return (
                                 <SortableTH
                                     key={key}
@@ -151,13 +170,16 @@ export function DefaultTableGenerator(
                                     name={column.name}
                                     engine={engine}
                                     onClickSort={(sortDirection: SortDirection, columnName: string) => {
-                                        currentlySortingColumn.current = columnName
+                                        setSortingState({
+                                            column: columnName,
+                                            direction: sortDirection
+                                        })
                                         if (onClickSort) {
                                             onClickSort(sortDirection, columnName)
                                         }
                                     }}
                                     columnClassName={column.columnClassName}
-                                    currentlySortingColumn={currentlySortingColumn.current}
+                                    sortDirection={sortDirection}
                                 />
                             )
                         })}
