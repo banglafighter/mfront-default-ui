@@ -61,6 +61,7 @@ import {
     DefaultItemSubTitle,
     DefaultItemTitle
 } from "./default-ui/default-item";
+import {DefaultRadioButtonField} from "./default-ui/default-radio-button-field";
 
 
 export const DefaultUIComponent: UIComponentSpec = {
@@ -99,6 +100,7 @@ export const DefaultUIComponent: UIComponentSpec = {
     SelectField: DefaultSelectField,
     FileField: DefaultFileField,
     CheckField: DefaultCheckField,
+    RadioButtonField: DefaultRadioButtonField,
     Dropdown: DefaultDropdown,
     Popover: DefaultPopover,
 
