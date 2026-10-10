@@ -5,7 +5,7 @@ import {makeClassVariance} from "mfront-default-ui";
 import {CheckIcon} from "lucide-react";
 import {mergeWind} from "./../common/tailwind-utils";
 import {DefaultInputFrame} from "./default-input-frame";
-import {useId, useState, type CSSProperties} from "mfront";
+import {useState, type CSSProperties} from "mfront";
 
 const radioGroupVariants = makeClassVariance("min-w-0 w-full", {
     variants: {
@@ -32,40 +32,14 @@ const radioGroupVariants = makeClassVariance("min-w-0 w-full", {
 });
 
 const radioOptionVariants = makeClassVariance(
-    [
-        "relative flex min-w-0 items-center rounded-lg border select-none",
-        "transition-[background-color,border-color,color,box-shadow] duration-200 ease-out",
-        "focus-within:ring-1 focus-within:ring-ring/30",
-        "data-[inactive=true]:cursor-not-allowed data-[inactive=true]:opacity-50",
-        "data-[readonly=true]:cursor-default",
-        "data-[inactive=false]:data-[readonly=false]:cursor-pointer",
-        "data-[inactive=false]:data-[readonly=false]:data-[state=unchecked]:hover:bg-muted/40",
-        "data-[state=checked]:font-medium"
-    ],
+    "relative flex min-w-0 items-center rounded-lg border select-none transition-colors duration-200 ease-out focus-within:ring-1 focus-within:ring-ring/30 data-[inactive=true]:cursor-not-allowed data-[inactive=true]:opacity-50 data-[readonly=true]:cursor-default data-[inactive=false]:data-[readonly=false]:cursor-pointer data-[state=checked]:font-medium",
     {
         variants: {
             variant: {
-                segmented: [
-                    "justify-center gap-1.5 border-transparent",
-                    "data-[state=checked]:bg-background",
-                    "data-[state=checked]:text-[var(--radio-selected-color)]"
-                ],
-                status: [
-                    "justify-center gap-1.5 border-border bg-background",
-                    "data-[state=checked]:border-[var(--radio-selected-color)]",
-                    "data-[state=checked]:bg-[var(--radio-selected-color)]",
-                    "data-[state=checked]:text-[var(--radio-contrast-color)]"
-                ],
-                cards: [
-                    "gap-3 border-border bg-background",
-                    "data-[state=checked]:border-[color-mix(in_srgb,var(--radio-selected-color)_35%,var(--color-border))]",
-                    "data-[state=checked]:bg-[color-mix(in_srgb,var(--radio-selected-color)_5%,var(--color-background))]"
-                ],
-                stacked: [
-                    "w-full gap-3 border-border bg-background",
-                    "data-[state=checked]:border-[color-mix(in_srgb,var(--radio-selected-color)_35%,var(--color-border))]",
-                    "data-[state=checked]:bg-[color-mix(in_srgb,var(--radio-selected-color)_5%,var(--color-background))]"
-                ]
+                segmented: "justify-center gap-1.5 border-transparent bg-background text-foreground hover:bg-background/90 data-[state=checked]:bg-background data-[state=checked]:text-[var(--radio-selected-color)]",
+                status: "justify-center gap-1.5 border-border bg-background text-foreground hover:bg-muted/40 data-[state=checked]:border-[var(--radio-selected-color)] data-[state=checked]:bg-[var(--radio-selected-color)] data-[state=checked]:text-[var(--radio-contrast-color)]",
+                cards: "gap-3 border-border bg-background text-foreground hover:bg-muted/40 data-[state=checked]:border-[var(--radio-soft-border)] data-[state=checked]:bg-[var(--radio-soft-background)]",
+                stacked: "w-full gap-3 border-border bg-background text-foreground hover:bg-muted/40 data-[state=checked]:border-[var(--radio-soft-border)] data-[state=checked]:bg-[var(--radio-soft-background)]"
             },
             size: {
                 small: "px-2 py-2 text-xs",
@@ -73,7 +47,7 @@ const radioOptionVariants = makeClassVariance(
                 large: "px-4 py-4 text-base"
             },
             fullWidth: {
-                true: "flex-1",
+                true: "flex-1 basis-0",
                 false: ""
             },
             vertical: {
@@ -134,15 +108,14 @@ export function DefaultRadioButtonField({
     defaultValue,
     options,
     variant = "segmented",
-    size = "medium",
+    size = "small",
     orientation,
-    fullWidth = false,
+    fullWidth = true,
     disabled = false,
     readOnly = false,
     selectedColor = "#2563eb",
     ...props
 }: WebRadioButtonFieldProps) {
-    const radioId = useId();
     const {fieldRef, setFieldValue} = useFieldHelper<HTMLInputElement>({
         name,
         defaultValue,
@@ -197,7 +170,7 @@ export function DefaultRadioButtonField({
             orientation="vertical"
             id={id}
             {...gridItemProps}
-            element={() => (
+            element={(labelId: string) => (
                 <div
                     role="radiogroup"
                     aria-label={typeof label === "string" ? label : name}
@@ -214,10 +187,12 @@ export function DefaultRadioButtonField({
                         const inactive = disabled || option.disabled;
                         const color = option.selectedColor ?? selectedColor;
                         const Icon = option.icon;
-                        const optionId = `${radioId}-${index}`;
+                        const optionId = `${labelId}-${index}`;
                         const style = {
                             "--radio-selected-color": color,
-                            "--radio-contrast-color": contrastText(color)
+                            "--radio-contrast-color": contrastText(color),
+                            "--radio-soft-border": `color-mix(in srgb, ${color} 35%, var(--color-border, #e2e8f0))`,
+                            "--radio-soft-background": `color-mix(in srgb, ${color} 5%, var(--color-background, white))`
                         } as CSSProperties;
 
                         return (
