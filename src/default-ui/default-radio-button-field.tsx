@@ -229,9 +229,7 @@ export function DefaultRadioButtonField({
                                         handleFieldChange(option.value);
                                     }}
                                 />
-                                {Icon && (
-                                    <Icon className={radioIconVariants({size})} aria-hidden="true" />
-                                )}
+                                {Icon && ( <Icon className={radioIconVariants({size})} />)}
                                 <span className={mergeWind("min-w-0", showDescription && "flex-1")}>
                                     <span className="block">{option.label}</span>
                                     {showDescription && option.subtitle && (
