@@ -133,13 +133,15 @@ export function getFieldFromSpec(spec: WebDefaultInputFieldPropsBase, index: num
     return null
 }
 
-export default function DefaultFieldGenerator ({className, engine, layout = "grid", extraConfig, ...props}: WebFieldGeneratorProps){
+export default function DefaultFieldGenerator ({className, engine, groupName, layout = "grid", extraConfig, ...props}: WebFieldGeneratorProps){
     const {gridProps, otherProps} = UICommonUtil.extractGridProps(props as Record<string, MixType>)
 
     return (
         <div {...otherProps} className={mergeWind(fieldGeneratorVariants({layout, ...gridProps}), className)} key={`fg-${engine.version}`}>
-            {engine.fieldSpecList().map((spec: WebDefaultInputFieldPropsBase, index: number)=> {
-                return getFieldFromSpec(spec, index, engine, extraConfig)
+            {engine.fieldSpecList().map((spec: WebDefaultInputFieldPropsBase, index: number) => {
+                if (!groupName || groupName === spec.groupName) {
+                    return getFieldFromSpec(spec, index, engine, extraConfig)
+                }
             })}
         </div>
     )
