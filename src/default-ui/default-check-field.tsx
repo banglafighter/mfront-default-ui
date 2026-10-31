@@ -81,7 +81,7 @@ export function DefaultCheckField(
             errorText={errorText}
             hintsText={hintsText}
             isError={isError}
-            className={mergeWind("self-center", className)}
+            className={mergeWind("self-end h-8 !items-center", className)}
             orientation={"horizontal"}
             isChildFirst={true}
             id={id}
