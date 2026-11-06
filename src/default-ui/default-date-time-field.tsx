@@ -31,6 +31,7 @@ export function DefaultDateTimeField(
         displayFormat = "dd/MM/yyyy",
         position = "center",
         dateInputType = "single",
+        showTimePicker = false,
         ...props
     }: WebDateTimeFieldProps) {
     const {fieldRef, handleChange} = useFieldHelper<HTMLInputElement>({name, defaultValue, engine, onChange})
@@ -88,6 +89,7 @@ export function DefaultDateTimeField(
                 placeholder={placeholder}
                 monthYearSelection={monthYearSelection}
                 displayFormat={displayFormat}
+                showTimePicker={showTimePicker}
                 handleChange={handleInputChange}
                 defaultValue={inputValue}
                 valueFormat={valueFormat}
@@ -120,9 +122,10 @@ interface CalendarInput {
     displayFormat?: string
     valueFormat?: string
     defaultValue?: FieldValueType
+    showTimePicker?: boolean
 }
 
-function CalendarSingleInput({placeholder, labelId, position, monthYearSelection, displayFormat, defaultValue, handleChange, valueFormat, ...props}: CalendarInput) {
+function CalendarSingleInput({placeholder, labelId, position, monthYearSelection, displayFormat, defaultValue, handleChange, valueFormat, showTimePicker = false, ...props}: CalendarInput) {
     const [date, setDate] = useState<Date>()
     const [month, setMonth] = useState<Date>()
 
@@ -159,6 +162,7 @@ function CalendarSingleInput({placeholder, labelId, position, monthYearSelection
                         selected={date}
                         month={month}
                         onMonthChange={setMonth}
+                        showTimePicker={showTimePicker}
                         onSelect={(selected: any) =>{
                             setDate(selected)
                             if (selected) {

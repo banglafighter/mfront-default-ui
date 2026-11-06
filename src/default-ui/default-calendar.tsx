@@ -1,233 +1,316 @@
+import {useState} from "mfront";
 import {ButtonVariant, WebCalendarProps} from "mmcore-ui";
 import {mergeWind} from "./../common/tailwind-utils"
 import {
-  ChevronDownIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-} from "lucide-react"
+    ChevronDownIcon,
+    ChevronLeftIcon,
+    ChevronRightIcon,
+} from "lucide-react";
 import {
-  DayPicker,
-  getDefaultClassNames,
-  type DayButton,
-} from "react-day-picker"
+    DayPicker,
+    getDefaultClassNames,
+    type DayButton,
+} from "react-day-picker";
 import {mmReactUseEffect, mmReactUseRef, UIComponentProps} from "mmcore";
 import {buttonClassAndVariants, DefaultButton} from "./default-button";
 
 
-export function DefaultCalendar({numberOfMonths, onSelect, selected, month, defaultMonth, onMonthChange, selectionMode = "single", monthYearSelection = "dropdown", ...props}: WebCalendarProps) {
-  let mode: any = selectionMode;
-  return (
-      <DayPickerCalendar
-          captionLayout={monthYearSelection}
-          mode={mode}
-          onSelect={onSelect}
-          selected={selected}
-          numberOfMonths={numberOfMonths}
-          month={month}
-          defaultMonth={defaultMonth}
-          onMonthChange={onMonthChange}
-      />
-  )
+export function DefaultCalendar({numberOfMonths, onSelect, selected, month, defaultMonth, onMonthChange, selectionMode = "single", monthYearSelection = "dropdown", showTimePicker = false, ...props}: WebCalendarProps & {showTimePicker?: boolean}) {
+    let mode: any = selectionMode;
+
+    return (
+        <DayPickerCalendar
+            captionLayout={monthYearSelection}
+            mode={mode}
+            onSelect={onSelect}
+            selected={selected}
+            numberOfMonths={numberOfMonths}
+            month={month}
+            defaultMonth={defaultMonth}
+            onMonthChange={onMonthChange}
+            showTimePicker={showTimePicker}
+        />
+    )
 }
 
 function DayPickerCalendar({
-  className,
-  classNames,
-  showOutsideDays = true,
-  captionLayout = "label",
-  buttonVariant = "ghost",
-  formatters,
-  components,
-  ...props
-}: UIComponentProps<typeof DayPicker> & { buttonVariant?: ButtonVariant }) {
-  const defaultClassNames = getDefaultClassNames()
+    className,
+    classNames,
+    showOutsideDays = true,
+    captionLayout = "label",
+    buttonVariant = "ghost",
+    formatters,
+    components,
+    showTimePicker = false,
+    ...props
+}: UIComponentProps<typeof DayPicker> & {
+    buttonVariant?: ButtonVariant;
+    showTimePicker?: boolean;
+    selected?: any;
+    onSelect?: any;
+}) {
+    const defaultClassNames = getDefaultClassNames()
+    const currentYear = new Date().getFullYear();
 
-  const currentYear = new Date().getFullYear();
-  return (
-    <DayPicker
-      endMonth={new Date(currentYear + 12, 11)}
-      showOutsideDays={showOutsideDays}
-      className={mergeWind(
-        "group/calendar bg-background p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-tag=popover-content]_&]:bg-transparent",
-        String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
-        String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
-        className
-      )}
-      captionLayout={captionLayout}
-      formatters={{
-        formatMonthDropdown: (date) =>
-          date.toLocaleString("default", { month: "short" }),
-        ...formatters,
-      }}
-      classNames={{
-        root: mergeWind("w-fit", defaultClassNames.root),
-        months: mergeWind(
-          "relative flex flex-col gap-4 md:flex-row",
-          defaultClassNames.months
-        ),
-        month: mergeWind("flex w-full flex-col gap-4", defaultClassNames.month),
-        nav: mergeWind(
-          "absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1",
-          defaultClassNames.nav
-        ),
-        button_previous: mergeWind(
-          buttonClassAndVariants({ variant: buttonVariant }),
-          "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
-          defaultClassNames.button_previous
-        ),
-        button_next: mergeWind(
-          buttonClassAndVariants({ variant: buttonVariant }),
-          "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
-          defaultClassNames.button_next
-        ),
-        month_caption: mergeWind(
-          "flex h-(--cell-size) w-full items-center justify-center px-(--cell-size)",
-          defaultClassNames.month_caption
-        ),
-        dropdowns: mergeWind(
-          "flex h-(--cell-size) w-full items-center justify-center gap-1.5 text-sm font-medium",
-          defaultClassNames.dropdowns
-        ),
-        dropdown_root: mergeWind(
-          "relative rounded-md border border-input shadow-xs has-focus:border-ring ",
-          defaultClassNames.dropdown_root
-        ),
-        dropdown: mergeWind(
-          "absolute inset-0 bg-popover opacity-0",
-          defaultClassNames.dropdown
-        ),
-        caption_label: mergeWind(
-          "font-medium select-none",
-          captionLayout === "label"
-            ? "text-sm"
-            : "flex h-8 items-center gap-1 rounded-md pr-1 pl-2 text-sm [&>svg]:size-3.5 [&>svg]:text-muted-foreground",
-          defaultClassNames.caption_label
-        ),
-        table: "w-full border-collapse",
-        weekdays: mergeWind("flex", defaultClassNames.weekdays),
-        weekday: mergeWind(
-          "flex-1 rounded-md text-[0.8rem] font-normal text-muted-foreground select-none",
-          defaultClassNames.weekday
-        ),
-        week: mergeWind("mt-2 flex w-full", defaultClassNames.week),
-        week_number_header: mergeWind(
-          "w-(--cell-size) select-none",
-          defaultClassNames.week_number_header
-        ),
-        week_number: mergeWind(
-          "text-[0.8rem] text-muted-foreground select-none",
-          defaultClassNames.week_number
-        ),
-        day: mergeWind(
-          "group/day relative aspect-square h-full w-full p-0 text-center select-none [&:last-child[data-selected=true]_button]:rounded-r-md",
-          props.showWeekNumber
-            ? "[&:nth-child(2)[data-selected=true]_button]:rounded-l-md"
-            : "[&:first-child[data-selected=true]_button]:rounded-l-md",
-          defaultClassNames.day
-        ),
-        range_start: mergeWind(
-          "rounded-l-md bg-accent",
-          defaultClassNames.range_start
-        ),
-        range_middle: mergeWind("rounded-none", defaultClassNames.range_middle),
-        range_end: mergeWind("rounded-r-md bg-accent", defaultClassNames.range_end),
-        today: mergeWind(
-          "rounded-md bg-accent text-accent-foreground data-[selected=true]:rounded-none",
-          defaultClassNames.today
-        ),
-        outside: mergeWind(
-          "text-muted-foreground aria-selected:text-muted-foreground",
-          defaultClassNames.outside
-        ),
-        disabled: mergeWind(
-          "text-muted-foreground opacity-50",
-          defaultClassNames.disabled
-        ),
-        hidden: mergeWind("invisible", defaultClassNames.hidden),
-        ...classNames,
-      }}
-      components={{
-        Root: ({ className, rootRef, ...props }) => {
-          return (
-            <div
-              data-slot="calendar"
-              ref={rootRef}
-              className={mergeWind(className)}
-              {...props}
+    const [time, setTime] = useState(() => {
+        if (props.selected instanceof Date && !isNaN(props.selected.getTime())) {
+            return `${String(props.selected.getHours()).padStart(2, "0")}:${String(props.selected.getMinutes()).padStart(2, "0")}`
+        }
+        return "00:00"
+    })
+
+    mmReactUseEffect(() => {
+      if (props.selected instanceof Date && !isNaN(props.selected.getTime())) {
+        const hours = String(props.selected.getHours()).padStart(2, "0")
+        const minutes = String(props.selected.getMinutes()).padStart(2, "0")
+
+        setTime(`${hours}:${minutes}`)
+      } else {
+        setTime("00:00")
+      }
+    }, [props.selected])
+
+    const handleTimeChange = (event: any) => {
+      const value = event.target.value
+      if (!value) {
+        return
+      }
+
+      setTime(value)
+
+      const date = new Date(props.selected instanceof Date ? props.selected : new Date())
+      const [hours, minutes] = value.split(":").map(Number)
+      date.setHours(hours, minutes, 0, 0)
+      props.onSelect?.(date as any, date, {} as any, event)
+    }
+
+    const handleDateSelect = (selected: any, selectedDay: Date, modifiers: any, event: any) => {
+        if (showTimePicker && selected instanceof Date) {
+            selected = new Date(selected)
+            selected.setHours(...time.split(":").map(Number) as [number, number])
+        }
+        props.onSelect?.(selected, selectedDay, modifiers, event)
+    }
+
+    const dayPickerProps = {
+        ...props,
+        ...(showTimePicker && props.mode === "single"
+            ? {onSelect: handleDateSelect}
+            : {}),
+    } as UIComponentProps<typeof DayPicker>;
+
+    return (
+        <div className="w-fit">
+            <DayPicker
+                endMonth={new Date(currentYear + 12, 11)}
+                showOutsideDays={showOutsideDays}
+                className={mergeWind(
+                    "group/calendar bg-background p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-tag=popover-content]_&]:bg-transparent",
+                    String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
+                    String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
+                    className
+                )}
+                captionLayout={captionLayout}
+                formatters={{
+                    formatMonthDropdown: (date) =>
+                        date.toLocaleString("default", {month: "short"}),
+                    ...formatters,
+                }}
+                classNames={{
+                    root: mergeWind("w-fit", defaultClassNames.root),
+                    months: mergeWind(
+                        "relative flex flex-col gap-4 md:flex-row",
+                        defaultClassNames.months
+                    ),
+                    month: mergeWind("flex w-full flex-col gap-4", defaultClassNames.month),
+                    nav: mergeWind(
+                        "absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1",
+                        defaultClassNames.nav
+                    ),
+                    button_previous: mergeWind(
+                        buttonClassAndVariants({variant: buttonVariant}),
+                        "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
+                        defaultClassNames.button_previous
+                    ),
+                    button_next: mergeWind(
+                        buttonClassAndVariants({variant: buttonVariant}),
+                        "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
+                        defaultClassNames.button_next
+                    ),
+                    month_caption: mergeWind(
+                        "flex h-(--cell-size) w-full items-center justify-center px-(--cell-size)",
+                        defaultClassNames.month_caption
+                    ),
+                    dropdowns: mergeWind(
+                        "flex h-(--cell-size) w-full items-center justify-center gap-1.5 text-sm font-medium",
+                        defaultClassNames.dropdowns
+                    ),
+                    dropdown_root: mergeWind(
+                        "relative rounded-md border border-input shadow-xs has-focus:border-ring ",
+                        defaultClassNames.dropdown_root
+                    ),
+                    dropdown: mergeWind(
+                        "absolute inset-0 bg-popover opacity-0",
+                        defaultClassNames.dropdown
+                    ),
+                    caption_label: mergeWind(
+                        "font-medium select-none",
+                        captionLayout === "label"
+                            ? "text-sm"
+                            : "flex h-8 items-center gap-1 rounded-md pr-1 pl-2 text-sm [&>svg]:size-3.5 [&>svg]:text-muted-foreground",
+                        defaultClassNames.caption_label
+                    ),
+                    table: "w-full border-collapse",
+                    weekdays: mergeWind("flex", defaultClassNames.weekdays),
+                    weekday: mergeWind(
+                        "flex-1 rounded-md text-[0.8rem] font-normal text-muted-foreground select-none",
+                        defaultClassNames.weekday
+                    ),
+                    week: mergeWind("mt-2 flex w-full", defaultClassNames.week),
+                    week_number_header: mergeWind(
+                        "w-(--cell-size) select-none",
+                        defaultClassNames.week_number_header
+                    ),
+                    week_number: mergeWind(
+                        "text-[0.8rem] text-muted-foreground select-none",
+                        defaultClassNames.week_number
+                    ),
+                    day: mergeWind(
+                        "group/day relative aspect-square h-full w-full p-0 text-center select-none [&:last-child[data-selected=true]_button]:rounded-r-md",
+                        props.showWeekNumber
+                            ? "[&:nth-child(2)[data-selected=true]_button]:rounded-l-md"
+                            : "[&:first-child[data-selected=true]_button]:rounded-l-md",
+                        defaultClassNames.day
+                    ),
+                    range_start: mergeWind(
+                        "rounded-l-md bg-accent",
+                        defaultClassNames.range_start
+                    ),
+                    range_middle: mergeWind("rounded-none", defaultClassNames.range_middle),
+                    range_end: mergeWind(
+                        "rounded-r-md bg-accent",
+                        defaultClassNames.range_end
+                    ),
+                    today: mergeWind(
+                        "rounded-md bg-accent text-accent-foreground data-[selected=true]:rounded-none",
+                        defaultClassNames.today
+                    ),
+                    outside: mergeWind(
+                        "text-muted-foreground aria-selected:text-muted-foreground",
+                        defaultClassNames.outside
+                    ),
+                    disabled: mergeWind(
+                        "text-muted-foreground opacity-50",
+                        defaultClassNames.disabled
+                    ),
+                    hidden: mergeWind("invisible", defaultClassNames.hidden),
+                    ...classNames,
+                }}
+                components={{
+                    Root: ({className, rootRef, ...props}) => {
+                        return (
+                            <div
+                                data-slot="calendar"
+                                ref={rootRef}
+                                className={mergeWind(className)}
+                                {...props}
+                            />
+                        )
+                    },
+                    Chevron: ({className, orientation, ...props}) => {
+                        if (orientation === "left") {
+                            return (
+                                <ChevronLeftIcon
+                                    className={mergeWind("size-4", className)}
+                                    {...props}
+                                />
+                            )
+                        }
+
+                        if (orientation === "right") {
+                            return (
+                                <ChevronRightIcon
+                                    className={mergeWind("size-4", className)}
+                                    {...props}
+                                />
+                            )
+                        }
+
+                        return (
+                            <ChevronDownIcon
+                                className={mergeWind("size-4", className)}
+                                {...props}
+                            />
+                        )
+                    },
+                    DayButton: CalendarDayButton,
+                    WeekNumber: ({children, ...props}) => {
+                        return (
+                            <td {...props}>
+                                <div className="flex size-(--cell-size) items-center justify-center text-center">
+                                    {children}
+                                </div>
+                            </td>
+                        )
+                    },
+                    ...components,
+                }}
+                {...dayPickerProps}
             />
-          )
-        },
-        Chevron: ({ className, orientation, ...props }) => {
-          if (orientation === "left") {
-            return (
-              <ChevronLeftIcon className={mergeWind("size-4", className)} {...props} />
-            )
-          }
 
-          if (orientation === "right") {
-            return (
-              <ChevronRightIcon
-                className={mergeWind("size-4", className)}
-                {...props}
-              />
-            )
-          }
+            {showTimePicker && props.mode === "single" && (
+                <div className="mx-3 mb-3 flex items-center justify-between gap-3 border-t pt-3">
+                    <span className="text-sm font-medium">Time</span>
 
-          return (
-            <ChevronDownIcon className={mergeWind("size-4", className)} {...props} />
-          )
-        },
-        DayButton: CalendarDayButton,
-        WeekNumber: ({ children, ...props }) => {
-          return (
-            <td {...props}>
-              <div className="flex size-(--cell-size) items-center justify-center text-center">
-                {children}
-              </div>
-            </td>
-          )
-        },
-        ...components,
-      }}
-      {...props}
-    />
-  )
+                    <input
+                        type="time"
+                        value={time}
+                        onChange={handleTimeChange}
+                        className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+                    />
+                </div>
+            )}
+        </div>
+    )
 }
 
 function CalendarDayButton({
-  className,
-  day,
-  modifiers,
-  ...props
+    className,
+    day,
+    modifiers,
+    ...props
 }: UIComponentProps<typeof DayButton>) {
-  const defaultClassNames = getDefaultClassNames()
+    const defaultClassNames = getDefaultClassNames()
 
-  const ref = mmReactUseRef<HTMLButtonElement>(null)
-  mmReactUseEffect(() => {
-    if (modifiers.focused) ref.current?.focus()
-  }, [modifiers.focused])
+    const ref = mmReactUseRef<HTMLButtonElement>(null)
 
-  return (
-    <DefaultButton
-      ref={ref}
-      variant="ghost"
-      size="icon"
-      data-day={day.date.toLocaleDateString()}
-      data-selected-single={
-        modifiers.selected &&
-        !modifiers.range_start &&
-        !modifiers.range_end &&
-        !modifiers.range_middle
-      }
-      data-range-start={modifiers.range_start}
-      data-range-end={modifiers.range_end}
-      data-range-middle={modifiers.range_middle}
-      className={mergeWind(
-        "flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-[1px] group-data-[focused=true]/day:ring-ring/50 data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-accent-foreground [&>span]:text-xs [&>span]:opacity-70",
-        defaultClassNames.day,
-        className
-      )}
-      {...props}
-    />
-  )
+    mmReactUseEffect(() => {
+        if (modifiers.focused) {
+            ref.current?.focus()
+        }
+    }, [modifiers.focused])
+
+    return (
+        <DefaultButton
+            ref={ref}
+            variant="ghost"
+            size="icon"
+            data-day={day.date.toLocaleDateString()}
+            data-selected-single={
+                modifiers.selected &&
+                !modifiers.range_start &&
+                !modifiers.range_end &&
+                !modifiers.range_middle
+            }
+            data-range-start={modifiers.range_start}
+            data-range-end={modifiers.range_end}
+            data-range-middle={modifiers.range_middle}
+            className={mergeWind(
+                "flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-[1px] group-data-[focused=true]/day:ring-ring/50 data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-accent-foreground [&>span]:text-xs [&>span]:opacity-70",
+                defaultClassNames.day,
+                className
+            )}
+            {...props}
+        />
+    )
 }
