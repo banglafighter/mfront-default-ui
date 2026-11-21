@@ -43,7 +43,7 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
         if (loadUrlItem) {
             let active = true
 
-            loadUrlItem().then((items: Record<string, MixType>[]) => {
+            loadUrlItem(defaultValue).then((items: Record<string, MixType>[]) => {
                 if (active && items) {
                     setDynamicOptions(items)
                 }
@@ -53,7 +53,7 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
                 active = false
             }
         }
-    }, [loadUrlItem]);
+    }, [loadUrlItem, defaultValue]);
 
     const selectOptions = mmReactUseMemo(() => {
         const uniqueMap = new Map();
@@ -207,7 +207,7 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
             }, (newOptions: Array<any>) => {
                 mergeDynamicOptions(newOptions);
                 setLoading(false)
-            })
+            }, defaultValue)
         }
 
     }, [isLoading, loadNewItem, selectOptions, mergeDynamicOptions])
