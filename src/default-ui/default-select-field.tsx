@@ -186,8 +186,8 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
     }, [valueKey])
 
     const onInputChange = mmReactUseCallback((inputValue: string) => {
+        setSearchText(inputValue);
         const trimmed = inputValue.trim();
-        setSearchText(trimmed);
 
         if (loadNewItem && !isLoading && trimmed !== '') {
             const refinedSearchText = trimmed.toLowerCase();
@@ -210,7 +210,7 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
             }, defaultValue)
         }
 
-    }, [isLoading, loadNewItem, selectOptions, mergeDynamicOptions])
+    }, [isLoading, loadNewItem, selectOptions, mergeDynamicOptions, defaultValue])
 
     const getNoOptionsContent = mmReactUseCallback(() => {
         if (isTagMode) {
@@ -332,6 +332,7 @@ export function DefaultSelectField({options, labelKey, valueKey, multiple, custo
                     placeholder={placeholder ? placeholder : _t("Select an option")}
 
                     filterOption={filterOption}
+                    inputValue={searchText}
 
                     value={processedSelectedValue}
                     options={selectOptions}
