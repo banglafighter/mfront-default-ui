@@ -1,4 +1,13 @@
-import {format, parse} from 'date-fns';
+import {
+    format,
+    parse,
+    addDays,
+    addMonths,
+    addYears,
+    getDate,
+    getMonth,
+    getYear
+} from "date-fns";
 
 export default class DateTimeFormatter {
 
@@ -17,6 +26,38 @@ export default class DateTimeFormatter {
     static stringDateToFormattedDateTime(dataTime: string, stringFormat: string, expectedFormat: string) {
         let parsedDateTime: any = this.getDateFromSting(dataTime, stringFormat)
         return this.getFormattedDate(expectedFormat, parsedDateTime)
+    }
+
+    static getDay(datetime: Date = new Date()) {
+        return getDate(datetime)
+    }
+
+    static getDayName(datetime: Date = new Date()) {
+        return format(datetime, "EEEE")
+    }
+
+    static getMonth(datetime: Date = new Date()) {
+        return getMonth(datetime) + 1
+    }
+
+    static getMonthName(datetime: Date = new Date()) {
+        return format(datetime, "MMMM")
+    }
+
+    static getYear(datetime: Date = new Date()) {
+        return getYear(datetime)
+    }
+
+    static addDays(days: number, datetime: Date = new Date()) {
+        return addDays(datetime, days)
+    }
+
+    static addMonths(months: number, datetime: Date = new Date()) {
+        return addMonths(datetime, months)
+    }
+
+    static addYears(years: number, datetime: Date = new Date()) {
+        return addYears(datetime, years)
     }
 
 }
